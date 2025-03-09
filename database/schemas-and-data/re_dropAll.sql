@@ -3,8 +3,8 @@ USE re_inventory;
 
 -- Drop the Tables
 DROP TABLE IF EXISTS inventory_log;
-DROP TABLE IF EXISTS ordered_item;
-DROP TABLE IF EXISTS purchased_item;
+DROP TABLE IF EXISTS checkout_item;
+DROP TABLE IF EXISTS purchase_item;
 
 DROP TABLE IF EXISTS checkout_order;
 DROP TABLE IF EXISTS purchase_order;

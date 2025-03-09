@@ -1,19 +1,14 @@
-/* 
-This script implements the DDL portion of the Retriever Essentials
-Inventory and Checkout database schema. It will create all the necessary
-tables, establish relationships between these tables, and declare
-all data types and constraints. Run the re_dropAll.sql script before running
-this to ensure a clean database and prevent errors.
+/*
+This script will create the test DB and pre-load it with data. It also creates a procedure for establishing a known good state
+that can be run prior to each unit test of the API.
 */
+DROP DATABASE IF EXISTS re_inventory_test;
 
 -- Create the 're_inventory' database.
-CREATE DATABASE re_inventory;
-
--- Show that the database has been created.
-SHOW DATABASES;
+CREATE DATABASE re_inventory_test;
 
 -- Select a database to work with.
-USE re_inventory;
+USE re_inventory_test;
 
 -- Table: app_user
 /*
@@ -154,12 +149,48 @@ CREATE INDEX idx_item_category ON item(category);
 -- Index to track which items are most popular on a per-day basis.
 CREATE INDEX idx_checkout_item_date ON checkout_item(checkout_id, quantity);
 
--- Show the Tables in the re_inventory DB.
-SHOW TABLES;
+-- -----------------------------------------------------
+-- Known Good State
+-- -----------------------------------------------------
+DELIMITER //
 
--- Show the Indexes for Tables in the re_inventory DB.
-SHOW INDEXES FROM checkout_order;
-SHOW INDEXES FROM item;
-SHOW INDEXES FROM inventory_log;
-SHOW INDEXES FROM purchase_order;
-SHOW INDEXES FROM checkout_item;
+CREATE PROCEDURE set_known_good_state()
+BEGIN
+
+	DELETE FROM inventory_log;
+	ALTER TABLE inventory_log auto_increment = 1;
+	DELETE FROM checkout_item;
+	ALTER TABLE checkout_item auto_increment = 1;
+	DELETE FROM purchase_item;
+	ALTER TABLE purchase_item auto_increment = 1;
+
+	DELETE FROM checkout_order;
+    ALTER TABLE checkout_order auto_increment = 1;
+	DELETE FROM purchase_order;
+    ALTER TABLE purchase_order auto_increment = 1;
+	DELETE FROM vendor;
+    ALTER TABLE vendor auto_increment = 1;
+	DELETE FROM app_user;
+	ALTER TABLE app_user auto_increment = 1;
+	DELETE FROM item;
+    ALTER TABLE item auto_increment = 1;
+
+    -- -----------------------------------------------------
+	-- Data
+	-- -----------------------------------------------------
+    
+    insert into app_role (`name`) values
+		('USER'),
+		('ADMIN');
+
+	-- Initial data to get started, passwords are set to "P@ssw0rd!" for now
+-- 	insert into app_user (username, password_hash, email, user_first_name, user_last_name) values
+    insert into app_user (username, password_hash, email) values
+-- 		('admin1', '$2a$10$ntB7CsRKQzuLoKY3rfoAQen5nNyiC/U60wBsWnnYrtQQi8Z3IZzQa', 'admin@admin.com', 'Test', 'McTesterson'),
+-- 		('user1', '$2a$10$ntB7CsRKQzuLoKY3rfoAQen5nNyiC/U60wBsWnnYrtQQi8Z3IZzQa', 'user@user.com', 'User', 'McUser');
+		('admin1', '$2a$10$ntB7CsRKQzuLoKY3rfoAQen5nNyiC/U60wBsWnnYrtQQi8Z3IZzQa', 'admin@admin.com'),
+		('user1', '$2a$10$ntB7CsRKQzuLoKY3rfoAQen5nNyiC/U60wBsWnnYrtQQi8Z3IZzQa', 'user@user.com');
+        
+end //
+
+delimiter ;
