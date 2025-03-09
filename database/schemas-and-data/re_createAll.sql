@@ -26,11 +26,11 @@ Unique Constraints:
 CREATE TABLE app_user (
     app_user_id INT PRIMARY KEY AUTO_INCREMENT,
     email VARCHAR(255) UNIQUE NOT NULL,
-    passwordHash VARCHAR(255) NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
     user_role ENUM('AUTHORITY', 'ADMIN') NOT NULL,
     enabled BOOLEAN DEFAULT TRUE
---     user_first_name varchar(50) null,
---     user_last_name varchar(50) null
+--     user_first_name varchar(50) NULL,
+--     user_last_name varchar(50) NULL
 );
 
 -- Table: item
@@ -70,7 +70,7 @@ CREATE TABLE inventory_log (
 
 -- Table: checkout_order
 /*
-Primary Key (PK): order_id
+Primary Key (PK): checkout_id
 Foreign Key (FK):
 	authority_id --> app_user(app_user_id)
 */
@@ -85,13 +85,13 @@ CREATE TABLE checkout_order (
 
 -- Table: ordered_item (bridge table for orders and their items)
 /*
-Primary Key (PK): ordered_item_id
+Primary Key (PK): checkout_item_id
 Foreign Key (FK):
 	checkout_id --> checkout_order(checkout_id)
     item_id --> item(item_id)
 */
-CREATE TABLE ordered_item (
-    ordered_item_id INT PRIMARY KEY AUTO_INCREMENT,
+CREATE TABLE checkout_item (
+    checkout_item_id INT PRIMARY KEY AUTO_INCREMENT,
     checkout_id INT NOT NULL,
     item_id INT NULL,
     quantity INT NOT NULL CHECK (quantity > 0),
@@ -114,7 +114,7 @@ CREATE TABLE vendor (
 
 -- Table: purchase_order
 /*
-Primary Key (PK): ordered_item_id
+Primary Key (PK): purchase_id
 Foreign Key (FK):
 	admin_id --> app_user(app_user_id)
     vendor_id --> vendor(vendor_id)
@@ -128,15 +128,15 @@ CREATE TABLE purchase_order (
     FOREIGN KEY (vendor_id) REFERENCES vendor(vendor_id) ON DELETE SET NULL
 );
 
--- Table: purchased_item
+-- Table: purchase_item
 /*
-Primary Key (PK): ordered_item_id
+Primary Key (PK): purchase_item_id
 Foreign Key (FK):
 	purchase_id --> purchase(purchase_id)
     item_id --> item(item_id)
 */
-CREATE TABLE purchased_item (
-    purchased_item_id INT PRIMARY KEY AUTO_INCREMENT,
+CREATE TABLE purchase_item (
+    purchase_item_id INT PRIMARY KEY AUTO_INCREMENT,
     purchase_id INT NOT NULL,
     item_id INT NULL,
     quantity INT NOT NULL CHECK (quantity > 0),
@@ -148,10 +148,13 @@ CREATE TABLE purchased_item (
 CREATE INDEX idx_checkout_order_date ON checkout_order(checkout_date);
 
 -- Index to improve performance when retrieving most popular items.
-CREATE INDEX idx_ordered_item_quantity ON ordered_item(quantity);
+CREATE INDEX idx_checkout_item_quantity ON checkout_item(quantity);
 
 -- Index to optimize category-based filtering.
 CREATE INDEX idx_item_category ON item(category);
+
+-- Index to track which items are most popular on a per-day basis.
+CREATE INDEX idx_checkout_item_date ON checkout_item(checkout_id, quantity);
 
 -- Show the Tables in the re_inventory DB.
 SHOW TABLES;
@@ -161,3 +164,4 @@ SHOW INDEXES FROM checkout_order;
 SHOW INDEXES FROM item;
 SHOW INDEXES FROM inventory_log;
 SHOW INDEXES FROM purchase_order;
+SHOW INDEXES FROM checkout_item;
