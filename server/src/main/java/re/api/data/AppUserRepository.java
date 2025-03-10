@@ -1,4 +1,4 @@
 package re.api.data;
 
-public class AppUserRepository {
+public interface AppUserRepository {
 }
