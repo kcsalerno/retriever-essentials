@@ -6,7 +6,7 @@ import re.api.models.Vendor;
 
 import java.util.List;
 
-
+@Service
 public class VendorService {
     private final VendorRepository vendorRepository;
 
@@ -77,6 +77,15 @@ public class VendorService {
         } else if (vendor.getVendorName().length() > 255) {
             result.addMessage(ResultType.INVALID, "Vendor name is too long");
         }
-        if (Validations.isNullOrBlank(vendor.getContactEmail()))
+        if (Validations.isNullOrBlank(vendor.getContactEmail())) {
+            result.addMessage(ResultType.INVALID, "Vendor contact email is required");
+        } else if (vendor.getContactEmail().length() > 255) {
+            result.addMessage(ResultType.INVALID, "Vendor contact email is too long");
+        }
+        if (vendor.getPhoneNumber().length() > 20) {
+            result.addMessage(ResultType.INVALID, "Phone number must be 20 characters or fewer");
+        }
+
+        return result;
     }
 }
