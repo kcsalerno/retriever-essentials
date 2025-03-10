@@ -1,6 +1,6 @@
 /*
 This script will test the DB by executing various common sql queries. Please make sure
-you have run the re_testSchema script first to create the DB and the procedure.
+you have run the re_createTest script first to create the DB and the procedure.
 */
 
 -- Select a database to work with.
