@@ -39,10 +39,10 @@ Unique Constraint:
 */
 CREATE TABLE item (
     item_id INT PRIMARY KEY AUTO_INCREMENT,
-    item_name VARCHAR(4) UNIQUE NOT NULL,
+    item_name VARCHAR(20) UNIQUE NOT NULL,
     item_description TEXT NULL,
     nutrition_facts TEXT NULL,
-	picture MEDIUMBLOB NULL,
+	picture_path VARCHAR(255) NULL,
     category VARCHAR(20) NOT NULL,
     current_count INT NOT NULL DEFAULT 0 CHECK (current_count >= 0),
     price_per_unit DECIMAL(7,2) NULL
@@ -59,7 +59,7 @@ CREATE TABLE inventory_log (
     log_id INT PRIMARY KEY AUTO_INCREMENT,
     authority_id INT NULL,
     item_id INT NOT NULL,
-    quantity_change INT NOT NULL,
+    quantity_change INT NOT NULL CHECK (quantity_change <> 0),
     reason VARCHAR(255) NOT NULL,
     time_stamp DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (authority_id) REFERENCES app_user(app_user_id) ON DELETE SET NULL,

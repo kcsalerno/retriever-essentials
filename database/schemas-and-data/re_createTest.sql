@@ -35,10 +35,10 @@ Unique Constraint:
 */
 CREATE TABLE item (
     item_id INT PRIMARY KEY AUTO_INCREMENT,
-    item_name VARCHAR(4) UNIQUE NOT NULL,
+    item_name VARCHAR(20) UNIQUE NOT NULL,
     item_description TEXT NULL,
     nutrition_facts TEXT NULL,
-	picture MEDIUMBLOB NULL,
+	picture_path VARCHAR(255) NULL,
     category VARCHAR(20) NOT NULL,
     current_count INT NOT NULL DEFAULT 0 CHECK (current_count >= 0),
     price_per_unit DECIMAL(7,2) NULL
@@ -55,7 +55,7 @@ CREATE TABLE inventory_log (
     log_id INT PRIMARY KEY AUTO_INCREMENT,
     authority_id INT NULL,
     item_id INT NOT NULL,
-    quantity_change INT NOT NULL,
+    quantity_change INT NOT NULL CHECK (quantity_change <> 0),
     reason VARCHAR(255) NOT NULL,
     time_stamp DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (authority_id) REFERENCES app_user(app_user_id) ON DELETE SET NULL,
@@ -157,48 +157,67 @@ DELIMITER //
 
 CREATE PROCEDURE set_known_good_state()
 BEGIN
+    -- Disable foreign key checks to prevent constraint issues
+    SET FOREIGN_KEY_CHECKS = 0;
 
-	DELETE FROM inventory_log;
-	ALTER TABLE inventory_log auto_increment = 1;
-	DELETE FROM checkout_item;
-	ALTER TABLE checkout_item auto_increment = 1;
-	DELETE FROM purchase_item;
-	ALTER TABLE purchase_item auto_increment = 1;
+    -- Truncate tables to reset all data
+    TRUNCATE TABLE inventory_log;
+    TRUNCATE TABLE checkout_item;
+    TRUNCATE TABLE purchase_item;
+    TRUNCATE TABLE checkout_order;
+    TRUNCATE TABLE purchase_order;
+    TRUNCATE TABLE vendor;
+    TRUNCATE TABLE item;
+    TRUNCATE TABLE app_user;
 
-	DELETE FROM checkout_order;
-    ALTER TABLE checkout_order auto_increment = 1;
-	DELETE FROM purchase_order;
-    ALTER TABLE purchase_order auto_increment = 1;
-	DELETE FROM vendor;
-    ALTER TABLE vendor auto_increment = 1;
-	DELETE FROM item;
-    ALTER TABLE item auto_increment = 1;
-	DELETE FROM app_user;
-	ALTER TABLE app_user auto_increment = 1;
-
+    -- Re-enable foreign key checks
+    SET FOREIGN_KEY_CHECKS = 1;
 
     -- -----------------------------------------------------
-	-- Data
-	-- -----------------------------------------------------
-    
-    -- Initial data to get started, passwords are set to "P@ssw0rd!" for now
-    insert into app_user (email, password_hash, user_role) values
-		('admin@umbc.com', '$2a$10$ntB7CsRKQzuLoKY3rfoAQen5nNyiC/U60wBsWnnYrtQQi8Z3IZzQa', 'ADMIN'),
-		('authority@umbc.com', '$2a$10$ntB7CsRKQzuLoKY3rfoAQen5nNyiC/U60wBsWnnYrtQQi8Z3IZzQa', 'AUTHORITY');
-	
+    -- Data
+    -- -----------------------------------------------------
+
+    -- Initial user data, passwords set to "P@ssw0rd!" for now.
+		INSERT INTO app_user (email, password_hash, user_role) VALUES
+        ('admin@umbc.com', '$2a$10$ntB7CsRKQzuLoKY3rfoAQen5nNyiC/U60wBsWnnYrtQQi8Z3IZzQa', 'ADMIN'),
+        ('authority@umbc.com', '$2a$10$ntB7CsRKQzuLoKY3rfoAQen5nNyiC/U60wBsWnnYrtQQi8Z3IZzQa', 'AUTHORITY');
+
     -- Test data for Vendor
-    insert into vendor (vendor_name, phone_number, contact_email) values
-		('Patel Brothers', '999-555-1234', 'patel@brothers.com'),
+    INSERT INTO vendor (vendor_name, phone_number, contact_email) VALUES
+        ('Patel Brothers', '999-555-1234', 'patel@brothers.com'),
         ('Test Vendor', '111-555-4321', 'test@vendor.com');
-        
-	-- Test data for item (how the heck do I mock a blob??)
-    insert into item (item_name, item_description, nutrition_facts, picture, category, current_count, price_per_unit) values
-		(
-    
-        
-	
-	
 
-end //
+    -- Test data for Item (storing picture paths instead of BLOBs)
+    INSERT INTO item (item_name, item_description, nutrition_facts, picture_path, category, current_count, price_per_unit) VALUES
+        ('Rice', 'Long grain basmati rice', 'Calories: 200 per 100g', 'https://cloudinary.com/rice123', 'Grain', 100, 2.50),
+        ('Milk', 'Organic whole milk', 'Calories: 150 per cup', 'https://cloudinary.com/milk123', 'Dairy', 50, 3.99),
+        ('Bread', 'Whole wheat bread', 'Calories: 80 per slice', 'https://cloudinary.com/bread123', 'Bakery', 30, 2.25),
+        ('Eggs', 'Free-range eggs', 'Calories: 70 per egg', 'https://cloudinary.com/eggs123', 'Dairy', 60, 4.50);
 
-delimiter ;
+    -- Sample purchase order data
+    INSERT INTO purchase_order (admin_id, vendor_id) VALUES
+        (1, 1), (1, 2);
+
+    -- Sample purchased items
+    INSERT INTO purchase_item (purchase_id, item_id, quantity) VALUES
+        (1, 1, 20), (1, 2, 30), (2, 3, 40), (2, 4, 50);
+
+    -- Sample checkout orders (admin processing the orders)
+    INSERT INTO checkout_order (student_id, authority_id, self_checkout) VALUES
+        ('VF63056', 2, FALSE),
+        ('VF99099', 2, TRUE);
+
+    -- Sample checked-out items (students purchasing items)
+    INSERT INTO checkout_item (checkout_id, item_id, quantity) VALUES
+        (1, 1, 2), (1, 2, 1), (2, 3, 3), (2, 4, 2);
+
+    -- Sample inventory log (tracking item adjustments)
+    INSERT INTO inventory_log (authority_id, item_id, quantity_change, reason) VALUES
+        (2, 1, -2, 'Spoiled'),
+        (2, 2, -1, 'Package Damaged'),
+        (1, 3, -3, 'Shrink'),
+        (1, 4, 2, 'Corrected Item Count');
+
+END //
+
+DELIMITER ;
