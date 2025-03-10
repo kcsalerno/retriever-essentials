@@ -31,6 +31,15 @@ public class ItemJdbcTemplateRepository implements ItemRepository {
     }
 
     @Override
+    public Item findByName(String name) {
+        final String sql = "SELECT * FROM item WHERE item_name = ?;";
+        return jdbcTemplate.query(sql, new ItemMapper(), name)
+                .stream()
+                .findFirst()
+                .orElse(null);
+    }
+
+    @Override
     public Item add(Item item) {
         final String sql = """
                 INSERT INTO item (item_name, item_description, nutrition_facts, picture_path, category, current_count, price_per_unit)

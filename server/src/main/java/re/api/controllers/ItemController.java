@@ -34,6 +34,15 @@ public class ItemController {
         return ResponseEntity.ok(item);
     }
 
+    @GetMapping("/{itemName}")
+    public ResponseEntity<Item> findByName(@PathVariable String itemName) {
+        Item item = service.findByName(itemName);
+        if (item == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(item);
+    }
+
     @PostMapping
     public ResponseEntity<Object> create(@RequestBody Item item) {
         Result<Item> result = service.add(item);

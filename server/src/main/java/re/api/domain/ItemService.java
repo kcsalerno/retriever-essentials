@@ -23,6 +23,8 @@ public class ItemService {
         return repository.findById(itemId);
     }
 
+    public Item findByName(String name){ return repository.findByName(name); }
+
     public Result<Item> add(Item item) {
         Result<Item> result = validate(item);
 
