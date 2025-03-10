@@ -93,15 +93,14 @@ public class Item {
 
     @Override
     public boolean equals(Object o) {
-        if (o == this) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Item item = (Item) o;
-        return Objects.equals(itemName, item.itemName) && Objects.equals(category, item.category);
+        return itemId == item.itemId && Objects.equals(itemName, item.itemName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(itemName, category);
+        return Objects.hash(itemId, itemName);
     }
 
     @Override
