@@ -1,4 +1,8 @@
 package re.api.domain;
 
-public class ResultType {
+public enum ResultType {
+    SUCCESS,
+    INVALID,
+    DUPLICATE,
+    NOT_FOUND
 }
