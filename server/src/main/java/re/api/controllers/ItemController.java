@@ -25,6 +25,11 @@ public class ItemController {
         return service.findAll();
     }
 
+    @GetMapping("/popular")
+    public List<Item> findMostPopularItems() {
+        return service.findMostPopularItems();
+    }
+
     @GetMapping("/{itemId}")
     public ResponseEntity<Item> findById(@PathVariable int itemId) {
         Item item = service.findById(itemId);
