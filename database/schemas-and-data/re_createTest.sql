@@ -1,6 +1,7 @@
 /*
-This script will create the test DB and pre-load it with data. It also creates a procedure for establishing a known good state
-that can be run prior to each unit test of the API.
+This script will create the test DB. Run this prior to testing the API. It also creates a procedure for establishing
+a known good state that can be run prior to each unit test of the API's persistence layer. This will drop any data or
+changes from previous unit tests and re-populate the DB with known good data.
 */
 DROP DATABASE IF EXISTS re_inventory_test;
 
@@ -170,27 +171,34 @@ BEGIN
     ALTER TABLE purchase_order auto_increment = 1;
 	DELETE FROM vendor;
     ALTER TABLE vendor auto_increment = 1;
-	DELETE FROM app_user;
-	ALTER TABLE app_user auto_increment = 1;
 	DELETE FROM item;
     ALTER TABLE item auto_increment = 1;
+	DELETE FROM app_user;
+	ALTER TABLE app_user auto_increment = 1;
+
 
     -- -----------------------------------------------------
 	-- Data
 	-- -----------------------------------------------------
     
-    insert into app_role (`name`) values
-		('USER'),
-		('ADMIN');
-
-	-- Initial data to get started, passwords are set to "P@ssw0rd!" for now
--- 	insert into app_user (username, password_hash, email, user_first_name, user_last_name) values
-    insert into app_user (username, password_hash, email) values
--- 		('admin1', '$2a$10$ntB7CsRKQzuLoKY3rfoAQen5nNyiC/U60wBsWnnYrtQQi8Z3IZzQa', 'admin@admin.com', 'Test', 'McTesterson'),
--- 		('user1', '$2a$10$ntB7CsRKQzuLoKY3rfoAQen5nNyiC/U60wBsWnnYrtQQi8Z3IZzQa', 'user@user.com', 'User', 'McUser');
-		('admin1', '$2a$10$ntB7CsRKQzuLoKY3rfoAQen5nNyiC/U60wBsWnnYrtQQi8Z3IZzQa', 'admin@admin.com'),
-		('user1', '$2a$10$ntB7CsRKQzuLoKY3rfoAQen5nNyiC/U60wBsWnnYrtQQi8Z3IZzQa', 'user@user.com');
+    -- Initial data to get started, passwords are set to "P@ssw0rd!" for now
+    insert into app_user (email, password_hash, user_role) values
+		('admin@umbc.com', '$2a$10$ntB7CsRKQzuLoKY3rfoAQen5nNyiC/U60wBsWnnYrtQQi8Z3IZzQa', 'ADMIN'),
+		('authority@umbc.com', '$2a$10$ntB7CsRKQzuLoKY3rfoAQen5nNyiC/U60wBsWnnYrtQQi8Z3IZzQa', 'AUTHORITY');
+	
+    -- Test data for Vendor
+    insert into vendor (vendor_name, phone_number, contact_email) values
+		('Patel Brothers', '999-555-1234', 'patel@brothers.com'),
+        ('Test Vendor', '111-555-4321', 'test@vendor.com');
         
+	-- Test data for item (how the heck do I mock a blob??)
+    insert into item (item_name, item_description, nutrition_facts, picture, category, current_count, price_per_unit) values
+		(
+    
+        
+	
+	
+
 end //
 
 delimiter ;

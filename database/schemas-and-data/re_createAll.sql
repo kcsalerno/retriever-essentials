@@ -2,8 +2,8 @@
 This script implements the DDL portion of the Retriever Essentials
 Inventory and Checkout database schema. It will create all the necessary
 tables, establish relationships between these tables, and declare
-all data types and constraints. Run the re_dropAll.sql script before running
-this to ensure a clean database and prevent errors.
+all data types and constraints. If this is not your first time running this script
+then run the re_dropAll.sql scrip first to ensure a clean database and prevent errors.
 */
 
 -- Create the 're_inventory' database.
@@ -163,3 +163,8 @@ SHOW INDEXES FROM item;
 SHOW INDEXES FROM inventory_log;
 SHOW INDEXES FROM purchase_order;
 SHOW INDEXES FROM checkout_item;
+
+-- Initial data to get started, passwords are set to "P@ssw0rd!" for now.
+insert into app_user (email, password_hash, user_role) values
+	('admin@umbc.com', '$2a$10$ntB7CsRKQzuLoKY3rfoAQen5nNyiC/U60wBsWnnYrtQQi8Z3IZzQa', 'ADMIN'),
+	('authority@umbc.com', '$2a$10$ntB7CsRKQzuLoKY3rfoAQen5nNyiC/U60wBsWnnYrtQQi8Z3IZzQa', 'AUTHORITY');
