@@ -78,7 +78,6 @@ public class VendorService {
             result.addMessage(ResultType.INVALID, "Vendor name is too long");
         }
         if (Validations.isNullOrBlank(vendor.getContactEmail())) {
-<<<<<<< Updated upstream
             result.addMessage(ResultType.INVALID, "Vendor contact email is required");
         } else if (vendor.getContactEmail().length() > 255) {
             result.addMessage(ResultType.INVALID, "Vendor contact email is too long");
@@ -88,24 +87,5 @@ public class VendorService {
         }
 
         return result;
-=======
-            result.addMessage(ResultType.INVALID, "Vendor email is required");
-        } else if (vendor.getContactEmail().length() > 255) {
-            result.addMessage(ResultType.INVALID, "Vendor email is too long");
-        }
-       if (vendor.getPhoneNumber().length() > 20) {
-            result.addMessage(ResultType.INVALID, "Vendor phone number is too long");
-        }
-
-       List<Vendor> vendorList = vendorRepository.findAll();
-       for (Vendor vendorItem : vendorList) {
-           if (vendorItem.equals(vendor)) {
-               result.addMessage(ResultType.DUPLICATE, "Duplicate vendors are not allowed");
-               return result;
-           }
-       }
-
-    return result;
->>>>>>> Stashed changes
     }
 }
