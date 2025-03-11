@@ -27,7 +27,7 @@ public class VendorController {
 
     @GetMapping("/{vendorId}")
     public ResponseEntity<Vendor> findById(@PathVariable int vendorId) {
-        Vedor vendor = service.findById(vendorId);
+        Vendor vendor = service.findById(vendorId);
         if (vendor == null) {
             return ResponseEntity.notFound().build();
         }
