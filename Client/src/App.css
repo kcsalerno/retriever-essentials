@@ -1,0 +1,140 @@
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/* Header */
+header {
+  height: 200px; 
+}
+
+/* Content wrapper: This will allow the sidebar and main content to share space */
+.content {
+  padding: 0; 
+  margin: 0; 
+  display: flex;
+  flex: 1;
+  flex-direction: column; 
+  justify-content: flex-start;
+  align-items: stretch;
+  height: 100%; 
+}
+
+
+
+/* Sidebar (non-scrollable and static) */
+.sidebar {
+  width: 250px; 
+  position: relative;
+  top: -40px;
+  bottom: 0;
+  padding: 20px;
+  background-color: #2d2d2d;
+  z-index: 1;
+  height: 100%;
+  margin-left: -30px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+
+/* Main content area (product grid) */
+.main-content {
+  display: flex;
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto; 
+  background-color: #2d2d2d;
+  justify-content: flex-start;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+
+
+/* Footer/Bottom Navigation */
+footer {
+  height: 60px; 
+  background-color: black;
+  color: white;
+  text-align: center;
+  padding: 10px;
+}
+
+/* Sidebar content */
+.types-of-food {
+  background-color: black;
+  color: white;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+
+}
+
+.types-of-food ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.types-of-food li {
+  margin: 10px 0;
+}
+
+.types-of-food button {
+  background-color: transparent;
+  color: white;
+  border: 1px solid white;
+  padding: 15px 20px;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+
+.types-of-food button:hover {
+  background-color: #333;
+}
+
+.hours {
+  padding: 5px;
+  background-color: #fff;
+  border-radius: 8px;
+  font-size: 19px;
+  margin-bottom: 20px;
+}
+
+.hours h3 {
+  margin-top: 0;
+  font-size: 19px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+.hours p{
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+.hours p:nth-child(1), 
+.hours h3,           
+.hours p:nth-child(11), 
+.hours button {
+  font-weight: bold; 
+  
+.hours button {
+  background-color: #000000;
+  color: white;
+  border: none;
+  padding: 12px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.hours button:hover {
+  background-color: #fff700;
+}
+
+
+
