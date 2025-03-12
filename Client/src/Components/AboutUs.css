@@ -11,7 +11,7 @@
 
 .about-us-box .section-header {
     text-align: left;
-    font-size: 4.5rem;  /* Increased from 2.25rem */
+    font-size: 4.5rem;  
     font-weight: bold;
     margin-top: 20px;
     margin-bottom: 10px;
@@ -28,7 +28,7 @@
 }
 
 .about-us-box ul {
-    font-size: 2.25rem;  /* Increased the list text size */
+    font-size: 2.25rem;
     color: #000000;
     line-height: 1.6;
     margin-bottom: 20px;

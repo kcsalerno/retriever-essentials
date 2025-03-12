@@ -1,25 +1,26 @@
-import "./Pages.css"; // Make sure to import the CSS file for styling
+import React from 'react';
 
 function Pagination({ currentPage, totalPages, onPageChange }) {
+  const handlePageChange = (page) => {
+    if (page >= 1 && page <= totalPages) {
+      onPageChange(page);
+    }
+  };
+
   return (
-    <div className="pagination-container">
-      <div className="pagination">
-        <button 
-          disabled={currentPage === 1} 
-          onClick={() => onPageChange(currentPage - 1)}>
-          Previous
-        </button>
-        <span> Page {currentPage} of {totalPages} </span>
-        <button 
-          disabled={currentPage === totalPages} 
-          onClick={() => onPageChange(currentPage + 1)}>
-          Next
-        </button>
-      </div>
+    <div className="pagination">
+      <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
+        Prev
+      </button>
+      <span>{currentPage} of {totalPages}</span>
+      <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>
+        Next
+      </button>
     </div>
   );
 }
 
 export default Pagination;
+
 
   
