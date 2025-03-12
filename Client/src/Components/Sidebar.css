@@ -1,0 +1,71 @@
+/* Sidebar Container */
+.sidebar {
+  width: 250px; /* Adjust the width as needed */
+  background-color: #f4f4f4;
+  padding: 20px 0; /* Only vertical padding */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  box-sizing: border-box;
+  height: 100%; /* Ensures the sidebar takes up the full available height */
+  margin-left: 0; /* Ensures it is flush with the left */
+}
+
+/* Black Box for Types of Food */
+.types-of-food {
+  background-color: black;
+  color: white;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.types-of-food ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.types-of-food li {
+  margin: 10px 0;
+}
+
+.types-of-food button {
+  background-color: transparent;
+  color: white;
+  border: 1px solid white;
+  padding: 5px 10px;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+
+.types-of-food button:hover {
+  background-color: #333;
+}
+
+/* Hours of Operation */
+.hours {
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+}
+
+.hours h3 {
+  margin-top: 0;
+}
+
+.hours button {
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+}
+
+.hours button:hover {
+  background-color: #0056b3;
+}
+
+
+
+  
