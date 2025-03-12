@@ -10,13 +10,9 @@ function Sidebar() {
           {["Pantry", "Produce", "Asian", "Meat", "Frozen", "American", "Mexican", "Indian", "Bread"]
             .map(category => (
               <li key={category}>
-                {category === "Asian" ? (
-                  <Link to="/product-grid">
-                    <button>{category}</button>
-                  </Link>
-                ) : (
+                <Link to={category === "Asian" ? "/Asian" : `/${category.toLowerCase()}`}>
                   <button>{category}</button>
-                )}
+                </Link>
               </li>
           ))}
         </ul>
@@ -43,6 +39,4 @@ function Sidebar() {
 }
 
 export default Sidebar;
-
-
 
