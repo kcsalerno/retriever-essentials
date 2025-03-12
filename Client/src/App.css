@@ -41,8 +41,7 @@ header {
   z-index: 1;
   height: 100%;
   margin-left: -30px;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-
+}
 /* Main content area (product grid) */
 .main-content {
   display: flex;
@@ -122,7 +121,7 @@ footer {
 .hours p:nth-child(11), 
 .hours button {
   font-weight: bold; 
-  
+}
 .hours button {
   background-color: #000000;
   color: white;
