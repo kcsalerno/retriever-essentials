@@ -4,11 +4,11 @@
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
   gap: 20px; 
   width: 100%; 
-  max-width: 1200px; /* Prevents it from stretching too much */
-  padding: 20px; /* Reduced padding to prevent content from being pushed too far down */
-  margin-top: 0; /* Removed the large negative margin */
+  max-width: 1200px; 
+  padding: 20px; 
+  margin-top: 0; 
   margin-left: 0;
-  justify-items: start; /* Ensures items align to the left */
+  justify-items: start; 
 }
 
 /* Product card styles */
@@ -20,8 +20,8 @@
   cursor: pointer;
   background-color: rgb(0, 0, 0);
   color: #ffffff;
-  margin: 0; /* Reset any margin that could cause spacing issues */
-  display: block; /* Ensure it's treated as a block element */
+  margin: 0;
+  display: block; 
 }
 
 /* Image styles within the product card */

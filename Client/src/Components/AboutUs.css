@@ -19,21 +19,21 @@
 /* Styling for headers (Mission, Our Mission, Our Vision, Our Values) */
 .section-header {
     text-align: center;
-    font-size: 2.25rem; /* Larger size for headers */
+    font-size: 2.25rem; 
     font-weight: bold;
     margin-top: 20px;
     margin-bottom: 10px;
-    color: #ff0000; /* Dark black for bold text */
+    color: #ff0000; 
 }
 
 /* Styling for the paragraph text */
 .about-us-box p {
-    font-size: 1.125rem; /* Default size for paragraphs */
+    font-size: 1.125rem; 
     color: #555;
     line-height: 1.6;
-    text-align: left; /* Left-align the text */
-    text-indent: 30px; /* Indentation at the start of each paragraph */
-    margin-bottom: 20px; /* Space between paragraphs */
+    text-align: left; 
+    text-indent: 30px; 
+    margin-bottom: 20px; 
 }
 
 
@@ -42,26 +42,26 @@
     display: flex;
     justify-content: space-between;
     margin-bottom: 30px;
-    flex-wrap: wrap; /* Allow the images to wrap if necessary */
-    gap: 10px; /* Space between the images */
+    flex-wrap: wrap; 
+    gap: 10px; 
 }
 
 .People, .car {
-    flex: 1 1 20%; /* Take up 20% of the container's width */
-    max-width: 20%; /* Ensures no stretching */
+    flex: 1 1 20%; 
+    max-width: 20%; 
     height: auto;
     object-fit: cover;
     border-radius: 8px;
-    max-height: 120px; /* Adjust height */
+    max-height: 120px; 
 }
 
 .leaf, .Guy-with-a-bag {
-    flex: 1 1 25%; /* Slightly larger size */
-    max-width: 25%; /* Ensures no stretching */
+    flex: 1 1 25%; 
+    max-width: 25%; 
     height: auto;
     object-fit: cover;
     border-radius: 8px;
-    max-height: 150px; /* Make these slightly taller */
+    max-height: 150px; 
 }
 
 
@@ -73,9 +73,9 @@
 }
 
 .image-container img {
-    max-width: 48%; /* Make each image take up 48% of the container */
+    max-width: 48%; 
     height: auto;
-    max-height: 200px; /* Limiting the height */
+    max-height: 200px;
     object-fit: cover;
     border-radius: 8px;
     margin-bottom: 10px;
@@ -84,15 +84,15 @@
 .food, .sym {
     width: 100%;
     height: auto;
-    max-height: 250px; /* Adjust height for these images */
+    max-height: 250px; 
     object-fit: cover;
     border-radius: 8px;
     margin-bottom: 15px;
 }
 
 em {
-    font-style: italic; /* Apply italic styling */
-    color: #777; /* Lighter color for the italicized text */
+    font-style: italic; 
+    color: #777; 
 }
 
 

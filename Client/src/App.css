@@ -1,4 +1,4 @@
-/* Global Reset */
+
 * {
   margin: 0;
   padding: 0;
@@ -13,26 +13,26 @@
 
 /* Header */
 header {
-  height: 200px; /* Adjust based on your header size */
+  height: 200px; 
 }
 
 /* Content wrapper: This will allow the sidebar and main content to share space */
 .content {
-  padding: 0; /* Remove any padding if present */
-  margin: 0; /* Remove any margin */
+  padding: 0; 
+  margin: 0; 
   display: flex;
   flex: 1;
-  flex-direction: column; /* Ensure a vertical stack */
-  justify-content: flex-start; /* Align the content to the top */
-  align-items: stretch; /* Stretch to take the full available width */
-  height: 100%; /* Ensure it takes the full height */
+  flex-direction: column; 
+  justify-content: flex-start;
+  align-items: stretch;
+  height: 100%; 
 }
 
 
 
 /* Sidebar (non-scrollable and static) */
 .sidebar {
-  width: 250px; /* Sidebar width */
+  width: 250px; 
   position: relative;
   top: -40px;
   bottom: 0;
@@ -41,15 +41,14 @@ header {
   z-index: 1;
   height: 100%;
   margin-left: -30px;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Add some shadow to make it stand out */
-}
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 
 /* Main content area (product grid) */
 .main-content {
   display: flex;
   flex: 1;
   padding: 20px;
-  overflow-y: auto; /* Allow vertical scrolling */
+  overflow-y: auto; 
   background-color: #2d2d2d;
   justify-content: flex-start;
   align-items: flex-start;
@@ -60,7 +59,7 @@ header {
 
 /* Footer/Bottom Navigation */
 footer {
-  height: 60px; /* Adjust based on your bottom nav height */
+  height: 60px; 
   background-color: black;
   color: white;
   text-align: center;
@@ -122,8 +121,8 @@ footer {
 .hours h3,           
 .hours p:nth-child(11), 
 .hours button {
-  font-weight: bold; /* Make all text within these paragraphs bold */
-}
+  font-weight: bold; 
+  
 .hours button {
   background-color: #000000;
   color: white;

@@ -1,16 +1,16 @@
-/* Container for the pagination (assumed to be a separate element) */
+/* Container for the pagination
 .pagination-container {
     display: flex;
-    justify-content: center; /* Center the pagination horizontally */
-    align-items: center; /* Center it vertically if needed */
-    margin-top: 20px; /* Add some space between the grid and the pagination */
+    justify-content: center; 
+    align-items: center;
+    margin-top: 20px; 
   }
   
   /* Pagination style */
   .pagination {
     list-style: none;
     display: flex;
-    gap: 10px; /* Space between the page buttons */
+    gap: 10px; 
     padding: 0;
     margin: 0;
   }

@@ -20,18 +20,15 @@ function App() {
           <Sidebar />
           <div className="content">
             <Routes>
-              {/* Set the About Us page as the default page */}
               <Route path="/" element={<AboutUs />} />
               <Route path="/product-grid" element={<ProductGrid />} />
               <Route path="/about-us" element={<AboutUs />} />
-              {/* Add more routes as needed */}
             </Routes>
 
             <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
           </div>
         </div>
 
-        {/* Bottom Nav */}
         <div
           className="bottom-nav"
           style={{
