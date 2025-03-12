@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Link, useLocation } from 'react-router-dom';
 import Header from './Components/Header';
 import Sidebar from './Components/Sidebar';
 import ProductGrid from './Components/Grid';
@@ -21,11 +21,9 @@ function App() {
           <div className="content">
             <Routes>
               <Route path="/" element={<AboutUs />} />
-              <Route path="/product-grid" element={<ProductGrid />} />
+              <Route path="/product-grid" element={<ProductGridWithPagination currentPage={currentPage} setCurrentPage={setCurrentPage} totalPages={totalPages} />} />
               <Route path="/about-us" element={<AboutUs />} />
             </Routes>
-
-            <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
           </div>
         </div>
 
@@ -61,6 +59,23 @@ function App() {
   );
 }
 
+// Create a component to handle pagination with location
+function ProductGridWithPagination({ currentPage, setCurrentPage, totalPages }) {
+  const location = useLocation();
+  const showPagination = location.pathname === '/product-grid';
+
+  return (
+    <div>
+      <ProductGrid />
+      {/* Conditionally render Pagination */}
+      {showPagination && (
+        <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+      )}
+    </div>
+  );
+}
+
 export default App;
+
 
 

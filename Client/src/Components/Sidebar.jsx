@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import './Sidebar.css';
 
 function Sidebar() {
@@ -8,7 +9,15 @@ function Sidebar() {
         <ul>
           {["Pantry", "Produce", "Asian", "Meat", "Frozen", "American", "Mexican", "Indian", "Bread"]
             .map(category => (
-              <li key={category}><button>{category}</button></li>
+              <li key={category}>
+                {category === "Asian" ? (
+                  <Link to="/product-grid">
+                    <button>{category}</button>
+                  </Link>
+                ) : (
+                  <button>{category}</button>
+                )}
+              </li>
           ))}
         </ul>
       </div>
@@ -34,5 +43,6 @@ function Sidebar() {
 }
 
 export default Sidebar;
+
 
 
