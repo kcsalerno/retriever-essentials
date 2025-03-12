@@ -1,0 +1,24 @@
+
+.bottom-nav {
+  background-color: black;
+  color: white;
+  text-align: center;
+  padding: 20px 0; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative; 
+  width: 100%;
+}
+
+
+.bottom-nav a {
+  color: white;
+  text-decoration: none;
+  margin: 0 15px;
+  font-size: 22px; 
+}
+
+.bottom-nav a:hover {
+  text-decoration: underline;
+}

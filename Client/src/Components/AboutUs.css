@@ -1,0 +1,120 @@
+/* AboutUs.css */
+.about-us-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+    background-color: #f0f0f0;
+}
+
+.about-us-box {
+    background-color: white;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 1000px;
+}
+
+/* Styling for headers (Mission, Our Mission, Our Vision, Our Values) */
+.section-header {
+    text-align: center;
+    font-size: 2.25rem; 
+    font-weight: bold;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    color: #ff0000; 
+}
+
+/* Styling for the paragraph text */
+.about-us-box p {
+    font-size: 1.125rem; 
+    color: #555;
+    line-height: 1.6;
+    text-align: left; 
+    text-indent: 30px; 
+    margin-bottom: 20px; 
+}
+
+
+/* Styling for Mission images */
+.mission-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    flex-wrap: wrap; 
+    gap: 10px; 
+}
+
+.People, .car {
+    flex: 1 1 20%; 
+    max-width: 20%; 
+    height: auto;
+    object-fit: cover;
+    border-radius: 8px;
+    max-height: 120px; 
+}
+
+.leaf, .Guy-with-a-bag {
+    flex: 1 1 25%; 
+    max-width: 25%; 
+    height: auto;
+    object-fit: cover;
+    border-radius: 8px;
+    max-height: 150px; 
+}
+
+
+/* Flexbox for the images inside the image-container */
+.image-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+}
+
+.image-container img {
+    max-width: 48%; 
+    height: auto;
+    max-height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.food, .sym {
+    width: 100%;
+    height: auto;
+    max-height: 250px; 
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+em {
+    font-style: italic; 
+    color: #777; 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+  
+  
+  
