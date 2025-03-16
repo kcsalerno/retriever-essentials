@@ -1,12 +1,10 @@
 import './Grid.css';
 
-const products = [
-  { id: 1, name: "Rice", image: "/images/Rice.png", quantity: 10 },
-  { id: 2, name: "Pocky Sticks", image: "/images/Pocky.png", quantity: 5 },
-  { id: 3, name: "Ramen 12 Pack", image: "/images/Ramen.png", quantity: 8 }
-];
+function ProductGrid({ products }) {
+  if (!products || !Array.isArray(products)) {
+    return <p>No products available.</p>; 
+  }
 
-function ProductGrid() {
   return (
     <div className="product-grid">
       {products.map(product => (
@@ -21,6 +19,7 @@ function ProductGrid() {
 }
 
 export default ProductGrid;
+
 
 
 

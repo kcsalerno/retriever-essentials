@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import './Sidebar.css';
 
 function Sidebar() {
@@ -8,7 +9,11 @@ function Sidebar() {
         <ul>
           {["Pantry", "Produce", "Asian", "Meat", "Frozen", "American", "Mexican", "Indian", "Bread"]
             .map(category => (
-              <li key={category}><button>{category}</button></li>
+              <li key={category}>
+                <Link to={category === "Asian" ? "/Asian" : `/${category.toLowerCase()}`}>
+                  <button>{category}</button>
+                </Link>
+              </li>
           ))}
         </ul>
       </div>
@@ -34,5 +39,4 @@ function Sidebar() {
 }
 
 export default Sidebar;
-
 
