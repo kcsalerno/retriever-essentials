@@ -25,9 +25,15 @@ public class ItemController {
         return service.findAll();
     }
 
-    @GetMapping("/popular")
+    @GetMapping("/popular-items")
     public List<Item> findMostPopularItems() {
         return service.findMostPopularItems();
+    }
+
+    @GetMapping("/popular-categories")
+    public ResponseEntity<List<String>> getMostPopularCategories() {
+        List<String> categories = service.getMostPopularCategories();
+        return ResponseEntity.ok(categories);
     }
 
     @GetMapping("/{itemId}")

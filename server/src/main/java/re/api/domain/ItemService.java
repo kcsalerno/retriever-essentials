@@ -23,6 +23,10 @@ public class ItemService {
         return repository.findMostPopularItems();
     }
 
+    public List<String> getMostPopularCategories() {
+        return repository.findMostPopularCategories();
+    }
+
     public Item findById(int itemId) {
         return repository.findById(itemId);
     }

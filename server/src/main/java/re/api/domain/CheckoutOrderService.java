@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import re.api.data.CheckoutOrderRepository;
 import re.api.models.CheckoutOrder;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class CheckoutOrderService {
@@ -15,6 +16,10 @@ public class CheckoutOrderService {
 
     public List<CheckoutOrder> findAll() {
         return repository.findAll();
+    }
+
+    public List<Map<String, Object>> getTopBusiestHours() {
+        return repository.findTopBusiestHours();
     }
 
     public CheckoutOrder findById(int checkoutId) {

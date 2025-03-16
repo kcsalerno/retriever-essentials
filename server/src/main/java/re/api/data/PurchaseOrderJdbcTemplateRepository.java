@@ -31,8 +31,8 @@ public class PurchaseOrderJdbcTemplateRepository implements PurchaseOrderReposit
     public PurchaseOrder add(PurchaseOrder purchaseOrder) {
         final String sql = "INSERT INTO purchase_order (admin_id, vendor_id, purchase_date) VALUES (?, ?, ?);";
         int rowsAffected = jdbcTemplate.update(sql,
-                purchaseOrder.getAdminId(),
-                purchaseOrder.getVendorId(),
+                purchaseOrder.getAdmin().getAppUserId(),
+                purchaseOrder.getVendor().getVendorId(),
                 purchaseOrder.getPurchaseDate());
 
         if (rowsAffected <= 0) {
@@ -48,8 +48,8 @@ public class PurchaseOrderJdbcTemplateRepository implements PurchaseOrderReposit
     public boolean update(PurchaseOrder purchaseOrder) {
         final String sql = "UPDATE purchase_order SET admin_id = ?, vendor_id = ?, purchase_date = ? WHERE purchase_id = ?;";
         return jdbcTemplate.update(sql,
-                purchaseOrder.getAdminId(),
-                purchaseOrder.getVendorId(),
+                purchaseOrder.getAdmin().getAppUserId(),
+                purchaseOrder.getVendor().getVendorId(),
                 purchaseOrder.getPurchaseDate(),
                 purchaseOrder.getPurchaseId()) > 0;
     }

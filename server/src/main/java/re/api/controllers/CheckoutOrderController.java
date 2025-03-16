@@ -1,9 +1,11 @@
 package re.api.controllers;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import re.api.domain.CheckoutOrderService;
 import re.api.models.CheckoutOrder;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/checkout-order")
@@ -17,6 +19,12 @@ public class CheckoutOrderController {
     @GetMapping
     public List<CheckoutOrder> findAll() {
         return service.findAll();
+    }
+
+    @GetMapping("/busiest-hours")
+    public ResponseEntity<List<Map<String, Object>>> getTopBusiestHours() {
+        List<Map<String, Object>> busiestHours = service.getTopBusiestHours();
+        return ResponseEntity.ok(busiestHours);
     }
 
     @GetMapping("/{id}")

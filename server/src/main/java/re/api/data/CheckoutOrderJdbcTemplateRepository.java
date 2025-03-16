@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 import re.api.data.mappers.CheckoutOrderMapper;
 import re.api.models.CheckoutOrder;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class CheckoutOrderJdbcTemplateRepository implements CheckoutOrderRepository {
@@ -28,11 +29,27 @@ public class CheckoutOrderJdbcTemplateRepository implements CheckoutOrderReposit
     }
 
     @Override
+    public List<Map<String, Object>> findTopBusiestHours() {
+        String sql = """
+            SELECT 
+                DAYNAME(checkout_date) AS day, 
+                HOUR(checkout_date) AS hour, 
+                COUNT(*) AS total_checkouts
+            FROM checkout_order 
+            GROUP BY day, hour 
+            ORDER BY total_checkouts DESC
+            LIMIT 5;
+        """;
+
+        return jdbcTemplate.queryForList(sql);
+    }
+
+    @Override
     public CheckoutOrder add(CheckoutOrder checkoutOrder) {
         final String sql = "INSERT INTO checkout_order (student_id, authority_id, self_checkout, checkout_date) VALUES (?, ?, ?, ?);";
         int rowsAffected = jdbcTemplate.update(sql,
                 checkoutOrder.getStudentId(),
-                checkoutOrder.getAuthorityId(),
+                checkoutOrder.getAuthority().getAppUserId(),
                 checkoutOrder.isSelfCheckout(),
                 checkoutOrder.getCheckoutDate());
 
@@ -50,7 +67,7 @@ public class CheckoutOrderJdbcTemplateRepository implements CheckoutOrderReposit
         final String sql = "UPDATE checkout_order SET student_id = ?, authority_id = ?, self_checkout = ?, checkout_date = ? WHERE checkout_id = ?;";
         return jdbcTemplate.update(sql,
                 checkoutOrder.getStudentId(),
-                checkoutOrder.getAuthorityId(),
+                checkoutOrder.getAuthority().getAppUserId(),
                 checkoutOrder.isSelfCheckout(),
                 checkoutOrder.getCheckoutDate(),
                 checkoutOrder.getCheckoutId()) > 0;
