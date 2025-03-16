@@ -5,6 +5,7 @@ import Sidebar from './Components/Sidebar';
 import ProductGrid from './Components/Grid';
 import Pagination from './Components/Pages';
 import BottomNav from './Components/Nav';
+import FAQ from './Components/FAQ';
 import Location from './Components/Location';
 import Pantry from './Components/Pantry';
 import Produce from './Components/Produce';
@@ -43,6 +44,7 @@ function App() {
         <Route path="/indian" element={<Indian />} />
         <Route path="/bread" element={<Bread />} />
         <Route path="/Asian" element={<Asian />} />
+        <Route path="/faq" element={<FAQ />} />
 </Routes>
 
           </div>
@@ -62,7 +64,7 @@ function App() {
         >
           <Link to="/about-us" style={{ color: 'white', margin: '0 15px' }}>About Us</Link>
           <Link to="/location" style={{ color: 'white', margin: '0 15px' }}>Location</Link>
-          <Link to="#faq" style={{ color: 'white', margin: '0 15px' }}>FAQ</Link>
+          <Link to="/faq" style={{ color: 'white', margin: '0 15px' }}>FAQ</Link>
         </div>
 
         {/* UMBC Banner inline style */}

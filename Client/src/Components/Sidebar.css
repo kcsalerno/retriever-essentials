@@ -1,7 +1,6 @@
-/* Sidebar Container */
 .sidebar {
   width: 250px; 
-  background-color: #f4f4f4;
+  background-color: #ffffff;
   padding: 20px 0; 
   display: flex;
   flex-direction: column;
@@ -11,7 +10,6 @@
   margin-left: 0; 
 }
 
-/* Black Box for Types of Food */
 .types-of-food {
   background-color: black;
   color: white;
@@ -43,7 +41,6 @@
   background-color: #333;
 }
 
-/* Hours of Operation */
 .hours {
   padding: 20px;
   background-color: #fff;
@@ -54,18 +51,25 @@
   margin-top: 0;
 }
 
-.hours button {
-  background-color: #007bff;
+.contact-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.contact-buttons button {
+  background-color: #000000;
   color: white;
   border: none;
   padding: 8px;
   cursor: pointer;
+  width: 100%;
+  text-align: center;
+  font-size: 16px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
 }
 
-.hours button:hover {
-  background-color: #0056b3;
+.contact-buttons button:hover {
+  background-color: #444444;
 }
-
-
-
-  
