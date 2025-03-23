@@ -5,12 +5,12 @@ import './Grid.css';
 
 
 const products = [
-  { id: 1, name: "Apples", image: "/images/apple.png", quantity: 30 },
-  { id: 2, name: "Carrots", image: "/images/carrot.png", quantity: 25 },
-  { id: 3, name: "Lettuce", image: "/images/lettuce.png", quantity: 10 }
+  { id: 16, name: "Apples", image: "/images/apple.png", quantity: 30 },
+  { id: 17, name: "Carrots", image: "/images/carrot.png", quantity: 25 },
+  { id: 18, name: "Lettuce", image: "/images/lettuce.png", quantity: 10 }
 ];
 
-function Produce() {
+function Produce({ addToCart }) {
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 3;
 
@@ -23,7 +23,7 @@ function Produce() {
 
   return (
     <div>
-      <ProductGrid products={currentProducts} /> 
+      <ProductGrid products={currentProducts}  addToCart={addToCart}/> 
       <Pagination 
         currentPage={currentPage} 
         totalPages={totalPages} 
