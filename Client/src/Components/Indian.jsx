@@ -5,12 +5,12 @@ import './Grid.css';
 
 
 const products = [
-  { id: 1, name: "Basmati Rice", image: "/images/bas.png", quantity: 15 },
-  { id: 2, name: "Lentils", image: "/images/len.png", quantity: 10 },
-  { id: 3, name: "Curry Powder", image: "/images/curry.png", quantity: 8 }
+  { id: 7, name: "Basmati Rice", image: "/images/bas.png", quantity: 15 },
+  { id: 8, name: "Lentils", image: "/images/len.png", quantity: 10 },
+  { id: 9, name: "Curry Powder", image: "/images/curry.png", quantity: 8 }
 ];
 
-function Indian() {
+function Indian({ addToCart }) {
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 3;
 
@@ -23,7 +23,7 @@ function Indian() {
 
   return (
     <div>
-      <ProductGrid products={currentProducts} /> 
+      <ProductGrid products={currentProducts}  addToCart={addToCart}/> 
       <Pagination 
         currentPage={currentPage} 
         totalPages={totalPages} 
