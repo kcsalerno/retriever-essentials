@@ -1,31 +1,26 @@
 package re.api.models;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 public class CheckoutOrder {
-    private int checkoutId;
+    private int checkoutOrderId;
     private String studentId;
-    private AppUser authority;
+    private int authorityId;
     private boolean selfCheckout;
     private LocalDateTime checkoutDate;
 
-    public CheckoutOrder() {}
+    // Enriched objects
+    private AppUser authority;
+    private List<CheckoutItem> items;
 
-    public CheckoutOrder(int checkoutId, String studentId, AppUser authority, boolean selfCheckout, LocalDateTime checkoutDate) {
-        this.checkoutId = checkoutId;
-        this.studentId = studentId;
-        this.authority = authority;
-        this.selfCheckout = selfCheckout;
-        this.checkoutDate = checkoutDate;
+    public int getCheckoutOrderId() {
+        return checkoutOrderId;
     }
 
-    public int getCheckoutId() {
-        return checkoutId;
-    }
-
-    public void setCheckoutId(int checkoutId) {
-        this.checkoutId = checkoutId;
+    public void setCheckoutOrderId(int checkoutOrderId) {
+        this.checkoutOrderId = checkoutOrderId;
     }
 
     public String getStudentId() {
@@ -36,12 +31,12 @@ public class CheckoutOrder {
         this.studentId = studentId;
     }
 
-    public AppUser getAuthority() {
-        return authority;
+    public int getAuthorityId() {
+        return authorityId;
     }
 
-    public void setAuthority(AppUser authority) {
-        this.authority = authority;
+    public void setAuthorityId(int authorityId) {
+        this.authorityId = authorityId;
     }
 
     public boolean isSelfCheckout() {
@@ -60,16 +55,45 @@ public class CheckoutOrder {
         this.checkoutDate = checkoutDate;
     }
 
+    public AppUser getAuthority() {
+        return authority;
+    }
+
+    public void setAuthority(AppUser authority) {
+        this.authority = authority;
+    }
+
+    public List<CheckoutItem> getItems() {
+        return items;
+    }
+
+    public void setItems(List<CheckoutItem> items) {
+        this.items = items;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof CheckoutOrder)) return false;
         CheckoutOrder that = (CheckoutOrder) o;
-        return checkoutId == that.checkoutId;
+        return checkoutOrderId == that.checkoutOrderId;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(checkoutId);
+        return Objects.hash(checkoutOrderId);
+    }
+
+    @Override
+    public String toString() {
+        return "CheckoutOrder{" +
+                "checkoutOrderId=" + checkoutOrderId +
+                ", studentId='" + studentId + '\'' +
+                ", authorityId=" + authorityId +
+                ", selfCheckout=" + selfCheckout +
+                ", checkoutDate=" + checkoutDate +
+                ", authority=" + authority +
+                ", items=" + items +
+                '}';
     }
 }
