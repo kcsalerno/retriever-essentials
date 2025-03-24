@@ -5,12 +5,12 @@ import './Grid.css';
 
 
 const products = [
-  { id: 1, name: "Frozen Pizza", image: "/images/pizza.png", quantity: 12 },
-  { id: 2, name: "Ice Cream", image: "/images/cream.png", quantity: 20 },
-  { id: 3, name: "Frozen Broccoli", image: "/images/bro.png", quantity: 15 }
+  { id: 4, name: "Frozen Pizza", image: "/images/pizza.png", quantity: 12 },
+  { id: 5, name: "Ice Cream", image: "/images/cream.png", quantity: 20 },
+  { id: 6, name: "Frozen Broccoli", image: "/images/bro.png", quantity: 15 }
 ];
 
-function Frozen() {
+function Frozen({ addToCart }) {
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 3;
 
@@ -23,7 +23,7 @@ function Frozen() {
 
   return (
     <div>
-      <ProductGrid products={currentProducts} /> 
+      <ProductGrid products={currentProducts} addToCart={addToCart} /> 
       <Pagination 
         currentPage={currentPage} 
         totalPages={totalPages} 

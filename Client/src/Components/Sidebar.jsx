@@ -2,6 +2,18 @@ import { Link } from 'react-router-dom';
 import './Sidebar.css';
 
 function Sidebar() {
+  const handleButtonClick = (type) => {
+    if (type === "ContactUs") {
+      alert("Email: retrieversessentials@umbc.edu");
+    } else if (type === "myUMBC") {
+      window.location.href = "https://my.umbc.edu";
+    } else if (type === "Facebook") {
+      window.location.href = "https://www.facebook.com/RetrieverEssentials";
+    } else if (type === "Instagram") {
+      window.location.href = "https://www.instagram.com/umbcretrieveressentials/";
+    }
+  };
+
   return (
     <aside className="sidebar">
       <div className="types-of-food">
@@ -29,14 +41,17 @@ function Sidebar() {
         <p>Sat: Closed</p>
         <p>Sun: Closed</p>
         <p>Contact</p>
-        <p><button>Contact US</button></p>
-        <p><button>myUMBC</button></p>
-        <p><button>Facebook</button></p>
-        <p><button>Instagram</button></p>
+        <div className="contact-buttons">
+          <button className="contact-button" onClick={() => handleButtonClick("ContactUs")}>Contact Us</button>
+          <button className="contact-button" onClick={() => handleButtonClick("myUMBC")}>myUMBC</button>
+          <button className="contact-button" onClick={() => handleButtonClick("Facebook")}>Facebook</button>
+          <button className="contact-button" onClick={() => handleButtonClick("Instagram")}>Instagram</button>
+        </div>
       </div>
     </aside>
   );
 }
 
 export default Sidebar;
+
 

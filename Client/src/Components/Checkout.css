@@ -1,0 +1,49 @@
+.checkout-container {
+    text-align: center;
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 40px auto;
+  }
+  
+  .checkout-container h1 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+  }
+  
+  .checkout-container ul {
+    list-style-type: none;
+    padding: 0;
+    margin-bottom: 20px;
+  }
+  
+  .checkout-container li {
+    font-size: 1.2rem;
+    margin: 5px 0;
+  }
+  
+  button {
+    padding: 12px 24px;
+    font-size: 1.2rem;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+    width: auto;
+    display: inline-block;
+    text-align: center;
+    transition: background-color 0.3s ease;
+  }
+  
+  button:hover {
+    background-color: #218838;
+  }
+  
+
+  
+  
+  
