@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin
+@CrossOrigin(origins = "*") // Allow all cross-origin requests
 @RequestMapping("/api/item")
 public class ItemController {
     private final ItemService service;
@@ -23,11 +23,6 @@ public class ItemController {
     @GetMapping
     public List<Item> findAll() {
         return service.findAll();
-    }
-
-    @GetMapping("/popular")
-    public List<Item> findMostPopularItems() {
-        return service.findMostPopularItems();
     }
 
     @GetMapping("/{itemId}")

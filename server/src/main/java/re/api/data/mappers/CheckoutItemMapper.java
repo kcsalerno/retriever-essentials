@@ -10,7 +10,7 @@ public class CheckoutItemMapper implements RowMapper<CheckoutItem> {
     public CheckoutItem mapRow(ResultSet rs, int rowNum) throws SQLException {
         CheckoutItem checkoutItem = new CheckoutItem();
         checkoutItem.setCheckoutItemId(rs.getInt("checkout_item_id"));
-        checkoutItem.setCheckoutId(rs.getInt("checkout_id"));
+        checkoutItem.setCheckoutOrderId(rs.getInt("checkout_id"));
         checkoutItem.setItemId(rs.getInt("item_id"));
         checkoutItem.setQuantity(rs.getInt("quantity"));
         return checkoutItem;

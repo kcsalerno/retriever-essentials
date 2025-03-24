@@ -22,19 +22,6 @@ public class ItemJdbcTemplateRepository implements ItemRepository {
     }
 
     @Override
-    public List<Item> findMostPopularItems() {
-        final String sql = """
-                SELECT i.* FROM item i
-                JOIN checkout_item ci ON i.item_id = ci.item_id
-                GROUP BY i.item_id
-                ORDER BY SUM(ci.quantity) DESC
-                LIMIT 10;
-                """;
-
-        return jdbcTemplate.query(sql, new ItemMapper());
-    }
-
-    @Override
     public Item findById(int itemId) {
         final String sql = "SELECT * FROM item WHERE item_id = ?;";
         return jdbcTemplate.query(sql, new ItemMapper(), itemId)

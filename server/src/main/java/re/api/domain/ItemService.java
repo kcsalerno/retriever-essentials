@@ -19,10 +19,6 @@ public class ItemService {
         return repository.findAll();
     }
 
-    public List<Item> findMostPopularItems() {
-        return repository.findMostPopularItems();
-    }
-
     public Item findById(int itemId) {
         return repository.findById(itemId);
     }

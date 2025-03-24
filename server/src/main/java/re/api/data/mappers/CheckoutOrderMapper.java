@@ -9,7 +9,7 @@ public class CheckoutOrderMapper implements RowMapper<CheckoutOrder> {
     @Override
     public CheckoutOrder mapRow(ResultSet rs, int rowNum) throws SQLException {
         CheckoutOrder checkoutOrder = new CheckoutOrder();
-        checkoutOrder.setCheckoutId(rs.getInt("checkout_id"));
+        checkoutOrder.setCheckoutOrderId(rs.getInt("checkout_id"));
         checkoutOrder.setStudentId(rs.getString("student_id"));
         checkoutOrder.setAuthorityId(rs.getInt("authority_id"));
         checkoutOrder.setSelfCheckout(rs.getBoolean("self_checkout"));
