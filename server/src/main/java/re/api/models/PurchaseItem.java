@@ -4,16 +4,21 @@ import java.util.Objects;
 
 public class PurchaseItem {
     private int purchaseItemId;
-    private PurchaseOrder purchaseOrder;
-    private Item item;
+    private int purchaseOrderId; // FK
+    private int itemId; // FK
     private int quantity;
+
+
+    // Enriched objects (for GET requests)
+    private Item item;
+    private PurchaseOrder purchaseOrder;
 
     public PurchaseItem() {}
 
-    public PurchaseItem(int purchaseItemId, PurchaseOrder purchaseOrder, Item item, int quantity) {
+    public PurchaseItem(int purchaseItemId, int purchaseOrderId, int itemId, int quantity) {
         this.purchaseItemId = purchaseItemId;
-        this.purchaseOrder = purchaseOrder;
-        this.item = item;
+        this.purchaseOrderId = purchaseOrderId;
+        this.itemId = itemId;
         this.quantity = quantity;
     }
 
@@ -25,12 +30,28 @@ public class PurchaseItem {
         this.purchaseItemId = purchaseItemId;
     }
 
-    public PurchaseOrder getPurchaseOrder() {
-        return purchaseOrder;
+    public int getPurchaseOrderId() {
+        return purchaseOrderId;
     }
 
-    public void setPurchaseOrder(PurchaseOrder purchaseOrder) {
-        this.purchaseOrder = purchaseOrder;
+    public void setPurchaseOrderId(int purchaseOrderId) {
+        this.purchaseOrderId = purchaseOrderId;
+    }
+
+    public int getItemId() {
+        return itemId;
+    }
+
+    public void setItemId(int itemId) {
+        this.itemId = itemId;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
     public Item getItem() {
@@ -41,12 +62,12 @@ public class PurchaseItem {
         this.item = item;
     }
 
-    public int getQuantity() {
-        return quantity;
+    public PurchaseOrder getPurchaseOrder() {
+        return purchaseOrder;
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+    public void setPurchaseOrder(PurchaseOrder purchaseOrder) {
+        this.purchaseOrder = purchaseOrder;
     }
 
     @Override

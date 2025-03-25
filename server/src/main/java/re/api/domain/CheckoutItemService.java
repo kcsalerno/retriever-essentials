@@ -20,9 +20,12 @@ public class CheckoutItemService {
         return repository.findById(checkoutItemId);
     }
 
+    // Used by CheckoutOrderService. Can we remove?
     public List<CheckoutItem> findByCheckoutOrderId(int checkoutOrderId) {
         return repository.findByCheckoutOrderId(checkoutOrderId);
     }
+
+    // Add handled by CheckoutOrderService
 
     public List<Map<String, Object>> findPopularItems() {
         return repository.findPopularItems();

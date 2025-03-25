@@ -22,6 +22,8 @@ public class CheckoutItemController {
         this.service = service;
     }
 
+    // No findAll or findById or findByCheckOrderId?
+
     @GetMapping("/popular-items")
     // Enable when Spring Security is set up
     // @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('AUTHORITY')")
@@ -64,4 +66,6 @@ public class CheckoutItemController {
         }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    // No deleteByCheckoutOrderId or deleteByProductId?
 }
