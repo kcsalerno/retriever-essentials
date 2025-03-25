@@ -8,7 +8,6 @@ public class PurchaseItem {
     private int itemId; // FK
     private int quantity;
 
-
     // Enriched objects (for GET requests)
     private Item item;
     private PurchaseOrder purchaseOrder;
@@ -87,9 +86,11 @@ public class PurchaseItem {
     public String toString() {
         return "PurchaseItem{" +
                 "purchaseItemId=" + purchaseItemId +
-                ", purchaseOrder=" + purchaseOrder +
-                ", item=" + item +
+                ", purchaseOrderId=" + purchaseOrderId +
+                ", itemId=" + itemId +
                 ", quantity=" + quantity +
+                ", item=" + item +
+                ", purchaseOrder=" + purchaseOrder +
                 '}';
     }
 }

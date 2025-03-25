@@ -19,8 +19,6 @@ public class PurchaseItemController {
         this.service = service;
     }
 
-    // No findAll or findById or findByPurchaseOrderId?
-
     @PutMapping("/{purchaseItemId}")
     // @PreAuthorize("hasAnyRole('ADMIN', 'AUTHORITY')")
     public ResponseEntity<Object> update(@PathVariable int purchaseItemId, @RequestBody PurchaseItem purchaseItem) {

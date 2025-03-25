@@ -1,6 +1,7 @@
 package re.api.models;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 public class PurchaseOrder {
@@ -12,6 +13,7 @@ public class PurchaseOrder {
     // Enriched objects (for GET requests)
     private AppUser admin;
     private Vendor vendor;
+    private List<PurchaseItem> purchaseItems;
 
     public PurchaseOrder() {}
 
@@ -68,6 +70,14 @@ public class PurchaseOrder {
 
     public void setVendor(Vendor vendor) {
         this.vendor = vendor;
+    }
+
+    public List<PurchaseItem> getPurchaseItems() {
+        return purchaseItems;
+    }
+
+    public void setPurchaseItems(List<PurchaseItem> purchaseItems) {
+        this.purchaseItems = purchaseItems;
     }
 
     @Override

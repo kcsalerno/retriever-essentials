@@ -14,7 +14,6 @@ import java.util.Map;
 
 @Repository
 public class CheckoutItemJdbcTemplateRepository implements CheckoutItemRepository {
-
     private final JdbcTemplate jdbcTemplate;
 
     public CheckoutItemJdbcTemplateRepository(JdbcTemplate jdbcTemplate) {

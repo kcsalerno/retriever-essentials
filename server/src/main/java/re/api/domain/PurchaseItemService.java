@@ -19,10 +19,9 @@ public class PurchaseItemService {
         return repository.findById(purchaseItemId);
     }
 
-    // Likely able to delete this as well. Going to be used with PurchaseOrderService.
-    public List<PurchaseItem> findByPurchaseOrderId(int purchaseOrderId) {
-        return repository.findByPurchaseOrderId(purchaseOrderId);
-    }
+//    public List<PurchaseItem> findByPurchaseOrderId(int purchaseOrderId) {
+//        return repository.findByPurchaseOrderId(purchaseOrderId);
+//    }
 
     // Add handled by PurchaseOrderService
 
@@ -50,18 +49,8 @@ public class PurchaseItemService {
     public Result<PurchaseItem> deleteById(int purchaseItemId) {
         Result<PurchaseItem> result = new Result<>();
 
-        // OK autocomplete, I see what you did there...
-        PurchaseItem purchaseItem = findById(purchaseItemId);
-
-        if (purchaseItem == null) {
-            result.addMessage(ResultType.NOT_FOUND, "Purchase item not found.");
-            return result;
-        }
-
         if (!repository.deleteById(purchaseItemId)) {
-            result.addMessage(ResultType.INVALID, "Unable to delete purchase item.");
-        } else {
-            result.setPayload(purchaseItem);
+            result.addMessage(ResultType.NOT_FOUND, "Purchase item ID not found.");
         }
 
         return result;

@@ -1,9 +1,14 @@
 package re.api.data;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import re.api.data.mappers.PurchaseOrderMapper;
 import re.api.models.PurchaseOrder;
+
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.List;
 
 @Repository
@@ -29,18 +34,26 @@ public class PurchaseOrderJdbcTemplateRepository implements PurchaseOrderReposit
 
     @Override
     public PurchaseOrder add(PurchaseOrder purchaseOrder) {
-        final String sql = "INSERT INTO purchase_order (admin_id, vendor_id, purchase_date) VALUES (?, ?, ?);";
-        int rowsAffected = jdbcTemplate.update(sql,
-                purchaseOrder.getAdmin().getAppUserId(),
-                purchaseOrder.getVendor().getVendorId(),
-                purchaseOrder.getPurchaseDate());
+        final String sql = """
+            INSERT INTO purchase_order (admin_id, vendor_id, purchase_date)
+            VALUES (?, ?, ?);
+        """;
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        int rowsAffected = jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setInt(1, purchaseOrder.getAdminId());
+            ps.setInt(2, purchaseOrder.getVendorId());
+            ps.setObject(3, purchaseOrder.getPurchaseDate());
+            return ps;
+        }, keyHolder);
 
         if (rowsAffected <= 0) {
             return null;
         }
 
-        int generatedId = jdbcTemplate.queryForObject("SELECT LAST_INSERT_ID();", Integer.class);
-        purchaseOrder.setPurchaseId(generatedId);
+        purchaseOrder.setPurchaseId(keyHolder.getKey().intValue());
         return purchaseOrder;
     }
 

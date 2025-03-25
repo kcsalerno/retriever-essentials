@@ -1,6 +1,7 @@
 package re.api.domain;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import re.api.data.CheckoutItemRepository;
 import re.api.models.CheckoutItem;
 
@@ -20,10 +21,9 @@ public class CheckoutItemService {
         return repository.findById(checkoutItemId);
     }
 
-    // Used by CheckoutOrderService. Can we remove?
-    public List<CheckoutItem> findByCheckoutOrderId(int checkoutOrderId) {
-        return repository.findByCheckoutOrderId(checkoutOrderId);
-    }
+//    public List<CheckoutItem> findByCheckoutOrderId(int checkoutOrderId) {
+//        return repository.findByCheckoutOrderId(checkoutOrderId);
+//    }
 
     // Add handled by CheckoutOrderService
 

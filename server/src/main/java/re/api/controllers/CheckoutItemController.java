@@ -66,6 +66,4 @@ public class CheckoutItemController {
         }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
-    // No deleteByCheckoutOrderId or deleteByProductId?
 }
