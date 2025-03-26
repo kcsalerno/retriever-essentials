@@ -1,6 +1,7 @@
 package re.api.domain;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import re.api.data.CheckoutItemRepository;
 import re.api.models.CheckoutItem;
 
@@ -20,9 +21,11 @@ public class CheckoutItemService {
         return repository.findById(checkoutItemId);
     }
 
-    public List<CheckoutItem> findByCheckoutOrderId(int checkoutOrderId) {
-        return repository.findByCheckoutOrderId(checkoutOrderId);
-    }
+//    public List<CheckoutItem> findByCheckoutOrderId(int checkoutOrderId) {
+//        return repository.findByCheckoutOrderId(checkoutOrderId);
+//    }
+
+    // Add handled by CheckoutOrderService
 
     public List<Map<String, Object>> findPopularItems() {
         return repository.findPopularItems();

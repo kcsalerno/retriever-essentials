@@ -6,9 +6,6 @@ import re.api.data.CheckoutOrderRepository;
 import re.api.data.CheckoutItemRepository;
 import re.api.models.CheckoutItem;
 import re.api.models.CheckoutOrder;
-import re.api.domain.Result;
-import re.api.domain.ResultType;
-import re.api.domain.Validations;
 
 import java.util.List;
 import java.util.Map;
@@ -29,7 +26,7 @@ public class CheckoutOrderService {
         List<CheckoutOrder> orders = checkoutOrderRepository.findAll();
         for (CheckoutOrder order : orders) {
             List<CheckoutItem> items = checkoutItemRepository.findByCheckoutOrderId(order.getCheckoutOrderId());
-            order.setItems(items);
+            order.setCheckoutItems(items);
         }
         return orders;
     }
@@ -38,7 +35,7 @@ public class CheckoutOrderService {
         CheckoutOrder order = checkoutOrderRepository.findById(checkoutOrderId);
         if (order != null) {
             List<CheckoutItem> items = checkoutItemRepository.findByCheckoutOrderId(order.getCheckoutOrderId());
-            order.setItems(items);
+            order.setCheckoutItems(items);
         }
         return order;
     }
@@ -65,8 +62,8 @@ public class CheckoutOrderService {
             return result;
         }
 
-        if (checkoutOrder.getItems() != null) {
-            for (CheckoutItem item : checkoutOrder.getItems()) {
+        if (checkoutOrder.getCheckoutItems() != null) {
+            for (CheckoutItem item : checkoutOrder.getCheckoutItems()) {
                 item.setCheckoutOrderId(addedOrder.getCheckoutOrderId());
                 checkoutItemRepository.add(item);
             }

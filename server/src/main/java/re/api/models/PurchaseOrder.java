@@ -1,20 +1,26 @@
 package re.api.models;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 public class PurchaseOrder {
     private int purchaseId;
+    private int adminId; // FK
+    private int vendorId; // FK
+    private LocalDateTime purchaseDate;
+
+    // Enriched objects (for GET requests)
     private AppUser admin;
     private Vendor vendor;
-    private LocalDateTime purchaseDate;
+    private List<PurchaseItem> purchaseItems;
 
     public PurchaseOrder() {}
 
-    public PurchaseOrder(int purchaseId, AppUser admin, Vendor vendor, LocalDateTime purchaseDate) {
+    public PurchaseOrder(int purchaseId, int adminId, int vendorId, LocalDateTime purchaseDate) {
         this.purchaseId = purchaseId;
-        this.admin = admin;
-        this.vendor = vendor;
+        this.adminId = adminId;
+        this.vendorId = vendorId;
         this.purchaseDate = purchaseDate;
     }
 
@@ -24,6 +30,30 @@ public class PurchaseOrder {
 
     public void setPurchaseId(int purchaseId) {
         this.purchaseId = purchaseId;
+    }
+
+    public int getAdminId() {
+        return adminId;
+    }
+
+    public void setAdminId(int adminId) {
+        this.adminId = adminId;
+    }
+
+    public int getVendorId() {
+        return vendorId;
+    }
+
+    public void setVendorId(int vendorId) {
+        this.vendorId = vendorId;
+    }
+
+    public LocalDateTime getPurchaseDate() {
+        return purchaseDate;
+    }
+
+    public void setPurchaseDate(LocalDateTime purchaseDate) {
+        this.purchaseDate = purchaseDate;
     }
 
     public AppUser getAdmin() {
@@ -42,12 +72,12 @@ public class PurchaseOrder {
         this.vendor = vendor;
     }
 
-    public LocalDateTime getPurchaseDate() {
-        return purchaseDate;
+    public List<PurchaseItem> getPurchaseItems() {
+        return purchaseItems;
     }
 
-    public void setPurchaseDate(LocalDateTime purchaseDate) {
-        this.purchaseDate = purchaseDate;
+    public void setPurchaseItems(List<PurchaseItem> purchaseItems) {
+        this.purchaseItems = purchaseItems;
     }
 
     @Override

@@ -15,6 +15,16 @@ public class CheckoutOrder {
     private AppUser authority;
     private List<CheckoutItem> items;
 
+    public CheckoutOrder() {}
+
+    public CheckoutOrder(int checkoutOrderId, String studentId, int authorityId, boolean selfCheckout, LocalDateTime checkoutDate) {
+        this.checkoutOrderId = checkoutOrderId;
+        this.studentId = studentId;
+        this.authorityId = authorityId;
+        this.selfCheckout = selfCheckout;
+        this.checkoutDate = checkoutDate;
+    }
+
     public int getCheckoutOrderId() {
         return checkoutOrderId;
     }
@@ -63,11 +73,11 @@ public class CheckoutOrder {
         this.authority = authority;
     }
 
-    public List<CheckoutItem> getItems() {
+    public List<CheckoutItem> getCheckoutItems() {
         return items;
     }
 
-    public void setItems(List<CheckoutItem> items) {
+    public void setCheckoutItems(List<CheckoutItem> items) {
         this.items = items;
     }
 
