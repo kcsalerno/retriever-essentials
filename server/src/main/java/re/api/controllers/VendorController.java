@@ -44,7 +44,7 @@ public class VendorController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> create(@RequestBody Vendor vendor) {
+    public ResponseEntity<Object> add(@RequestBody Vendor vendor) {
         Result<Vendor> result = service.add(vendor);
         if (result.isSuccess()) {
             return new ResponseEntity<>(result.getPayload(), HttpStatus.CREATED);

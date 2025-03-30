@@ -4,8 +4,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import re.api.data.CheckoutOrderRepository;
 import re.api.data.CheckoutItemRepository;
+import re.api.data.ItemRepository;
 import re.api.models.CheckoutItem;
 import re.api.models.CheckoutOrder;
+import re.api.models.Item;
 
 import java.util.List;
 import java.util.Map;
@@ -15,11 +17,14 @@ public class CheckoutOrderService {
 
     private final CheckoutOrderRepository checkoutOrderRepository;
     private final CheckoutItemRepository checkoutItemRepository;
+    private final ItemRepository itemRepository;
 
     public CheckoutOrderService(CheckoutOrderRepository checkoutOrderRepository,
-                                CheckoutItemRepository checkoutItemRepository) {
+                                CheckoutItemRepository checkoutItemRepository,
+                                ItemRepository itemRepository) {
         this.checkoutOrderRepository = checkoutOrderRepository;
         this.checkoutItemRepository = checkoutItemRepository;
+        this.itemRepository = itemRepository;
     }
 
     public List<CheckoutOrder> findAll() {
@@ -31,11 +36,12 @@ public class CheckoutOrderService {
         return orders;
     }
 
+    // Likely need to copy this pattern in order to have nested JSON objects. Checkout Order<Checkout Items<Item>, Authority>
     public CheckoutOrder findById(int checkoutOrderId) {
         CheckoutOrder order = checkoutOrderRepository.findById(checkoutOrderId);
         if (order != null) {
-            List<CheckoutItem> items = checkoutItemRepository.findByCheckoutOrderId(order.getCheckoutOrderId());
-            order.setCheckoutItems(items);
+            enrichOrderWithItems(order);
+            enrichOrderWithAuthority(order);
         }
         return order;
     }
@@ -122,5 +128,30 @@ public class CheckoutOrderService {
         }
 
         return result;
+    }
+
+    private void enrichOrderWithItems(CheckoutOrder order) {
+        // Fetch checkout items associated with order (contains Item IDs and quantities)
+        List<CheckoutItem> checkoutItems = checkoutItemRepository.findByCheckoutOrderId(order.getCheckoutOrderId());
+        if (checkoutItems == null || checkoutItems.isEmpty()) {
+            return;
+        }
+
+        // Fetch items from the item repository using the IDs from checkout items
+        for (CheckoutItem checkoutItem : checkoutItems) {
+            Item item  = itemRepository.findById(checkoutItem.getItemId());
+            if (item != null) {
+                checkoutItem.setItem(item);
+            }
+        }
+
+        order.setCheckoutItems(checkoutItems);
+    }
+
+    private void enrichOrderWithAuthority(CheckoutOrder order) {
+        // Fetch authority associated with the order
+        if (order.getAuthorityId() > 0) {
+            order.setAuthority(appUserRepository.findById(order.getAuthorityId()));
+        }
     }
 }

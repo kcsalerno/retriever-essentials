@@ -10,21 +10,23 @@ public class InventoryLog {
     private int quantityChange;
     private String reason;
     private LocalDateTime timeStamp;
-    // Additional fields for display
-    private String authorityEmail; // (Username) Retrieved from app_user
-    private String itemName; // Retrieved from item
+
+    // Replace with optional enrichment attributes
+//    // Additional fields for display
+//    private String authorityEmail; // (Username) Retrieved from app_user
+//    private String itemName; // Retrieved from item
+    private AppUser authority;
+    private Item item;
 
     public InventoryLog() {}
 
-    public InventoryLog(int logId, Integer authorityId, int itemId, int quantityChange, String reason, LocalDateTime timeStamp, String authorityEmail, String itemName) {
+    public InventoryLog(int logId, Integer authorityId, int itemId, int quantityChange, String reason, LocalDateTime timeStamp) {
         this.logId = logId;
         this.authorityId = authorityId;
         this.itemId = itemId;
         this.quantityChange = quantityChange;
         this.reason = reason;
         this.timeStamp = timeStamp;
-        this.authorityEmail = authorityEmail;
-        this.itemName = itemName;
     }
 
     public int getLogId() {
@@ -75,20 +77,20 @@ public class InventoryLog {
         this.timeStamp = timeStamp;
     }
 
-    public String getAuthorityEmail() {
-        return authorityEmail;
+    public AppUser getAuthority() {
+        return authority;
     }
 
-    public void setAuthorityEmail(String authorityEmail) {
-        this.authorityEmail = authorityEmail;
+    public void setAuthority(AppUser authority) {
+        this.authority = authority;
     }
 
-    public String getItemName() {
-        return itemName;
+    public Item getItem() {
+        return item;
     }
 
-    public void setItemName(String itemName) {
-        this.itemName = itemName;
+    public void setItem(Item item) {
+        this.item = item;
     }
 
     @Override
@@ -113,8 +115,8 @@ public class InventoryLog {
                 ", quantityChange=" + quantityChange +
                 ", reason='" + reason + '\'' +
                 ", timeStamp=" + timeStamp +
-                ", authorityEmail='" + authorityEmail + '\'' +
-                ", itemName='" + itemName + '\'' +
+                ", authority=" + authority +
+                ", item=" + item +
                 '}';
     }
 }

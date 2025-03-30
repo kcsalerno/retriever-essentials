@@ -17,9 +17,6 @@ public class InventoryLogMapper implements RowMapper<InventoryLog> {
         log.setQuantityChange(rs.getInt("quantity_change"));
         log.setReason(rs.getString("reason"));
         log.setTimeStamp(rs.getObject("time_stamp", LocalDateTime.class));
-        // Fetch additional fields from the joined tables
-        log.setAuthorityEmail(rs.getString("authority_email"));
-        log.setItemName(rs.getString("item_name"));
 
         return log;
     }

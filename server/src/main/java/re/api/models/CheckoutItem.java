@@ -10,7 +10,6 @@ public class CheckoutItem {
 
     // Enriched object (for GET requests)
     private Item item;
-    private CheckoutOrder checkoutOrder;
 
     public CheckoutItem() {}
 
@@ -53,14 +52,6 @@ public class CheckoutItem {
         this.item = item;
     }
 
-    public CheckoutOrder getCheckoutOrder() {
-        return checkoutOrder;
-    }
-
-    public void setCheckoutOrder(CheckoutOrder checkoutOrder) {
-        this.checkoutOrder = checkoutOrder;
-    }
-
     public int getQuantity() {
         return quantity;
     }
@@ -90,7 +81,6 @@ public class CheckoutItem {
                 ", checkoutOrderId=" + checkoutOrderId +
                 ", quantity=" + quantity +
                 ", item=" + item +
-                ", checkoutOrder=" + checkoutOrder +
                 '}';
     }
 }

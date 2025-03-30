@@ -5,6 +5,10 @@ import org.springframework.stereotype.Repository;
 import re.api.data.mappers.ItemMapper;
 import re.api.models.Item;
 
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.List;
 
 @Repository
@@ -46,19 +50,26 @@ public class ItemJdbcTemplateRepository implements ItemRepository {
                 VALUES (?, ?, ?, ?, ?, ?, ?);
                 """;
 
-        int rowsAffected = jdbcTemplate.update(sql,
-                item.getItemName(),
-                item.getItemDescription(),
-                item.getNutritionFacts(),
-                item.getPicturePath(),
-                item.getCategory(),
-                item.getCurrentCount(),
-                item.getPricePerUnit());
+        KeyHolder keyHolder = new GeneratedKeyHolder();
 
-        if (rowsAffected > 0) {
-            return item;
+        int rowsAffected = jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, item.getItemName());
+            ps.setString(2, item.getItemDescription());
+            ps.setString(3, item.getNutritionFacts());
+            ps.setString(4, item.getPicturePath());
+            ps.setString(5, item.getCategory());
+            ps.setInt(6, item.getCurrentCount());
+            ps.setBigDecimal(7, item.getPricePerUnit());
+            return ps;
+        }, keyHolder);
+
+        if (rowsAffected <= 0) {
+            return null;
         }
-        return null;
+
+        item.setItemId(keyHolder.getKey().intValue());
+        return item;
     }
 
     @Override
