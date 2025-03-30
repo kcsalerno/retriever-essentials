@@ -1,18 +1,24 @@
 package re.api.data;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import re.api.data.mappers.ItemMapper;
 import re.api.models.Item;
 
+<<<<<<< Updated upstream
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+=======
+>>>>>>> Stashed changes
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
 
 @Repository
 public class ItemJdbcTemplateRepository implements ItemRepository {
+
     private final JdbcTemplate jdbcTemplate;
 
     public ItemJdbcTemplateRepository(JdbcTemplate jdbcTemplate) {
@@ -21,24 +27,36 @@ public class ItemJdbcTemplateRepository implements ItemRepository {
 
     @Override
     public List<Item> findAll() {
-        final String sql = "SELECT * FROM item;";
+        final String sql = """
+                SELECT item_id, item_name, item_description, nutrition_facts,
+                       picture_path, category, current_count, price_per_unit
+                FROM item;
+                """;
         return jdbcTemplate.query(sql, new ItemMapper());
     }
 
     @Override
     public Item findById(int itemId) {
-        final String sql = "SELECT * FROM item WHERE item_id = ?;";
-        return jdbcTemplate.query(sql, new ItemMapper(), itemId)
-                .stream()
+        final String sql = """
+                SELECT item_id, item_name, item_description, nutrition_facts,
+                       picture_path, category, current_count, price_per_unit
+                FROM item
+                WHERE item_id = ?;
+                """;
+        return jdbcTemplate.query(sql, new ItemMapper(), itemId).stream()
                 .findFirst()
                 .orElse(null);
     }
 
     @Override
-    public Item findByName(String name) {
-        final String sql = "SELECT * FROM item WHERE item_name = ?;";
-        return jdbcTemplate.query(sql, new ItemMapper(), name)
-                .stream()
+    public Item findByName(String itemName) {
+        final String sql = """
+                SELECT item_id, item_name, item_description, nutrition_facts,
+                       picture_path, category, current_count, price_per_unit
+                FROM item
+                WHERE item_name = ?;
+                """;
+        return jdbcTemplate.query(sql, new ItemMapper(), itemName).stream()
                 .findFirst()
                 .orElse(null);
     }
@@ -46,7 +64,8 @@ public class ItemJdbcTemplateRepository implements ItemRepository {
     @Override
     public Item add(Item item) {
         final String sql = """
-                INSERT INTO item (item_name, item_description, nutrition_facts, picture_path, category, current_count, price_per_unit)
+                INSERT INTO item (item_name, item_description, nutrition_facts,
+                                  picture_path, category, current_count, price_per_unit)
                 VALUES (?, ?, ?, ?, ?, ?, ?);
                 """;
 
@@ -75,8 +94,10 @@ public class ItemJdbcTemplateRepository implements ItemRepository {
     @Override
     public boolean update(Item item) {
         final String sql = """
-                UPDATE item SET item_name = ?, item_description = ?, nutrition_facts = ?, picture_path = ?,
-                category = ?, current_count = ?, price_per_unit = ? WHERE item_id = ?;
+                UPDATE item
+                SET item_name = ?, item_description = ?, nutrition_facts = ?,
+                    picture_path = ?, category = ?, current_count = ?, price_per_unit = ?
+                WHERE item_id = ?;
                 """;
 
         return jdbcTemplate.update(sql,
