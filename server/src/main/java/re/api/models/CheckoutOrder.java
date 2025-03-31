@@ -7,13 +7,13 @@ import java.util.Objects;
 public class CheckoutOrder {
     private int checkoutOrderId;
     private String studentId;
-    private int authorityId;
+    private int authorityId; // FK
     private boolean selfCheckout;
     private LocalDateTime checkoutDate;
 
     // Enriched objects
     private AppUser authority;
-    private List<CheckoutItem> items;
+    private List<CheckoutItem> checkoutItemList;
 
     public CheckoutOrder() {}
 
@@ -74,24 +74,26 @@ public class CheckoutOrder {
     }
 
     public List<CheckoutItem> getCheckoutItems() {
-        return items;
+        return checkoutItemList;
     }
 
     public void setCheckoutItems(List<CheckoutItem> items) {
-        this.items = items;
+        this.checkoutItemList = items;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof CheckoutOrder)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         CheckoutOrder that = (CheckoutOrder) o;
-        return checkoutOrderId == that.checkoutOrderId;
+        return authorityId == that.authorityId
+                && Objects.equals(studentId, that.studentId)
+                && Objects.equals(checkoutDate, that.checkoutDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(checkoutOrderId);
+        return Objects.hash(studentId, authorityId, checkoutDate);
     }
 
     @Override
@@ -103,7 +105,7 @@ public class CheckoutOrder {
                 ", selfCheckout=" + selfCheckout +
                 ", checkoutDate=" + checkoutDate +
                 ", authority=" + authority +
-                ", items=" + items +
+                ", items=" + checkoutItemList +
                 '}';
     }
 }

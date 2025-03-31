@@ -85,12 +85,14 @@ public class PurchaseOrder {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PurchaseOrder that = (PurchaseOrder) o;
-        return purchaseId == that.purchaseId;
+        return adminId == that.adminId
+                && vendorId == that.vendorId
+                && Objects.equals(purchaseDate, that.purchaseDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(purchaseId);
+        return Objects.hash(adminId, vendorId, purchaseDate);
     }
 
     @Override

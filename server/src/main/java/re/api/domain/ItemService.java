@@ -81,10 +81,15 @@ public class ItemService {
             result.addMessage(ResultType.INVALID, "Item cannot be null.");
             return result;
         }
+
         if (Validations.isNullOrBlank(item.getItemName())) {
             result.addMessage(ResultType.INVALID, "Item name is required");
         } else if (item.getItemName().length() > 20) {
             result.addMessage(ResultType.INVALID, "Item name must be 20 characters or fewer");
+        }
+
+        if (!Validations.isNullOrBlank(item.getPicturePath()) && !Validations.isValidUrl(item.getPicturePath())) {
+            result.addMessage(ResultType.INVALID, "Picture path must be a valid URL");
         }
 
         if (Validations.isNullOrBlank(item.getCategory())) {
@@ -97,12 +102,15 @@ public class ItemService {
             result.addMessage(ResultType.INVALID, "Current count cannot be negative");
         }
 
+        if (item.getItemLimit() < 1) {
+            result.addMessage(ResultType.INVALID, "Item limit must be greater than or equal to 1");
+        }
+
         if (item.getPricePerUnit() != null && (item.getPricePerUnit().compareTo(BigDecimal.ZERO) < 0)) {
             result.addMessage(ResultType.INVALID, "Price per unit cannot be negative");
         }
-
-        if (!Validations.isNullOrBlank(item.getPicturePath()) && !Validations.isValidUrl(item.getPicturePath())) {
-            result.addMessage(ResultType.INVALID, "Picture path must be a valid URL");
+        else if (item.getPricePerUnit().scale() > 2) {
+            result.addMessage(ResultType.INVALID, "Price per unit cannot have more than 2 decimal places");
         }
 
         List<Item> items = repository.findAll();

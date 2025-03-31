@@ -8,9 +8,8 @@ public class PurchaseItem {
     private int itemId; // FK
     private int quantity;
 
-    // Enriched objects (for GET requests)
+    // Enriched object (for GET requests)
     private Item item;
-    private PurchaseOrder purchaseOrder;
 
     public PurchaseItem() {}
 
@@ -61,25 +60,18 @@ public class PurchaseItem {
         this.item = item;
     }
 
-    public PurchaseOrder getPurchaseOrder() {
-        return purchaseOrder;
-    }
-
-    public void setPurchaseOrder(PurchaseOrder purchaseOrder) {
-        this.purchaseOrder = purchaseOrder;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PurchaseItem that = (PurchaseItem) o;
-        return purchaseItemId == that.purchaseItemId;
+        return purchaseOrderId == that.purchaseOrderId
+                && itemId == that.itemId;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(purchaseItemId);
+        return Objects.hash(purchaseOrderId, itemId);
     }
 
     @Override
@@ -90,7 +82,6 @@ public class PurchaseItem {
                 ", itemId=" + itemId +
                 ", quantity=" + quantity +
                 ", item=" + item +
-                ", purchaseOrder=" + purchaseOrder +
                 '}';
     }
 }

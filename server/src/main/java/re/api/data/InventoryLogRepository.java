@@ -5,10 +5,16 @@ import java.util.List;
 
 public interface InventoryLogRepository {
     List<InventoryLog> findAll();
-    List<InventoryLog> findByItemName(String itemName);
-    List<InventoryLog> findByAuthorityEmail(String authorityEmail);
+
+    List<InventoryLog> findByItemId(int itemId);
+
+    List<InventoryLog> findByAuthorityId(int authorityId);
+
     InventoryLog findById(int logId);
+
     InventoryLog add(InventoryLog log);
+
     boolean update(InventoryLog log);
+
     boolean deleteById(int logId);
 }

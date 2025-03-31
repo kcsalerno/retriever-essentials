@@ -1,9 +1,14 @@
 package re.api.data;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import re.api.data.mappers.InventoryLogMapper;
 import re.api.models.InventoryLog;
+
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.List;
 
 @Repository
@@ -18,77 +23,103 @@ public class InventoryLogJdbcTemplateRepository implements InventoryLogRepositor
     @Override
     public List<InventoryLog> findAll() {
         final String sql = """
-            SELECT il.*, au.email AS authority_email, i.item_name
-            FROM inventory_log il
-            LEFT JOIN app_user au ON il.authority_id = au.app_user_id
-            JOIN item i ON il.item_id = i.item_id
-            ORDER BY il.time_stamp DESC
-        """;
+               SELECT log_id, authority_id, item_id, quantity_change, reason, time_stamp
+               FROM inventory_log
+               ORDER BY time_stamp DESC
+               """;
+
         return jdbcTemplate.query(sql, new InventoryLogMapper());
     }
 
     @Override
-    public List<InventoryLog> findByItemName(String itemName) {
+    public List<InventoryLog> findByItemId(int itemId) {
         final String sql = """
-            SELECT il.*, au.email AS authority_email, i.item_name
-            FROM inventory_log il
-            LEFT JOIN app_user au ON il.authority_id = au.app_user_id
-            JOIN item i ON il.item_id = i.item_id
-            WHERE i.item_name LIKE ?
-            ORDER BY il.time_stamp DESC
-        """;
-        return jdbcTemplate.query(sql, new InventoryLogMapper(), "%" + itemName + "%");
+                SELECT log_id, authority_id, item_id, quantity_change, reason, time_stamp
+                FROM inventory_log
+                WHERE item_id = ?
+                ORDER BY time_stamp DESC
+                """;
+
+        return jdbcTemplate.query(sql, new InventoryLogMapper(), itemId);
     }
 
     @Override
-    public List<InventoryLog> findByAuthorityEmail(String authorityEmail) {
+    public List<InventoryLog> findByAuthorityId(int authorityId) {
         final String sql = """
-            SELECT il.*, au.email AS authority_email, i.item_name
-            FROM inventory_log il
-            LEFT JOIN app_user au ON il.authority_id = au.app_user_id
-            JOIN item i ON il.item_id = i.item_id
-            WHERE au.email LIKE ?
-            ORDER BY il.time_stamp DESC
-        """;
-        return jdbcTemplate.query(sql, new InventoryLogMapper(), "%" + authorityEmail + "%");
+                SELECT log_id, authority_id, item_id, quantity_change, reason, time_stamp
+                FROM inventory_log
+                WHERE authority_id = ?
+                ORDER BY time_stamp DESC
+                """;
+
+        return jdbcTemplate.query(sql, new InventoryLogMapper(), authorityId);
     }
 
     @Override
     public InventoryLog findById(int logId) {
         final String sql = """
-            SELECT il.*, au.email AS authority_email, i.item_name
-            FROM inventory_log il
-            LEFT JOIN app_user au ON il.authority_id = au.app_user_id
-            JOIN item i ON il.item_id = i.item_id
-            WHERE il.log_id = ?
-        """;
+                SELECT log_id, authority_id, item_id, quantity_change, reason, time_stamp
+                FROM inventory_log
+                WHERE log_id = ?
+                """;
+
         return jdbcTemplate.query(sql, new InventoryLogMapper(), logId)
-                .stream().findFirst().orElse(null);
+                .stream()
+                .findFirst()
+                .orElse(null);
     }
 
     @Override
-    public InventoryLog add(InventoryLog log) {
+    public InventoryLog add(InventoryLog inventoryLog) {
         final String sql = """
-            INSERT INTO inventory_log (authority_id, item_id, quantity_change, reason, time_stamp)
-            VALUES (?, ?, ?, ?, ?)
-        """;
-        jdbcTemplate.update(sql, log.getAuthorityId(), log.getItemId(), log.getQuantityChange(), log.getReason(), log.getTimeStamp());
-        return log;
+                INSERT INTO inventory_log (authority_id, item_id, quantity_change, reason, time_stamp)
+                VALUES (?, ?, ?, ?, ?)
+                """;
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        int rowsAffected = jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setInt(1, inventoryLog.getAuthorityId());
+            ps.setInt(2, inventoryLog.getItemId());
+            ps.setInt(3, inventoryLog.getQuantityChange());
+            ps.setString(4, inventoryLog.getReason());
+            ps.setTimestamp(5, java.sql.Timestamp.valueOf(inventoryLog.getTimeStamp()));
+            return ps;
+        }, keyHolder);
+
+        if (rowsAffected <= 0) {
+            return null;
+        }
+
+        inventoryLog.setLogId(keyHolder.getKey().intValue());
+        return inventoryLog;
     }
 
     @Override
-    public boolean update(InventoryLog log) {
+    public boolean update(InventoryLog inventoryLog) {
         final String sql = """
-            UPDATE inventory_log
-            SET authority_id = ?, item_id = ?, quantity_change = ?, reason = ?, time_stamp = ?
-            WHERE log_id = ?
-        """;
-        return jdbcTemplate.update(sql, log.getAuthorityId(), log.getItemId(), log.getQuantityChange(), log.getReason(), log.getTimeStamp(), log.getLogId()) > 0;
+                UPDATE inventory_log
+                SET authority_id = ?, item_id = ?, quantity_change = ?, reason = ?, time_stamp = ?
+                WHERE log_id = ?
+                """;
+
+        return jdbcTemplate.update(sql,
+                inventoryLog.getAuthorityId(),
+                inventoryLog.getItemId(),
+                inventoryLog.getQuantityChange(),
+                inventoryLog.getReason(),
+                inventoryLog.getTimeStamp(),
+                inventoryLog.getLogId()) > 0;
     }
 
     @Override
     public boolean deleteById(int logId) {
-        final String sql = "DELETE FROM inventory_log WHERE log_id = ?";
+        final String sql = """
+                DELETE FROM inventory_log
+                WHERE log_id = ?
+                """;
+
         return jdbcTemplate.update(sql, logId) > 0;
     }
 }

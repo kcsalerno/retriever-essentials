@@ -11,12 +11,14 @@ public class Item {
     private String picturePath;
     private String category;
     private int currentCount;
+    private int itemLimit;
     private BigDecimal pricePerUnit;
+    private boolean enabled;
 
     public Item() {}
 
     public Item(int itemId, String itemName, String itemDescription, String nutritionFacts,
-                String picturePath, String category, int currentCount, BigDecimal pricePerUnit) {
+                String picturePath, String category, int currentCount, int itemLimit, BigDecimal pricePerUnit) {
         this.itemId = itemId;
         this.itemName = itemName;
         this.itemDescription = itemDescription;
@@ -24,6 +26,7 @@ public class Item {
         this.picturePath = picturePath;
         this.category = category;
         this.currentCount = currentCount;
+        this.itemLimit = itemLimit;
         this.pricePerUnit = pricePerUnit;
     }
 
@@ -83,6 +86,14 @@ public class Item {
         this.currentCount = currentCount;
     }
 
+    public int getItemLimit() {
+        return itemLimit;
+    }
+
+    public void setItemLimit(int itemLimit) {
+        this.itemLimit = itemLimit;
+    }
+
     public BigDecimal getPricePerUnit() {
         return pricePerUnit;
     }
@@ -91,17 +102,27 @@ public class Item {
         this.pricePerUnit = pricePerUnit;
     }
 
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Item item = (Item) o;
-        return itemId == item.itemId && Objects.equals(itemName, item.itemName);
+        return Objects.equals(itemName, item.itemName)
+                && Objects.equals(category, item.category)
+                && Objects.equals(pricePerUnit, item.pricePerUnit);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(itemId, itemName);
+        return Objects.hash(itemName, category, pricePerUnit);
     }
 
     @Override
@@ -114,7 +135,9 @@ public class Item {
                 ", picturePath='" + picturePath + '\'' +
                 ", category='" + category + '\'' +
                 ", currentCount=" + currentCount +
+                ", itemLimit=" + itemLimit +
                 ", pricePerUnit=" + pricePerUnit +
+                ", enabled=" + enabled +
                 '}';
     }
 }
