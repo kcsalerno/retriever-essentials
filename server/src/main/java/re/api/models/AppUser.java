@@ -1,7 +1,6 @@
 package re.api.models;
 
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
@@ -12,20 +11,20 @@ public class AppUser implements UserDetails {
     private int appUserId;
     private final String email;
     private final String passwordHash;
-    private final GrantedAuthority authority;
+    private final UserRole userRole;
     private boolean enabled;
 
-    public AppUser(int appUserId,String email, String passwordHash, String user_role, boolean enabled) {
+    public AppUser(int appUserId,String email, String passwordHash, UserRole userRole, boolean enabled) {
         this.appUserId = appUserId;
         this.email = email;
         this.passwordHash = passwordHash;
-        this.authority = new SimpleGrantedAuthority(user_role);     // Use ENUM value directly
+        this.userRole = userRole;
         this.enabled = enabled;
     }
 
     @Override
-    public Collection<GrantedAuthority> getAuthorities() {
-        return List.of(authority); // Return a single-element list
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(userRole.toGrantedAuthority());
     }
 
     @Override
@@ -59,7 +58,7 @@ public class AppUser implements UserDetails {
 
     @Override
     public boolean equals(Object o) {
-        if (o == this) return true;     // Self-check
+        if (o == this) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AppUser appUser = (AppUser) o;
         return Objects.equals(email, appUser.email);
@@ -76,7 +75,7 @@ public class AppUser implements UserDetails {
                 "appUserId=" + appUserId +
                 ", email='" + email + '\'' +
                 ", enabled=" + enabled +
-                ", role=" + authority.getAuthority() +
+                ", role=" + userRole +
                 '}';
     }
 }

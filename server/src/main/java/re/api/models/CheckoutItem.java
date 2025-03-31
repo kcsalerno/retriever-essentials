@@ -4,8 +4,8 @@ import java.util.Objects;
 
 public class CheckoutItem {
     private int checkoutItemId;
-    private int itemId; // FK
     private int checkoutOrderId; // FK
+    private int itemId; // FK
     private int quantity;
 
     // Enriched object (for GET requests)
@@ -65,12 +65,12 @@ public class CheckoutItem {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CheckoutItem that = (CheckoutItem) o;
-        return checkoutItemId == that.checkoutItemId;
+        return checkoutOrderId == that.checkoutOrderId && itemId == that.itemId;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(checkoutItemId);
+        return Objects.hash(checkoutOrderId, itemId);
     }
 
     @Override

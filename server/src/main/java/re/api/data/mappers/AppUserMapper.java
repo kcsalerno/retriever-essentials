@@ -2,7 +2,7 @@ package re.api.data.mappers;
 
 import org.springframework.jdbc.core.RowMapper;
 import re.api.models.AppUser;
-import re.api.models.Item;
+import re.api.models.UserRole;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,8 +13,8 @@ public class AppUserMapper implements RowMapper<AppUser> {
         return new AppUser(
                 rs.getInt("app_user_id"),
                 rs.getString("email"),
-                rs.getString("passwordHash"),
-                rs.getString("user_role"),
+                rs.getString("password_hash"),
+                UserRole.valueOf(rs.getString("user_role").toUpperCase()),
                 rs.getBoolean("enabled")
         );
     }

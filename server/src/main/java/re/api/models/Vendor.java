@@ -54,7 +54,9 @@ public class Vendor {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Vendor vendor = (Vendor) o;
-        return Objects.equals(vendorName, vendor.vendorName) && Objects.equals(phoneNumber, vendor.phoneNumber) && Objects.equals(contactEmail, vendor.contactEmail);
+        return Objects.equals(vendorName, vendor.vendorName)
+                & Objects.equals(phoneNumber, vendor.phoneNumber)
+                && Objects.equals(contactEmail, vendor.contactEmail);
     }
 
     @Override

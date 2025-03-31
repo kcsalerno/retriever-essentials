@@ -7,11 +7,6 @@ import org.springframework.stereotype.Repository;
 import re.api.data.mappers.ItemMapper;
 import re.api.models.Item;
 
-<<<<<<< Updated upstream
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
-=======
->>>>>>> Stashed changes
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;

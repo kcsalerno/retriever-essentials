@@ -5,16 +5,13 @@ import java.util.Objects;
 
 public class InventoryLog {
     private int logId;
-    private Integer authorityId; // Nullable in case an authority is deleted
+    private int authorityId;
     private int itemId;
     private int quantityChange;
     private String reason;
     private LocalDateTime timeStamp;
 
-    // Replace with optional enrichment attributes
-//    // Additional fields for display
-//    private String authorityEmail; // (Username) Retrieved from app_user
-//    private String itemName; // Retrieved from item
+    // Enriched objects (for GET requests)
     private AppUser authority;
     private Item item;
 

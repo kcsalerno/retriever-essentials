@@ -65,12 +65,12 @@ public class PurchaseItem {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PurchaseItem that = (PurchaseItem) o;
-        return purchaseItemId == that.purchaseItemId;
+        return purchaseOrderId == that.purchaseOrderId && itemId == that.itemId;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(purchaseItemId);
+        return Objects.hash(purchaseOrderId, itemId);
     }
 
     @Override

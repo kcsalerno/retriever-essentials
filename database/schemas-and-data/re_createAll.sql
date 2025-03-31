@@ -3,7 +3,7 @@ This script implements the DDL portion of the Retriever Essentials
 Inventory and Checkout database schema. It will create all the necessary
 tables, establish relationships between these tables, and declare
 all data types and constraints. If this is not your first time running this script
-then run the re_dropAll.sql scrip first to ensure a clean database and prevent errors.
+then run the re_dropAll.sql script first to ensure a clean database and prevent errors.
 */
 
 -- Create the 're_inventory' database.
@@ -26,9 +26,6 @@ CREATE TABLE app_user (
     email VARCHAR(255) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
     user_role ENUM('AUTHORITY', 'ADMIN') NOT NULL,
-    enabled BOOLEAN DEFAULT TRUE
---     user_first_name varchar(50) NULL,
---     user_last_name varchar(50) NULL
 );
 
 -- Table: item
@@ -45,7 +42,9 @@ CREATE TABLE item (
 	picture_path VARCHAR(255) NULL,
     category VARCHAR(20) NOT NULL,
     current_count INT NOT NULL DEFAULT 0 CHECK (current_count >= 0),
-    price_per_unit DECIMAL(7,2) NULL
+    item_limit INT NOT NULL,
+    price_per_unit DECIMAL(7,2) NULL,
+	enabled BOOLEAN DEFAULT TRUE
 );
 
 -- Table: inventory_log
@@ -57,13 +56,13 @@ Foreign Key (FK):
 */
 CREATE TABLE inventory_log (
     log_id INT PRIMARY KEY AUTO_INCREMENT,
-    authority_id INT NULL,
+    authority_id INT NOT NULL,
     item_id INT NOT NULL,
     quantity_change INT NOT NULL CHECK (quantity_change <> 0),
     reason VARCHAR(255) NOT NULL,
     time_stamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (authority_id) REFERENCES app_user(app_user_id) ON DELETE SET NULL,
-    FOREIGN KEY (item_id) REFERENCES item(item_id) ON DELETE CASCADE
+    FOREIGN KEY (authority_id) REFERENCES app_user(app_user_id),
+    FOREIGN KEY (item_id) REFERENCES item(item_id)
 );
 
 -- Table: checkout_order
@@ -74,11 +73,11 @@ Foreign Key (FK):
 */
 CREATE TABLE checkout_order (
     checkout_id INT PRIMARY KEY AUTO_INCREMENT,
-    student_id VARCHAR(10) NULL,  -- Recorded manually or via myUMBC login in self-checkout
-    authority_id INT NULL,  -- Authority processing the order (NULL if self-checkout)
+    student_id VARCHAR(10) NOT NULL,  -- Recorded manually or via myUMBC login in self-checkout
+    authority_id INT NOT NULL,  -- Authority that performed checkout or enabled self-checkout
     self_checkout BOOLEAN NOT NULL DEFAULT FALSE,
     checkout_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (authority_id) REFERENCES app_user(app_user_id) ON DELETE SET NULL
+    FOREIGN KEY (authority_id) REFERENCES app_user(app_user_id)
 );
 
 -- Table: ordered_item (bridge table for orders and their items)
@@ -91,23 +90,25 @@ Foreign Key (FK):
 CREATE TABLE checkout_item (
     checkout_item_id INT PRIMARY KEY AUTO_INCREMENT,
     checkout_id INT NOT NULL,
-    item_id INT NULL,
+    item_id INT NOT NULL,
     quantity INT NOT NULL CHECK (quantity > 0),
     FOREIGN KEY (checkout_id) REFERENCES checkout_order(checkout_id) ON DELETE CASCADE,
-    FOREIGN KEY (item_id) REFERENCES item(item_id) ON DELETE SET NULL
+    FOREIGN KEY (item_id) REFERENCES item(item_id),
+    UNIQUE (checkout_id, item_id)
 );
 
 -- Table: vendor
 /*
 Primary Key (PK): vendor_id
 Unique Constraint:
-	item_name, contact_email
+	vendor_name, contact_email
 */
 CREATE TABLE vendor (
     vendor_id INT PRIMARY KEY AUTO_INCREMENT,
     vendor_name VARCHAR(255) NOT NULL UNIQUE,
     phone_number VARCHAR(20) NULL,
-    contact_email VARCHAR(255) NOT NULL UNIQUE
+    contact_email VARCHAR(255) NOT NULL UNIQUE,
+    enabled BOOLEAN DEFAULT TRUE
 );
 
 -- Table: purchase_order
@@ -119,27 +120,28 @@ Foreign Key (FK):
 */
 CREATE TABLE purchase_order (
     purchase_id INT PRIMARY KEY AUTO_INCREMENT,
-    admin_id INT NULL,
-    vendor_id INT NULL,
+    admin_id INT NOT NULL,
+    vendor_id INT NOT NULL,
     purchase_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (admin_id) REFERENCES app_user(app_user_id) ON DELETE SET NULL,
-    FOREIGN KEY (vendor_id) REFERENCES vendor(vendor_id) ON DELETE SET NULL
+    FOREIGN KEY (admin_id) REFERENCES app_user(app_user_id),
+    FOREIGN KEY (vendor_id) REFERENCES vendor(vendor_id)
 );
 
 -- Table: purchase_item
 /*
 Primary Key (PK): purchase_item_id
 Foreign Key (FK):
-	purchase_id --> purchase(purchase_id)
+	purchase_id --> purchase_order(purchase_id)
     item_id --> item(item_id)
 */
 CREATE TABLE purchase_item (
     purchase_item_id INT PRIMARY KEY AUTO_INCREMENT,
     purchase_id INT NOT NULL,
-    item_id INT NULL,
+    item_id INT NOT NULL,
     quantity INT NOT NULL CHECK (quantity > 0),
     FOREIGN KEY (purchase_id) REFERENCES purchase_order(purchase_id) ON DELETE CASCADE,
-    FOREIGN KEY (item_id) REFERENCES item(item_id) ON DELETE SET NULL
+    FOREIGN KEY (item_id) REFERENCES item(item_id),
+    UNIQUE (purchase_id, item_id)
 );
 
 -- Index to speed up queries for busiest hours.
@@ -153,6 +155,10 @@ CREATE INDEX idx_item_category ON item(category);
 
 -- Index to track which items are most popular on a per-day basis.
 CREATE INDEX idx_checkout_item_date ON checkout_item(checkout_id, quantity);
+
+-- Indexes for frequent queries by item_id.
+CREATE INDEX idx_checkout_item_item_id ON checkout_item(item_id);
+CREATE INDEX idx_purchase_item_item_id ON purchase_item(item_id);
 
 -- Show the Tables in the re_inventory DB.
 SHOW TABLES;
