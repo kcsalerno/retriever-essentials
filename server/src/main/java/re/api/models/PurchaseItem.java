@@ -65,7 +65,8 @@ public class PurchaseItem {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PurchaseItem that = (PurchaseItem) o;
-        return purchaseOrderId == that.purchaseOrderId && itemId == that.itemId;
+        return purchaseOrderId == that.purchaseOrderId
+                && itemId == that.itemId;
     }
 
     @Override

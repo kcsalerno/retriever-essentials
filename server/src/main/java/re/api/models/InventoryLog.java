@@ -92,15 +92,15 @@ public class InventoryLog {
 
     @Override
     public boolean equals(Object o) {
-        if (o == this) return true;     // Self-check
+        if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         InventoryLog that = (InventoryLog) o;
-        return logId == that.logId;
+        return authorityId == that.authorityId && itemId == that.itemId && quantityChange == that.quantityChange && Objects.equals(timeStamp, that.timeStamp);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(logId);
+        return Objects.hash(authorityId, itemId, quantityChange, timeStamp);
     }
 
     @Override
