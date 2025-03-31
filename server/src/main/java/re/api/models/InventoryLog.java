@@ -17,7 +17,7 @@ public class InventoryLog {
 
     public InventoryLog() {}
 
-    public InventoryLog(int logId, Integer authorityId, int itemId, int quantityChange, String reason, LocalDateTime timeStamp) {
+    public InventoryLog(int logId, int authorityId, int itemId, int quantityChange, String reason, LocalDateTime timeStamp) {
         this.logId = logId;
         this.authorityId = authorityId;
         this.itemId = itemId;
@@ -34,11 +34,11 @@ public class InventoryLog {
         this.logId = logId;
     }
 
-    public Integer getAuthorityId() {
+    public int getAuthorityId() {
         return authorityId;
     }
 
-    public void setAuthorityId(Integer authorityId) {
+    public void setAuthorityId(int authorityId) {
         this.authorityId = authorityId;
     }
 

@@ -2,48 +2,57 @@ package re.api.domain;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import re.api.data.AppUserRepository;
 import re.api.data.CheckoutOrderRepository;
 import re.api.data.CheckoutItemRepository;
 import re.api.data.ItemRepository;
+import re.api.models.AppUser;
 import re.api.models.CheckoutItem;
 import re.api.models.CheckoutOrder;
 import re.api.models.Item;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 public class CheckoutOrderService {
-
     private final CheckoutOrderRepository checkoutOrderRepository;
     private final CheckoutItemRepository checkoutItemRepository;
     private final ItemRepository itemRepository;
+    private final AppUserRepository appUserRepository;
 
     public CheckoutOrderService(CheckoutOrderRepository checkoutOrderRepository,
                                 CheckoutItemRepository checkoutItemRepository,
-                                ItemRepository itemRepository) {
+                                ItemRepository itemRepository,
+                                AppUserRepository appUserRepository) {
         this.checkoutOrderRepository = checkoutOrderRepository;
         this.checkoutItemRepository = checkoutItemRepository;
         this.itemRepository = itemRepository;
+        this.appUserRepository = appUserRepository;
     }
 
     public List<CheckoutOrder> findAll() {
-        List<CheckoutOrder> orders = checkoutOrderRepository.findAll();
-        for (CheckoutOrder order : orders) {
-            List<CheckoutItem> items = checkoutItemRepository.findByCheckoutOrderId(order.getCheckoutOrderId());
-            order.setCheckoutItems(items);
+        List<CheckoutOrder> checkoutOrderList = checkoutOrderRepository.findAll();
+        if (checkoutOrderList == null || checkoutOrderList.isEmpty()) {
+            return checkoutOrderList;
         }
-        return orders;
+
+        for (CheckoutOrder checkoutOrder : checkoutOrderList) {
+            enrichOrderWithItemsAndAuthority(checkoutOrder);
+        }
+
+        return checkoutOrderList;
     }
 
-    // Likely need to copy this pattern in order to have nested JSON objects. Checkout Order<Checkout Items<Item>, Authority>
     public CheckoutOrder findById(int checkoutOrderId) {
-        CheckoutOrder order = checkoutOrderRepository.findById(checkoutOrderId);
-        if (order != null) {
-            enrichOrderWithItems(order);
-            enrichOrderWithAuthority(order);
+        CheckoutOrder checkoutOrder = checkoutOrderRepository.findById(checkoutOrderId);
+        if (checkoutOrder != null) {
+            enrichOrderWithItemsAndAuthority(checkoutOrder);
         }
-        return order;
+
+        return checkoutOrder;
     }
 
     public List<Map<String, Object>> findTopBusiestHours() {
@@ -57,6 +66,7 @@ public class CheckoutOrderService {
         if (!result.isSuccess()) {
             return result;
         }
+
         if (checkoutOrder.getCheckoutOrderId() != 0) {
             result.addMessage(ResultType.INVALID, "Checkout order ID cannot be set for `add` operation.");
         }
@@ -79,6 +89,7 @@ public class CheckoutOrderService {
         return result;
     }
 
+    @Transactional
     public Result<CheckoutOrder> update(CheckoutOrder checkoutOrder) {
         Result<CheckoutOrder> result = validate(checkoutOrder);
 
@@ -123,16 +134,64 @@ public class CheckoutOrderService {
             return result;
         }
 
+        if (Validations.isNullOrBlank(checkoutOrder.getStudentId())) {
+            result.addMessage(ResultType.INVALID, "Student ID is required.");
+        } else if (checkoutOrder.getStudentId().length() > 10) {
+            result.addMessage(ResultType.INVALID, "Student ID cannot exceed 10 characters.");
+        }
+
+        if (checkoutOrder.getAuthorityId() <= 0) {
+            result.addMessage(ResultType.INVALID, "Invalid authority ID.");
+        } else {
+            AppUser authority = appUserRepository.findById(checkoutOrder.getAuthorityId());
+            if (authority == null || !authority.isEnabled()) {
+                result.addMessage(ResultType.NOT_FOUND, "Authority ID does not exist or is disabled.");
+            }
+        }
+
         if (checkoutOrder.getCheckoutDate() == null) {
             result.addMessage(ResultType.INVALID, "Checkout date is required.");
+        }
+
+        if (checkoutOrder.getCheckoutItems() != null) {
+            Set<Integer> foundItemIds = new HashSet<>();
+
+            for (CheckoutItem checkoutItem : checkoutOrder.getCheckoutItems()) {
+
+                // Check for duplicates using a Set
+                if (!foundItemIds.add(checkoutItem.getItemId())) {
+                    result.addMessage(ResultType.INVALID,
+                            "Duplicate item in checkout order: Item ID " + checkoutItem.getItemId());
+                    continue; // Skip additional validation for duplicates
+                }
+
+                Item item = itemRepository.findById(checkoutItem.getItemId());
+
+                if (item == null) {
+                    result.addMessage(ResultType.INVALID,
+                            "Item ID " + checkoutItem.getItemId() + " not found.");
+                    continue;
+                }
+
+                if (checkoutItem.getQuantity() <= 0) {
+                    result.addMessage(ResultType.INVALID,
+                            "Quantity for item " + item.getItemName() + " must be greater than 0.");
+                }
+
+                if ((item.getItemLimit() > 0) && (checkoutItem.getQuantity() > item.getItemLimit())) {
+                    result.addMessage(ResultType.INVALID,
+                            String.format("Quantity for item %s exceeds limit (%d).",
+                                    item.getItemName(), item.getItemLimit()));
+                }
+            }
         }
 
         return result;
     }
 
-    private void enrichOrderWithItems(CheckoutOrder order) {
+    private void enrichOrderWithItems(CheckoutOrder checkoutOrder) {
         // Fetch checkout items associated with order (contains Item IDs and quantities)
-        List<CheckoutItem> checkoutItems = checkoutItemRepository.findByCheckoutOrderId(order.getCheckoutOrderId());
+        List<CheckoutItem> checkoutItems = checkoutItemRepository.findByCheckoutOrderId(checkoutOrder.getCheckoutOrderId());
         if (checkoutItems == null || checkoutItems.isEmpty()) {
             return;
         }
@@ -145,13 +204,18 @@ public class CheckoutOrderService {
             }
         }
 
-        order.setCheckoutItems(checkoutItems);
+        checkoutOrder.setCheckoutItems(checkoutItems);
     }
 
-    private void enrichOrderWithAuthority(CheckoutOrder order) {
+    private void enrichOrderWithAuthority(CheckoutOrder checkoutOrder) {
         // Fetch authority associated with the order
-        if (order.getAuthorityId() > 0) {
-            order.setAuthority(appUserRepository.findById(order.getAuthorityId()));
+        if (checkoutOrder.getAuthorityId() > 0) {
+            checkoutOrder.setAuthority(appUserRepository.findById(checkoutOrder.getAuthorityId()));
         }
+    }
+
+    private void enrichOrderWithItemsAndAuthority(CheckoutOrder checkoutOrder) {
+        enrichOrderWithItems(checkoutOrder);
+        enrichOrderWithAuthority(checkoutOrder);
     }
 }

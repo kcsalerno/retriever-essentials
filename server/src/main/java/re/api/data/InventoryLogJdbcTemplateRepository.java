@@ -32,6 +32,20 @@ public class InventoryLogJdbcTemplateRepository implements InventoryLogRepositor
     }
 
     @Override
+    public InventoryLog findById(int logId) {
+        final String sql = """
+                SELECT log_id, authority_id, item_id, quantity_change, reason, time_stamp
+                FROM inventory_log
+                WHERE log_id = ?
+                """;
+
+        return jdbcTemplate.query(sql, new InventoryLogMapper(), logId)
+                .stream()
+                .findFirst()
+                .orElse(null);
+    }
+
+    @Override
     public List<InventoryLog> findByItemId(int itemId) {
         final String sql = """
                 SELECT log_id, authority_id, item_id, quantity_change, reason, time_stamp
@@ -53,20 +67,6 @@ public class InventoryLogJdbcTemplateRepository implements InventoryLogRepositor
                 """;
 
         return jdbcTemplate.query(sql, new InventoryLogMapper(), authorityId);
-    }
-
-    @Override
-    public InventoryLog findById(int logId) {
-        final String sql = """
-                SELECT log_id, authority_id, item_id, quantity_change, reason, time_stamp
-                FROM inventory_log
-                WHERE log_id = ?
-                """;
-
-        return jdbcTemplate.query(sql, new InventoryLogMapper(), logId)
-                .stream()
-                .findFirst()
-                .orElse(null);
     }
 
     @Override
