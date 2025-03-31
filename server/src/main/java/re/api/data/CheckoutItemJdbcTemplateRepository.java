@@ -27,7 +27,6 @@ public class CheckoutItemJdbcTemplateRepository implements CheckoutItemRepositor
                 FROM checkout_item
                 WHERE checkout_item_id = ?
                 """;
-
         return jdbcTemplate.query(sql, new CheckoutItemMapper(), checkoutItemId)
                 .stream()
                 .findFirst()
@@ -41,24 +40,29 @@ public class CheckoutItemJdbcTemplateRepository implements CheckoutItemRepositor
                 FROM checkout_item
                 WHERE checkout_id = ?
                 """;
-
         return jdbcTemplate.query(sql, new CheckoutItemMapper(), checkoutId);
     }
 
+//        SELECT i.item_name, SUM(ci.quantity) AS total_quantity
+//        FROM checkout_item ci
+//        JOIN item i ON ci.item_id = i.item_id
+//        GROUP BY i.item_name
+//        ORDER BY total_quantity DESC
+//        LIMIT 5;
     @Override
     public List<Map<String, Object>> findPopularItems() {
         final String sql = """
-        SELECT i.item_name, SUM(ci.quantity) AS total_quantity
-        FROM checkout_item ci
-        JOIN item i ON ci.item_id = i.item_id
-        GROUP BY i.item_name
-        ORDER BY total_quantity DESC
-        LIMIT 5;
+            SELECT ci.item_id, SUM(ci.quantity) AS total_quantity
+            FROM checkout_item ci
+            GROUP BY ci.item_id
+            ORDER BY total_quantity DESC
+            LIMIT 5;
         """;
 
         return jdbcTemplate.queryForList(sql);
     }
 
+    // This is wrong
     @Override
     public List<Map<String, Object>> findPopularCategories() {
         final String sql = """

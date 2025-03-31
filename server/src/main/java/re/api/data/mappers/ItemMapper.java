@@ -18,11 +18,10 @@ public class ItemMapper implements RowMapper<Item> {
         item.setPicturePath(rs.getString("picture_path"));
         item.setCategory(rs.getString("category"));
         item.setCurrentCount(rs.getInt("current_count"));
-
-        // Ensure null safety for price_per_unit
-        BigDecimal price = rs.getBigDecimal("price_per_unit");
+        item.setItemLimit(rs.getInt("item_limit"));
+        BigDecimal price = rs.getBigDecimal("price_per_unit"); // Ensure null safety for price_per_unit
         item.setPricePerUnit(price != null ? price : BigDecimal.ZERO);
-
+        item.setEnabled(rs.getBoolean("enabled"));
         return item;
     }
 }

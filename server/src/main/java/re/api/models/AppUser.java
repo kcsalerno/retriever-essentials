@@ -10,7 +10,7 @@ import java.util.Objects;
 public class AppUser implements UserDetails {
     private int appUserId;
     private final String email;
-    private final String passwordHash;
+    private String passwordHash;
     private final UserRole userRole;
     private boolean enabled;
 
@@ -39,6 +39,10 @@ public class AppUser implements UserDetails {
         return email;
     }
 
+    public void setPassword(String password) {
+        this.passwordHash = password;
+    }
+
     @Override
     public boolean isEnabled() {
         return enabled;
@@ -46,6 +50,10 @@ public class AppUser implements UserDetails {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public boolean hasRole(UserRole role) {
+        return this.userRole == role;
     }
 
     public int getAppUserId() {

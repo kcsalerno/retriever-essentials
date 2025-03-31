@@ -20,9 +20,9 @@ Unique Constraints:
 CREATE TABLE app_user (
     app_user_id INT PRIMARY KEY AUTO_INCREMENT,
     email VARCHAR(255) UNIQUE NOT NULL,
-    password_hash VARCHAR(255) NOT NULL,
+    password_hash VARCHAR(255) NOT NULL DEFAULT '$2a$10$ntB7CsRKQzuLoKY3rfoAQen5nNyiC/U60wBsWnnYrtQQi8Z3IZzQa', -- Passwords are set to "P@ssw0rd!" as default
     user_role ENUM('AUTHORITY', 'ADMIN') NOT NULL,
-    enabled BOOLEAN DEFAULT TRUE
+	enabled BOOLEAN DEFAULT TRUE
 );
 
 -- Table: item
@@ -39,7 +39,7 @@ CREATE TABLE item (
 	picture_path VARCHAR(255) NULL,
     category VARCHAR(20) NOT NULL,
     current_count INT NOT NULL DEFAULT 0 CHECK (current_count >= 0),
-    item_limit INT NOT NULL,
+    item_limit INT NOT NULL DEFAULT 1 CHECK (item_limit >= 1),
     price_per_unit DECIMAL(7,2) NULL,
 	enabled BOOLEAN DEFAULT TRUE
 );
@@ -185,9 +185,9 @@ BEGIN
     -- -----------------------------------------------------
 
     -- Initial user data, passwords set to "P@ssw0rd!" for now.
-		INSERT INTO app_user (email, password_hash, user_role) VALUES
-        ('admin@umbc.com', '$2a$10$ntB7CsRKQzuLoKY3rfoAQen5nNyiC/U60wBsWnnYrtQQi8Z3IZzQa', 'ADMIN'),
-        ('authority@umbc.com', '$2a$10$ntB7CsRKQzuLoKY3rfoAQen5nNyiC/U60wBsWnnYrtQQi8Z3IZzQa', 'AUTHORITY');
+		INSERT INTO app_user (email, user_role) VALUES
+        ('admin@umbc.com', 'ADMIN'),
+        ('authority@umbc.com', 'AUTHORITY');
 
     -- Test data for Vendor
     INSERT INTO vendor (vendor_name, phone_number, contact_email) VALUES

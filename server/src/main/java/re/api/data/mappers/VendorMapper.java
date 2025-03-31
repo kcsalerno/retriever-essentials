@@ -15,7 +15,7 @@ public class VendorMapper implements RowMapper<Vendor> {
         vendor.setVendorName(rs.getString("vendor_name"));
         vendor.setPhoneNumber(rs.getString("phone_number"));
         vendor.setContactEmail(rs.getString("contact_email"));
-
+        vendor.setEnabled(rs.getBoolean("enabled"));
         return vendor;
     }
 }

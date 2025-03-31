@@ -24,7 +24,7 @@ public class ItemJdbcTemplateRepository implements ItemRepository {
     public List<Item> findAll() {
         final String sql = """
                 SELECT item_id, item_name, item_description, nutrition_facts,
-                       picture_path, category, current_count, price_per_unit
+                       picture_path, category, current_count, item_limit, price_per_unit, enabled
                 FROM item;
                 """;
         return jdbcTemplate.query(sql, new ItemMapper());
@@ -34,11 +34,12 @@ public class ItemJdbcTemplateRepository implements ItemRepository {
     public Item findById(int itemId) {
         final String sql = """
                 SELECT item_id, item_name, item_description, nutrition_facts,
-                       picture_path, category, current_count, price_per_unit
+                       picture_path, category, current_count, item_limit, price_per_unit, enabled
                 FROM item
                 WHERE item_id = ?;
                 """;
-        return jdbcTemplate.query(sql, new ItemMapper(), itemId).stream()
+        return jdbcTemplate.query(sql, new ItemMapper(), itemId)
+                .stream()
                 .findFirst()
                 .orElse(null);
     }
@@ -47,11 +48,12 @@ public class ItemJdbcTemplateRepository implements ItemRepository {
     public Item findByName(String itemName) {
         final String sql = """
                 SELECT item_id, item_name, item_description, nutrition_facts,
-                       picture_path, category, current_count, price_per_unit
+                       picture_path, category, current_count, item_limit, price_per_unit, enabled
                 FROM item
                 WHERE item_name = ?;
                 """;
-        return jdbcTemplate.query(sql, new ItemMapper(), itemName).stream()
+        return jdbcTemplate.query(sql, new ItemMapper(), itemName)
+                .stream()
                 .findFirst()
                 .orElse(null);
     }
@@ -60,8 +62,8 @@ public class ItemJdbcTemplateRepository implements ItemRepository {
     public Item add(Item item) {
         final String sql = """
                 INSERT INTO item (item_name, item_description, nutrition_facts,
-                                  picture_path, category, current_count, price_per_unit)
-                VALUES (?, ?, ?, ?, ?, ?, ?);
+                                  picture_path, category, current_count, item_limit, price_per_unit)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?);
                 """;
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -74,7 +76,8 @@ public class ItemJdbcTemplateRepository implements ItemRepository {
             ps.setString(4, item.getPicturePath());
             ps.setString(5, item.getCategory());
             ps.setInt(6, item.getCurrentCount());
-            ps.setBigDecimal(7, item.getPricePerUnit());
+            ps.setInt(7, item.getItemLimit());
+            ps.setBigDecimal(8, item.getPricePerUnit());
             return ps;
         }, keyHolder);
 
@@ -91,7 +94,7 @@ public class ItemJdbcTemplateRepository implements ItemRepository {
         final String sql = """
                 UPDATE item
                 SET item_name = ?, item_description = ?, nutrition_facts = ?,
-                    picture_path = ?, category = ?, current_count = ?, price_per_unit = ?
+                    picture_path = ?, category = ?, current_count = ?, item_limit = ?, price_per_unit = ?
                 WHERE item_id = ?;
                 """;
 
@@ -102,6 +105,7 @@ public class ItemJdbcTemplateRepository implements ItemRepository {
                 item.getPicturePath(),
                 item.getCategory(),
                 item.getCurrentCount(),
+                item.getItemLimit(),
                 item.getPricePerUnit(),
                 item.getItemId()) > 0;
     }

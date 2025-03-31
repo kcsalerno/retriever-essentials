@@ -17,7 +17,6 @@ public class InventoryLogMapper implements RowMapper<InventoryLog> {
         log.setQuantityChange(rs.getInt("quantity_change"));
         log.setReason(rs.getString("reason"));
         log.setTimeStamp(rs.getObject("time_stamp", LocalDateTime.class));
-
         return log;
     }
 }

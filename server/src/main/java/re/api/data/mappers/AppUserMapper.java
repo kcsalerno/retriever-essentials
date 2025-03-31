@@ -10,6 +10,7 @@ import java.sql.SQLException;
 public class AppUserMapper implements RowMapper<AppUser> {
     @Override
     public AppUser mapRow(ResultSet rs, int rowNum) throws SQLException {
+        // No empty constructor in AppUser, so we need to use the constructor with parameters
         return new AppUser(
                 rs.getInt("app_user_id"),
                 rs.getString("email"),
