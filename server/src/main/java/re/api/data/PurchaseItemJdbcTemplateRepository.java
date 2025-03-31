@@ -49,7 +49,7 @@ public class PurchaseItemJdbcTemplateRepository implements PurchaseItemRepositor
         final String sql = """
             INSERT INTO purchase_item (purchase_id, item_id, quantity)
             VALUES (?, ?, ?);
-        """;
+            """;
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -86,13 +86,21 @@ public class PurchaseItemJdbcTemplateRepository implements PurchaseItemRepositor
 
     @Override
     public boolean deleteById(int purchaseItemId) {
-        final String sql = "DELETE FROM purchase_item WHERE purchase_item_id = ?;";
+        final String sql = """
+                DELETE FROM purchase_item
+                WHERE purchase_item_id = ?;
+                """;
+
         return jdbcTemplate.update(sql, purchaseItemId) > 0;
     }
 
     @Override
     public boolean deleteByPurchaseOrderId(int purchaseOrderId) {
-        final String sql = "DELETE FROM purchase_item WHERE purchase_id = ?;";
+        final String sql = """
+                DELETE FROM purchase_item
+                WHERE purchase_id = ?;
+                """;
+
         return jdbcTemplate.update(sql, purchaseOrderId) > 0;
     }
 }

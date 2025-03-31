@@ -27,6 +27,7 @@ public class ItemJdbcTemplateRepository implements ItemRepository {
                        picture_path, category, current_count, item_limit, price_per_unit, enabled
                 FROM item;
                 """;
+
         return jdbcTemplate.query(sql, new ItemMapper());
     }
 
@@ -38,6 +39,7 @@ public class ItemJdbcTemplateRepository implements ItemRepository {
                 FROM item
                 WHERE item_id = ?;
                 """;
+
         return jdbcTemplate.query(sql, new ItemMapper(), itemId)
                 .stream()
                 .findFirst()
@@ -52,6 +54,7 @@ public class ItemJdbcTemplateRepository implements ItemRepository {
                 FROM item
                 WHERE item_name = ?;
                 """;
+
         return jdbcTemplate.query(sql, new ItemMapper(), itemName)
                 .stream()
                 .findFirst()
@@ -94,7 +97,8 @@ public class ItemJdbcTemplateRepository implements ItemRepository {
         final String sql = """
                 UPDATE item
                 SET item_name = ?, item_description = ?, nutrition_facts = ?,
-                    picture_path = ?, category = ?, current_count = ?, item_limit = ?, price_per_unit = ?
+                    picture_path = ?, category = ?, current_count = ?,
+                    item_limit = ?, price_per_unit = ?, enabled = ?
                 WHERE item_id = ?;
                 """;
 
@@ -107,12 +111,17 @@ public class ItemJdbcTemplateRepository implements ItemRepository {
                 item.getCurrentCount(),
                 item.getItemLimit(),
                 item.getPricePerUnit(),
+                item.isEnabled(),
                 item.getItemId()) > 0;
     }
 
     @Override
     public boolean deleteById(int itemId) {
-        final String sql = "DELETE FROM item WHERE item_id = ?;";
+        final String sql = """
+                DELETE FROM item
+                WHERE item_id = ?;
+                """;
+
         return jdbcTemplate.update(sql, itemId) > 0;
     }
 }

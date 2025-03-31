@@ -6,9 +6,9 @@ import java.util.List;
 public interface InventoryLogRepository {
     List<InventoryLog> findAll();
 
-    List<InventoryLog> findByItemName(String itemName);
+    List<InventoryLog> findByItemId(int itemId);
 
-    List<InventoryLog> findByAuthorityEmail(String authorityEmail);
+    List<InventoryLog> findByAuthorityId(int authorityId);
 
     InventoryLog findById(int logId);
 

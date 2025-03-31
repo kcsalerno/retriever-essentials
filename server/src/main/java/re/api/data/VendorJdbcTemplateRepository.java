@@ -22,19 +22,21 @@ public class VendorJdbcTemplateRepository implements VendorRepository{
     @Override
     public List<Vendor> findAll() {
        final String sql = """
-                    SELECT vendor_id, vendor_name, phone_number, contact_email, enabled
-                    FROM vendor;
-                    """;
+                SELECT vendor_id, vendor_name, phone_number, contact_email, enabled
+                FROM vendor;
+                """;
+
        return jdbcTemplate.query(sql, new VendorMapper());
     }
 
     @Override
     public Vendor findById(int vendorId) {
         final String sql = """
-                    SELECT vendor_id, vendor_name, phone_number, contact_email, enabled
-                    FROM vendor
-                    WHERE vendor_id = ?;
-                    """;
+                SELECT vendor_id, vendor_name, phone_number, contact_email, enabled
+                FROM vendor
+                WHERE vendor_id = ?;
+                """;
+
         return jdbcTemplate.query(sql, new VendorMapper(), vendorId)
                 .stream()
                 .findFirst()
@@ -44,10 +46,11 @@ public class VendorJdbcTemplateRepository implements VendorRepository{
     @Override
     public Vendor findByName(String vendorName) {
         final String sql = """
-                    SELECT vendor_id, vendor_name, phone_number, contact_email, enabled
-                    FROM vendor
-                    WHERE vendor_name = ?;
-                    """;
+                SELECT vendor_id, vendor_name, phone_number, contact_email, enabled
+                FROM vendor
+                WHERE vendor_name = ?;
+                """;
+
         return jdbcTemplate.query(sql, new VendorMapper(), vendorName)
                 .stream()
                 .findFirst()
@@ -83,7 +86,7 @@ public class VendorJdbcTemplateRepository implements VendorRepository{
     public boolean update(Vendor vendor) {
         final String sql = """
                 UPDATE vendor
-                SET vendor_name = ?, phone_number = ?, contact_email = ?
+                SET vendor_name = ?, phone_number = ?, contact_email = ?, enabled = ?
                 WHERE vendor_id = ?;
                 """;
 
@@ -91,12 +94,17 @@ public class VendorJdbcTemplateRepository implements VendorRepository{
                 vendor.getVendorName(),
                 vendor.getPhoneNumber(),
                 vendor.getContactEmail(),
+                vendor.isEnabled(),
                 vendor.getVendorId()) > 0;
     }
 
     @Override
     public boolean deleteById(int vendorId) {
-       final String sql = "DELETE FROM vendor WHERE vendor_id = ?;";
+       final String sql = """
+               DELETE FROM vendor
+               WHERE vendor_id = ?;
+               """;
+
        return jdbcTemplate.update(sql, vendorId) > 0;
     }
 }

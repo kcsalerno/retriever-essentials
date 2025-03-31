@@ -21,13 +21,21 @@ public class PurchaseOrderJdbcTemplateRepository implements PurchaseOrderReposit
 
     @Override
     public List<PurchaseOrder> findAll() {
-        final String sql = "SELECT purchase_id, admin_id, vendor_id, purchase_date FROM purchase_order;";
+        final String sql = """
+                SELECT purchase_id, admin_id, vendor_id, purchase_date
+                FROM purchase_order;
+                """;
+
         return jdbcTemplate.query(sql, new PurchaseOrderMapper());
     }
 
     @Override
     public PurchaseOrder findById(int purchaseId) {
-        final String sql = "SELECT purchase_id, admin_id, vendor_id, purchase_date FROM purchase_order WHERE purchase_id = ?;";
+        final String sql = """
+                SELECT purchase_id, admin_id, vendor_id, purchase_date FROM purchase_order
+                WHERE purchase_id = ?;
+                """;
+
         return jdbcTemplate.query(sql, new PurchaseOrderMapper(), purchaseId).stream()
                 .findFirst().orElse(null);
     }
@@ -37,7 +45,7 @@ public class PurchaseOrderJdbcTemplateRepository implements PurchaseOrderReposit
         final String sql = """
             INSERT INTO purchase_order (admin_id, vendor_id, purchase_date)
             VALUES (?, ?, ?);
-        """;
+            """;
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -59,7 +67,12 @@ public class PurchaseOrderJdbcTemplateRepository implements PurchaseOrderReposit
 
     @Override
     public boolean update(PurchaseOrder purchaseOrder) {
-        final String sql = "UPDATE purchase_order SET admin_id = ?, vendor_id = ?, purchase_date = ? WHERE purchase_id = ?;";
+        final String sql = """
+                UPDATE purchase_order
+                SET admin_id = ?, vendor_id = ?, purchase_date = ?
+                WHERE purchase_id = ?;
+                """;
+
         return jdbcTemplate.update(sql,
                 purchaseOrder.getAdmin().getAppUserId(),
                 purchaseOrder.getVendor().getVendorId(),
@@ -69,7 +82,11 @@ public class PurchaseOrderJdbcTemplateRepository implements PurchaseOrderReposit
 
     @Override
     public boolean deleteById(int purchaseId) {
-        final String sql = "DELETE FROM purchase_order WHERE purchase_id = ?;";
+        final String sql = """
+                DELETE FROM purchase_order
+                WHERE purchase_id = ?;
+                """;
+
         return jdbcTemplate.update(sql, purchaseId) > 0;
     }
 }

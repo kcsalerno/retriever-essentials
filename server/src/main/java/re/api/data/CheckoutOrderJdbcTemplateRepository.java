@@ -22,36 +22,47 @@ public class CheckoutOrderJdbcTemplateRepository implements CheckoutOrderReposit
 
     @Override
     public List<CheckoutOrder> findAll() {
-        final String sql = "SELECT checkout_id, student_id, authority_id, self_checkout, checkout_date FROM checkout_order;";
+        final String sql = """
+                 SELECT checkout_id, student_id, authority_id, self_checkout, checkout_date
+                 FROM checkout_order;
+                 """;
+
         return jdbcTemplate.query(sql, new CheckoutOrderMapper());
     }
 
     @Override
     public CheckoutOrder findById(int checkoutId) {
-        final String sql = "SELECT checkout_id, student_id, authority_id, self_checkout, checkout_date FROM checkout_order WHERE checkout_id = ?;";
+        final String sql = """
+                SELECT checkout_id, student_id, authority_id, self_checkout, checkout_date
+                FROM checkout_order
+                WHERE checkout_id = ?;
+                """;
+
         return jdbcTemplate.query(sql, new CheckoutOrderMapper(), checkoutId).stream()
                 .findFirst().orElse(null);
     }
 
     @Override
     public List<Map<String, Object>> findTopBusiestHours() {
-        String sql = """
-            SELECT
-                DAYNAME(checkout_date) AS day,
-                HOUR(checkout_date) AS hour,
-                COUNT(*) AS total_checkouts
-            FROM checkout_order
-            GROUP BY day, hour
-            ORDER BY total_checkouts DESC
-            LIMIT 5;
-        """;
+        final String sql = """
+                SELECT
+                    DAYNAME(checkout_date) AS day,
+                    HOUR(checkout_date) AS hour,
+                    COUNT(*) AS total_checkouts
+                FROM checkout_order
+                GROUP BY day, hour
+                ORDER BY FIELD(day, 'Sunday', 'Monday', 'Tuesday', 'Wednesday','Thursday', 'Friday', 'Saturday'), hour;
+                """;
 
         return jdbcTemplate.queryForList(sql);
     }
 
     @Override
     public CheckoutOrder add(CheckoutOrder checkoutOrder) {
-        final String sql = "INSERT INTO checkout_order (student_id, authority_id, self_checkout, checkout_date) VALUES (?, ?, ?, ?);";
+        final String sql = """
+                INSERT INTO checkout_order (student_id, authority_id, self_checkout, checkout_date)
+                VALUES (?, ?, ?, ?);
+                """;
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -74,7 +85,12 @@ public class CheckoutOrderJdbcTemplateRepository implements CheckoutOrderReposit
 
     @Override
     public boolean update(CheckoutOrder checkoutOrder) {
-        final String sql = "UPDATE checkout_order SET student_id = ?, authority_id = ?, self_checkout = ?, checkout_date = ? WHERE checkout_id = ?;";
+        final String sql = """
+                UPDATE checkout_order
+                SET student_id = ?, authority_id = ?, self_checkout = ?, checkout_date = ?
+                WHERE checkout_id = ?;
+                """;
+
         return jdbcTemplate.update(sql,
                 checkoutOrder.getStudentId(),
                 checkoutOrder.getAuthority().getAppUserId(),
@@ -85,7 +101,11 @@ public class CheckoutOrderJdbcTemplateRepository implements CheckoutOrderReposit
 
     @Override
     public boolean deleteById(int checkoutId) {
-        final String sql = "DELETE FROM checkout_order WHERE checkout_id = ?;";
+        final String sql = """
+                DELETE FROM checkout_order
+                WHERE checkout_id = ?;
+                """;
+
         return jdbcTemplate.update(sql, checkoutId) > 0;
     }
 }
