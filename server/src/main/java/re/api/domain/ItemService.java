@@ -1,6 +1,7 @@
 package re.api.domain;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import re.api.data.ItemRepository;
 import re.api.models.Item;
 
@@ -27,6 +28,7 @@ public class ItemService {
         return repository.findByName(name);
     }
 
+    @Transactional
     public Result<Item> add(Item item) {
         Result<Item> result = validate(item);
 
@@ -44,6 +46,7 @@ public class ItemService {
         return result;
     }
 
+    @Transactional
     public Result<Item> update(Item item) {
         Result<Item> result = validate(item);
 
@@ -64,6 +67,7 @@ public class ItemService {
         return result;
     }
 
+    @Transactional
     public Result<Item> deleteById(int itemId) {
         Result<Item> result = new Result<>();
 
@@ -81,31 +85,25 @@ public class ItemService {
             result.addMessage(ResultType.INVALID, "Item cannot be null.");
             return result;
         }
-
         if (Validations.isNullOrBlank(item.getItemName())) {
             result.addMessage(ResultType.INVALID, "Item name is required");
         } else if (item.getItemName().length() > 20) {
             result.addMessage(ResultType.INVALID, "Item name must be 20 characters or fewer");
         }
-
         if (!Validations.isNullOrBlank(item.getPicturePath()) && !Validations.isValidUrl(item.getPicturePath())) {
             result.addMessage(ResultType.INVALID, "Picture path must be a valid URL");
         }
-
         if (Validations.isNullOrBlank(item.getCategory())) {
             result.addMessage(ResultType.INVALID, "Category is required");
         } else if (item.getCategory().length() > 20) {
             result.addMessage(ResultType.INVALID, "Category must be 20 characters or fewer");
         }
-
         if (item.getCurrentCount() < 0) {
             result.addMessage(ResultType.INVALID, "Current count cannot be negative");
         }
-
         if (item.getItemLimit() < 1) {
             result.addMessage(ResultType.INVALID, "Item limit must be greater than or equal to 1");
         }
-
         if (item.getPricePerUnit() != null && (item.getPricePerUnit().compareTo(BigDecimal.ZERO) < 0)) {
             result.addMessage(ResultType.INVALID, "Price per unit cannot be negative");
         }
@@ -116,7 +114,7 @@ public class ItemService {
         List<Item> items = repository.findAll();
         for (Item existingItem : items) {
             if (existingItem.equals(item)) {
-                result.addMessage(ResultType.DUPLICATE, "Duplicate item names are not allowed.");
+                result.addMessage(ResultType.DUPLICATE, "Duplicate items are not allowed.");
                 return result;
             }
         }

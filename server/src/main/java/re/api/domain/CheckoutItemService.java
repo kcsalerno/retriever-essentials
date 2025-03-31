@@ -21,11 +21,10 @@ public class CheckoutItemService {
         return repository.findById(checkoutItemId);
     }
 
+    // Not used here, used by CheckoutOrderService to enrich CheckoutOrder with CheckoutItems
 //    public List<CheckoutItem> findByCheckoutOrderId(int checkoutOrderId) {
 //        return repository.findByCheckoutOrderId(checkoutOrderId);
 //    }
-
-    // Add handled by CheckoutOrderService
 
     public List<Map<String, Object>> findPopularItems() {
         return repository.findPopularItems();
@@ -35,6 +34,9 @@ public class CheckoutItemService {
         return repository.findPopularCategories();
     }
 
+    // Add handled by CheckoutOrderService
+
+    @Transactional
     public Result<CheckoutItem> update(CheckoutItem checkoutItem) {
         Result<CheckoutItem> result = validate(checkoutItem);
 
@@ -56,6 +58,7 @@ public class CheckoutItemService {
         return result;
     }
 
+    @Transactional
     public Result<CheckoutItem> deleteById(int checkoutItemId) {
         Result<CheckoutItem> result = new Result<>();
 
@@ -74,6 +77,7 @@ public class CheckoutItemService {
             return result;
         }
 
+        // Add checks for whether the checkour order and item exist
         if (checkoutItem.getCheckoutOrderId() <= 0) {
             result.addMessage(ResultType.INVALID, "Checkout order ID is required.");
         }
@@ -85,6 +89,8 @@ public class CheckoutItemService {
         if (checkoutItem.getQuantity() <= 0) {
             result.addMessage(ResultType.INVALID, "Quantity must be greater than 0.");
         }
+
+        // Add check for duplicate
 
         return result;
     }

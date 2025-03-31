@@ -178,7 +178,6 @@ public class InventoryLogService {
             result.addMessage(ResultType.INVALID, "Inventory log cannot be null.");
             return result;
         }
-
         if (inventoryLog.getAuthorityId() <= 0) {
             result.addMessage(ResultType.INVALID, "Invalid authority ID.");
         } else {
@@ -187,26 +186,24 @@ public class InventoryLogService {
                 result.addMessage(ResultType.NOT_FOUND, "Authority ID does not exist or is disabled.");
             }
         }
-
         if (inventoryLog.getItemId() <= 0) {
             result.addMessage(ResultType.INVALID, "Valid item ID is required.");
         } else if (itemRepository.findById(inventoryLog.getItemId()) == null) {
             result.addMessage(ResultType.NOT_FOUND, "Item ID does not exist.");
         }
-
         if (inventoryLog.getQuantityChange() == 0) {
             result.addMessage(ResultType.INVALID, "Quantity change cannot be zero.");
         }
-
         if (Validations.isNullOrBlank(inventoryLog.getReason())) {
             result.addMessage(ResultType.INVALID, "Reason for inventory change is required.");
         } else if (inventoryLog.getReason().length() > MAX_REASON_LENGTH) {
             result.addMessage(ResultType.INVALID, "Reason must not exceed " + MAX_REASON_LENGTH + " characters.");
         }
-
         if (inventoryLog.getTimeStamp() == null) {
             result.addMessage(ResultType.INVALID, "Log date is required.");
         }
+
+        // Add check for dupliacte log entries
 
         return result;
     }

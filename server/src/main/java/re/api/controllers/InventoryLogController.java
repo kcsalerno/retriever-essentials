@@ -23,6 +23,16 @@ public class InventoryLogController {
         return service.findAll();
     }
 
+    @GetMapping("/item-id/{itemId}")
+    public List<InventoryLog> findByItemId(@PathVariable int itemId) {
+        return service.findByItemId(itemId);
+    }
+
+    @GetMapping("/authority-id/{authorityId}")
+    public List<InventoryLog> findByAuthorityId(@PathVariable int authorityId) {
+        return service.findByAuthorityId(authorityId);
+    }
+
     @GetMapping("/item/{itemName}")
     public List<InventoryLog> findByItemName(@PathVariable String itemName) {
         return service.findByItemName(itemName);

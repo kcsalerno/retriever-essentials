@@ -153,6 +153,8 @@ public class CheckoutOrderService {
             result.addMessage(ResultType.INVALID, "Checkout date is required.");
         }
 
+        // Is this enough validation for Checkout Item since that validation is not being done in Checkout Item Service?
+        // Or is there a way to do validation there, and then just call that method here?
         if (checkoutOrder.getCheckoutItems() != null) {
             Set<Integer> foundItemIds = new HashSet<>();
 
