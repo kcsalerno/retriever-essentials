@@ -1,6 +1,7 @@
 package re.api.domain;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import re.api.data.PurchaseItemRepository;
 import re.api.models.PurchaseItem;
 
@@ -25,6 +26,7 @@ public class PurchaseItemService {
 
     // Add handled by PurchaseOrderService
 
+    @Transactional
     public Result<PurchaseItem> update(PurchaseItem purchaseItem) {
         Result<PurchaseItem> result = validate(purchaseItem);
 
@@ -46,6 +48,7 @@ public class PurchaseItemService {
         return result;
     }
 
+    @Transactional
     public Result<PurchaseItem> deleteById(int purchaseItemId) {
         Result<PurchaseItem> result = new Result<>();
 

@@ -94,11 +94,11 @@ public class VendorService {
 
         List<Vendor> vendors = vendorRepository.findAll();
         for (Vendor existingVendor : vendors) {
-//            if (existingVendor.getVendorName().equalsIgnoreCase(vendor.getVendorName())) {
-//                result.addMessage(ResultType.INVALID, "Vendor name already exists");
-//            }
             if (existingVendor.equals(vendor)) {
                 result.addMessage(ResultType.INVALID, "Duplicate vendors are not allowed");
+            }
+            if (existingVendor.getVendorName().equalsIgnoreCase(vendor.getVendorName())) {
+                result.addMessage(ResultType.INVALID, "Vendor name already exists");
             }
         }
 

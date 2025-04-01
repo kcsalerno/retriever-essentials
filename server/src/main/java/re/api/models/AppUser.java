@@ -32,15 +32,13 @@ public class AppUser implements UserDetails {
         return passwordHash;
     }
 
-    // Could add methods to set password, username, or roles if needed later.
+    public void setPassword(String password) {
+        this.passwordHash = password;
+    }
 
     @Override
     public String getUsername() {
         return email;
-    }
-
-    public void setPassword(String password) {
-        this.passwordHash = password;
     }
 
     @Override

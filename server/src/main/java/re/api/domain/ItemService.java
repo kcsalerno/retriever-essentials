@@ -111,8 +111,8 @@ public class ItemService {
             result.addMessage(ResultType.INVALID, "Price per unit cannot have more than 2 decimal places");
         }
 
-        List<Item> items = repository.findAll();
-        for (Item existingItem : items) {
+        List<Item> existingItems = repository.findAll();
+        for (Item existingItem : existingItems) {
             if (existingItem.equals(item)) {
                 result.addMessage(ResultType.DUPLICATE, "Duplicate items are not allowed.");
                 return result;

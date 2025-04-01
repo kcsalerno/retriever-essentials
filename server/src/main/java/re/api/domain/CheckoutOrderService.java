@@ -78,6 +78,7 @@ public class CheckoutOrderService {
             return result;
         }
 
+        // Do we need to validate for checkout items before reaching here?
         if (checkoutOrder.getCheckoutItems() != null) {
             for (CheckoutItem item : checkoutOrder.getCheckoutItems()) {
                 item.setCheckoutOrderId(addedOrder.getCheckoutOrderId());
@@ -91,6 +92,8 @@ public class CheckoutOrderService {
 
     @Transactional
     public Result<CheckoutOrder> update(CheckoutOrder checkoutOrder) {
+        // What needs to be validated here? What is being updated? On the front end, what will trigger updates and to what
+        // endpoints?
         Result<CheckoutOrder> result = validate(checkoutOrder);
 
         if (!result.isSuccess()) {

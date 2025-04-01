@@ -73,6 +73,7 @@ public class PurchaseOrderService {
         return result;
     }
 
+    @Transactional
     public Result<PurchaseOrder> update(PurchaseOrder purchaseOrder) {
         Result<PurchaseOrder> result = validate(purchaseOrder);
 

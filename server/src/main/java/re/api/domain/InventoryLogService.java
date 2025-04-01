@@ -204,6 +204,13 @@ public class InventoryLogService {
         }
 
         // Add check for dupliacte log entries
+        List<InventoryLog> existingLogs = logRepository.findAll();
+        for (InventoryLog existingLog : existingLogs) {
+            if (existingLog.equals(inventoryLog)) {
+                result.addMessage(ResultType.INVALID, "Duplicate log entry detected.");
+                break;
+            }
+        }
 
         return result;
     }
