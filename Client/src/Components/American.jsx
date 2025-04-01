@@ -1,20 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import ProductGrid from './Grid';
 import Pagination from './Pages';
 import './Grid.css';
 
-
-const products = [
-  { id: 25, name: "Mac & Cheese", image: "/images/mac.png", quantity: 10 },
-  { id: 26, name: "Burgers", image: "/images/bur.png", quantity: 5 },
-  { id: 27, name: "Hot Dogs", image: "/images/hot.png", quantity: 8 }
-];
-
 function American({ addToCart }) {
+  const [products, setProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 3; 
+  const productsPerPage = 3;
 
-  // Paginate the products
+  useEffect(() => {
+    axios.get('http://localhost:8080/api/item/category/American')  // Adjust the API endpoint
+      .then((response) => {
+        setProducts(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching American products:', error);
+      });
+  }, []);
+
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
   const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
@@ -23,15 +27,12 @@ function American({ addToCart }) {
 
   return (
     <div>
-      <ProductGrid products={currentProducts}  addToCart={addToCart} /> 
-      <Pagination 
-        currentPage={currentPage} 
-        totalPages={totalPages} 
-        onPageChange={setCurrentPage} 
-      />
+      <ProductGrid products={currentProducts} addToCart={addToCart} />
+      <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
     </div>
   );
 }
 
 export default American;
+
 
