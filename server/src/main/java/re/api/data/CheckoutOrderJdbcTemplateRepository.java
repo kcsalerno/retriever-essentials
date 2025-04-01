@@ -69,7 +69,7 @@ public class CheckoutOrderJdbcTemplateRepository implements CheckoutOrderReposit
         int rowsAffected = jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, checkoutOrder.getStudentId());
-            ps.setInt(2, checkoutOrder.getAuthority().getAppUserId());
+            ps.setInt(2, checkoutOrder.getAuthorityId());
             ps.setBoolean(3, checkoutOrder.isSelfCheckout());
             ps.setTimestamp(4, java.sql.Timestamp.valueOf(checkoutOrder.getCheckoutDate()));
             return ps;
@@ -93,7 +93,7 @@ public class CheckoutOrderJdbcTemplateRepository implements CheckoutOrderReposit
 
         return jdbcTemplate.update(sql,
                 checkoutOrder.getStudentId(),
-                checkoutOrder.getAuthority().getAppUserId(),
+                checkoutOrder.getAuthorityId(),
                 checkoutOrder.isSelfCheckout(),
                 checkoutOrder.getCheckoutDate(),
                 checkoutOrder.getCheckoutOrderId()) > 0;

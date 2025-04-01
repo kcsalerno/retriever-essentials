@@ -58,12 +58,23 @@ public class VendorService {
         return result;
     }
 
+//    @Transactional
+//    public Result<Vendor> deleteById(int vendorId) {
+//        Result<Vendor> result = new Result<>();
+//
+//        if (!vendorRepository.deleteById(vendorId)) {
+//            result.addMessage(ResultType.INVALID, "Vendor ID not found..");
+//        }
+//
+//        return result;
+//    }
+
     @Transactional
-    public Result<Vendor> deleteById(int vendorId) {
+    public Result<Vendor> disableById(int vendorId) {
         Result<Vendor> result = new Result<>();
 
-        if (!vendorRepository.deleteById(vendorId)) {
-            result.addMessage(ResultType.INVALID, "Vendor ID not found..");
+        if (!vendorRepository.disableById(vendorId)) {
+            result.addMessage(ResultType.INVALID, "Vendor ID not found.");
         }
 
         return result;
@@ -76,11 +87,13 @@ public class VendorService {
             result.addMessage(ResultType.INVALID, "Vendor cannot be null");
             return result;
         }
+
         if (Validations.isNullOrBlank(vendor.getVendorName())) {
             result.addMessage(ResultType.INVALID, "Vendor name is required");
         } else if (vendor.getVendorName().length() > 255) {
             result.addMessage(ResultType.INVALID, "Vendor name is too long");
         }
+
         if (Validations.isNullOrBlank(vendor.getContactEmail())) {
             result.addMessage(ResultType.INVALID, "Vendor contact email is required");
         } else if (vendor.getContactEmail().length() > 255) {
@@ -88,16 +101,20 @@ public class VendorService {
         } else if (!Validations.isValidEmail(vendor.getContactEmail())) {
             result.addMessage(ResultType.INVALID, "Vendor contact email is not valid");
         }
-        if (vendor.getPhoneNumber().length() > 20) {
+
+        // Null safety check
+        if (!Validations.isNullOrBlank(vendor.getPhoneNumber()) && vendor.getPhoneNumber().length() > 20) {
             result.addMessage(ResultType.INVALID, "Phone number must be 20 characters or fewer");
         }
 
         List<Vendor> vendors = vendorRepository.findAll();
         for (Vendor existingVendor : vendors) {
-            if (existingVendor.equals(vendor)) {
+            if (existingVendor.equals(vendor)
+                    && existingVendor.getVendorId() != vendor.getVendorId()) {
                 result.addMessage(ResultType.INVALID, "Duplicate vendors are not allowed");
             }
-            if (existingVendor.getVendorName().equalsIgnoreCase(vendor.getVendorName())) {
+            if (existingVendor.getVendorName().equalsIgnoreCase(vendor.getVendorName())
+                    && existingVendor.getVendorId() != vendor.getVendorId()) {
                 result.addMessage(ResultType.INVALID, "Vendor name already exists");
             }
         }

@@ -74,8 +74,8 @@ public class PurchaseOrderJdbcTemplateRepository implements PurchaseOrderReposit
                 """;
 
         return jdbcTemplate.update(sql,
-                purchaseOrder.getAdmin().getAppUserId(),
-                purchaseOrder.getVendor().getVendorId(),
+                purchaseOrder.getAdminId(),
+                purchaseOrder.getVendorId(),
                 purchaseOrder.getPurchaseDate(),
                 purchaseOrder.getPurchaseId()) > 0;
     }

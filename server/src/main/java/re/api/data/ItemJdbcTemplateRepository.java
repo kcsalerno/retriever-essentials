@@ -115,10 +115,21 @@ public class ItemJdbcTemplateRepository implements ItemRepository {
                 item.getItemId()) > 0;
     }
 
+//    @Override
+//    public boolean deleteById(int itemId) {
+//        final String sql = """
+//                DELETE FROM item
+//                WHERE item_id = ?;
+//                """;
+//
+//        return jdbcTemplate.update(sql, itemId) > 0;
+//    }
+
     @Override
-    public boolean deleteById(int itemId) {
+    public boolean disableById(int itemId) {
         final String sql = """
-                DELETE FROM item
+                UPDATE item
+                SET enabled = FALSE
                 WHERE item_id = ?;
                 """;
 

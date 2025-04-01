@@ -44,7 +44,7 @@ CREATE TABLE item (
     category VARCHAR(20) NOT NULL,
     current_count INT NOT NULL DEFAULT 0 CHECK (current_count >= 0),
     item_limit INT NOT NULL DEFAULT 1 CHECK (item_limit >= 1),
-    price_per_unit DECIMAL(7,2) NULL,
+    price_per_unit DECIMAL(7,2) NOT NULL CHECK (price_per_unit >= 0),
 	enabled BOOLEAN DEFAULT TRUE
 );
 

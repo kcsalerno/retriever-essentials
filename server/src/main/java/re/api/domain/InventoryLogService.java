@@ -178,35 +178,45 @@ public class InventoryLogService {
             result.addMessage(ResultType.INVALID, "Inventory log cannot be null.");
             return result;
         }
+
+        AppUser authority = null;
         if (inventoryLog.getAuthorityId() <= 0) {
             result.addMessage(ResultType.INVALID, "Invalid authority ID.");
         } else {
-            AppUser authority = appUserRepository.findById(inventoryLog.getAuthorityId());
+            authority = appUserRepository.findById(inventoryLog.getAuthorityId());
             if (authority == null || !authority.isEnabled()) {
                 result.addMessage(ResultType.NOT_FOUND, "Authority ID does not exist or is disabled.");
             }
         }
+
+        Item item = null;
         if (inventoryLog.getItemId() <= 0) {
             result.addMessage(ResultType.INVALID, "Valid item ID is required.");
-        } else if (itemRepository.findById(inventoryLog.getItemId()) == null) {
-            result.addMessage(ResultType.NOT_FOUND, "Item ID does not exist.");
+        } else {
+            item = itemRepository.findById(inventoryLog.getItemId());
+            if (item == null || !item.isEnabled()) {
+                result.addMessage(ResultType.NOT_FOUND, "Item ID does not exist or is disabled.");
+            }
         }
+
         if (inventoryLog.getQuantityChange() == 0) {
             result.addMessage(ResultType.INVALID, "Quantity change cannot be zero.");
         }
+
         if (Validations.isNullOrBlank(inventoryLog.getReason())) {
             result.addMessage(ResultType.INVALID, "Reason for inventory change is required.");
         } else if (inventoryLog.getReason().length() > MAX_REASON_LENGTH) {
             result.addMessage(ResultType.INVALID, "Reason must not exceed " + MAX_REASON_LENGTH + " characters.");
         }
+
         if (inventoryLog.getTimeStamp() == null) {
             result.addMessage(ResultType.INVALID, "Log date is required.");
         }
 
-        // Add check for dupliacte log entries
         List<InventoryLog> existingLogs = logRepository.findAll();
         for (InventoryLog existingLog : existingLogs) {
-            if (existingLog.equals(inventoryLog)) {
+            if (existingLog.equals(inventoryLog)
+                    && existingLog.getLogId() != inventoryLog.getLogId()) {
                 result.addMessage(ResultType.INVALID, "Duplicate log entry detected.");
                 break;
             }
@@ -215,17 +225,38 @@ public class InventoryLogService {
         return result;
     }
 
-    private void enrichLogWithItem (InventoryLog inventoryLog) {
+//    private void enrichLogWithItem (InventoryLog inventoryLog) {
+//        if (inventoryLog.getItemId() > 0
+//                && itemRepository.findById(inventoryLog.getItemId()) != null) {
+//            inventoryLog.setItem(itemRepository.findById(inventoryLog.getItemId()));
+//        }
+//    }
+//
+//    private void enrichLogWithAuthority (InventoryLog inventoryLog) {
+//        if (inventoryLog.getAuthorityId() > 0
+//                && appUserRepository.findById(inventoryLog.getAuthorityId()) != null) {
+//            inventoryLog.setAuthority(appUserRepository.findById(inventoryLog.getAuthorityId()));
+//        }
+//    }
+
+    private void enrichLogWithItem(InventoryLog inventoryLog) {
         if (inventoryLog.getItemId() > 0) {
-            inventoryLog.setItem(itemRepository.findById(inventoryLog.getItemId()));
+            Item item = itemRepository.findById(inventoryLog.getItemId());
+            if (item != null) {
+                inventoryLog.setItem(item);
+            }
         }
     }
 
-    private void enrichLogWithAuthority (InventoryLog inventoryLog) {
+    private void enrichLogWithAuthority(InventoryLog inventoryLog) {
         if (inventoryLog.getAuthorityId() > 0) {
-            inventoryLog.setAuthority(appUserRepository.findById(inventoryLog.getAuthorityId()));
+            AppUser authority = appUserRepository.findById(inventoryLog.getAuthorityId());
+            if (authority != null) {
+                inventoryLog.setAuthority(authority);
+            }
         }
     }
+
 
     private void enrichLogWithItemAndAuthority (InventoryLog inventoryLog) {
         enrichLogWithItem(inventoryLog);

@@ -87,33 +87,33 @@ public class CheckoutItemService {
             return result;
         }
 
-        // Add checks for whether the checkout order and item exist
+        CheckoutOrder checkoutOrder = null;
         if (checkoutItem.getCheckoutOrderId() <= 0) {
             result.addMessage(ResultType.INVALID, "Checkout order ID is required.");
         } else {
-            CheckoutOrder checkoutOrder = checkoutOrderRepository.findById(checkoutItem.getCheckoutOrderId());
+            checkoutOrder = checkoutOrderRepository.findById(checkoutItem.getCheckoutOrderId());
             if (checkoutOrder == null) {
                 result.addMessage(ResultType.NOT_FOUND, "Checkout order not found.");
             }
         }
 
+        Item item = null;
         if (checkoutItem.getItemId() <= 0) {
             result.addMessage(ResultType.INVALID, "Item ID is required.");
         } else {
-            Item item = itemRepository.findById(checkoutItem.getItemId());
-            if (item == null) {
-                result.addMessage(ResultType.NOT_FOUND, "Item not found.");
+            item = itemRepository.findById(checkoutItem.getItemId());
+            if (item == null || !item.isEnabled()) {
+                result.addMessage(ResultType.NOT_FOUND, "Item does not exist or is disabled.");
             }
         }
 
-        // Is this null safe? Does it short circuit on the 'item != null' check?
         if (checkoutItem.getQuantity() <= 0) {
             result.addMessage(ResultType.INVALID, "Quantity must be greater than 0.");
-        } else {
-            Item item = itemRepository.findById(checkoutItem.getItemId());
-            if (item != null && checkoutItem.getQuantity() > item.getCurrentCount()) {
+        } else if (item != null) {
+            if (checkoutItem.getQuantity() > item.getCurrentCount()) {
                 result.addMessage(ResultType.INVALID, "Quantity exceeds available stock.");
-            } else if (checkoutItem.getQuantity() > item.getItemLimit()) {
+            }
+            if (checkoutItem.getQuantity() > item.getItemLimit()) {
                 result.addMessage(ResultType.INVALID, "Quantity exceeds item limit.");
             }
         }
@@ -121,7 +121,8 @@ public class CheckoutItemService {
         // Add check for duplicate (needed for update)
         List<CheckoutItem> existingItems = checkoutItemRepository.findByCheckoutOrderId(checkoutItem.getCheckoutOrderId());
         for (CheckoutItem existingItem : existingItems) {
-            if (existingItem.equals(checkoutItem)) {
+            if (existingItem.equals(checkoutItem)
+                    && existingItem.getCheckoutItemId() != checkoutItem.getCheckoutItemId()) {
                 result.addMessage(ResultType.INVALID, "Duplicate checkout item found.");
                 break;
             }

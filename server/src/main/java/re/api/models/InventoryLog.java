@@ -1,5 +1,7 @@
 package re.api.models;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -12,7 +14,9 @@ public class InventoryLog {
     private LocalDateTime timeStamp;
 
     // Enriched objects (for GET requests)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private AppUser authority;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Item item;
 
     public InventoryLog() {}

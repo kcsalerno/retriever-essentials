@@ -6,10 +6,7 @@ import re.api.data.AppUserRepository;
 import re.api.data.CheckoutOrderRepository;
 import re.api.data.CheckoutItemRepository;
 import re.api.data.ItemRepository;
-import re.api.models.AppUser;
-import re.api.models.CheckoutItem;
-import re.api.models.CheckoutOrder;
-import re.api.models.Item;
+import re.api.models.*;
 
 import java.util.HashSet;
 import java.util.List;
@@ -162,19 +159,17 @@ public class CheckoutOrderService {
             Set<Integer> foundItemIds = new HashSet<>();
 
             for (CheckoutItem checkoutItem : checkoutOrder.getCheckoutItems()) {
-
-                // Check for duplicates using a Set
+                // Check for duplicates using a Set to avoid O(n^2) complexity
                 if (!foundItemIds.add(checkoutItem.getItemId())) {
                     result.addMessage(ResultType.INVALID,
                             "Duplicate item in checkout order: Item ID " + checkoutItem.getItemId());
-                    continue; // Skip additional validation for duplicates
+                    continue;
                 }
 
                 Item item = itemRepository.findById(checkoutItem.getItemId());
-
-                if (item == null) {
+                if (item == null || !item.isEnabled()) {
                     result.addMessage(ResultType.INVALID,
-                            "Item ID " + checkoutItem.getItemId() + " not found.");
+                            "Item ID " + checkoutItem.getItemId() + " not found or is disabled.");
                     continue;
                 }
 
@@ -213,9 +208,11 @@ public class CheckoutOrderService {
     }
 
     private void enrichOrderWithAuthority(CheckoutOrder checkoutOrder) {
-        // Fetch authority associated with the order
         if (checkoutOrder.getAuthorityId() > 0) {
-            checkoutOrder.setAuthority(appUserRepository.findById(checkoutOrder.getAuthorityId()));
+            AppUser authority = appUserRepository.findById(checkoutOrder.getAuthorityId());
+            if (authority != null) {
+                checkoutOrder.setAuthority(authority);
+            }
         }
     }
 

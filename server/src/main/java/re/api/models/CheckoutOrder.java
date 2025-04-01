@@ -1,5 +1,7 @@
 package re.api.models;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -12,7 +14,9 @@ public class CheckoutOrder {
     private LocalDateTime checkoutDate;
 
     // Enriched objects
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private AppUser authority;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<CheckoutItem> checkoutItemList;
 
     public CheckoutOrder() {}
