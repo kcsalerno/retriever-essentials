@@ -1,20 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import ProductGrid from './Grid';
 import Pagination from './Pages';
 import './Grid.css';
 
-
-const products = [
-  { id: 7, name: "Basmati Rice", image: "/images/bas.png", quantity: 15 },
-  { id: 8, name: "Lentils", image: "/images/len.png", quantity: 10 },
-  { id: 9, name: "Curry Powder", image: "/images/curry.png", quantity: 8 }
-];
-
 function Indian({ addToCart }) {
+  const [products, setProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 3;
 
-  
+  useEffect(() => {
+    axios.get('http://localhost:8080/api/item/category/Indian')  // Adjust the API endpoint
+      .then((response) => {
+        setProducts(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching Indian products:', error);
+      });
+  }, []);
+
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
   const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
@@ -23,12 +27,8 @@ function Indian({ addToCart }) {
 
   return (
     <div>
-      <ProductGrid products={currentProducts}  addToCart={addToCart}/> 
-      <Pagination 
-        currentPage={currentPage} 
-        totalPages={totalPages} 
-        onPageChange={setCurrentPage} 
-      />
+      <ProductGrid products={currentProducts} addToCart={addToCart} />
+      <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
     </div>
   );
 }
