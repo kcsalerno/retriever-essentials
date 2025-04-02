@@ -75,11 +75,10 @@ public class CheckoutOrderService {
             return result;
         }
 
-        // Do we need to validate for checkout items before reaching here?
         if (checkoutOrder.getCheckoutItems() != null) {
-            for (CheckoutItem item : checkoutOrder.getCheckoutItems()) {
-                item.setCheckoutOrderId(addedOrder.getCheckoutOrderId());
-                checkoutItemRepository.add(item);
+            for (CheckoutItem checkoutItem : checkoutOrder.getCheckoutItems()) {
+                checkoutItem.setCheckoutOrderId(addedOrder.getCheckoutOrderId());
+                checkoutItemRepository.add(checkoutItem);
             }
         }
 
@@ -89,8 +88,6 @@ public class CheckoutOrderService {
 
     @Transactional
     public Result<CheckoutOrder> update(CheckoutOrder checkoutOrder) {
-        // What needs to be validated here? What is being updated? On the front end, what will trigger updates and to what
-        // endpoints?
         Result<CheckoutOrder> result = validate(checkoutOrder);
 
         if (!result.isSuccess()) {
@@ -140,53 +137,76 @@ public class CheckoutOrderService {
             result.addMessage(ResultType.INVALID, "Student ID cannot exceed 10 characters.");
         }
 
-        if (checkoutOrder.getAuthorityId() <= 0) {
-            result.addMessage(ResultType.INVALID, "Invalid authority ID.");
-        } else {
-            AppUser authority = appUserRepository.findById(checkoutOrder.getAuthorityId());
-            if (authority == null || !authority.isEnabled()) {
-                result.addMessage(ResultType.NOT_FOUND, "Authority ID does not exist or is disabled.");
-            }
-        }
+        validateAuthority(result, checkoutOrder.getAuthorityId());
 
         if (checkoutOrder.getCheckoutDate() == null) {
             result.addMessage(ResultType.INVALID, "Checkout date is required.");
         }
 
-        // Is this enough validation for Checkout Item since that validation is not being done in Checkout Item Service?
-        // Or is there a way to do validation there, and then just call that method here?
-        if (checkoutOrder.getCheckoutItems() != null) {
-            Set<Integer> foundItemIds = new HashSet<>();
+        // Validate checkout items if present
+        if (checkoutOrder.getCheckoutItems() != null && !checkoutOrder.getCheckoutItems().isEmpty()) {
+            Set<Integer> itemIds = new HashSet<>();
 
             for (CheckoutItem checkoutItem : checkoutOrder.getCheckoutItems()) {
-                // Check for duplicates using a Set to avoid O(n^2) complexity
-                if (!foundItemIds.add(checkoutItem.getItemId())) {
+                // Check for duplicates
+                if (!itemIds.add(checkoutItem.getItemId())) {
                     result.addMessage(ResultType.INVALID,
                             "Duplicate item in checkout order: Item ID " + checkoutItem.getItemId());
                     continue;
                 }
 
-                Item item = itemRepository.findById(checkoutItem.getItemId());
-                if (item == null || !item.isEnabled()) {
-                    result.addMessage(ResultType.INVALID,
-                            "Item ID " + checkoutItem.getItemId() + " not found or is disabled.");
-                    continue;
-                }
-
-                if (checkoutItem.getQuantity() <= 0) {
-                    result.addMessage(ResultType.INVALID,
-                            "Quantity for item " + item.getItemName() + " must be greater than 0.");
-                }
-
-                if ((item.getItemLimit() > 0) && (checkoutItem.getQuantity() > item.getItemLimit())) {
-                    result.addMessage(ResultType.INVALID,
-                            String.format("Quantity for item %s exceeds limit (%d).",
-                                    item.getItemName(), item.getItemLimit()));
-                }
+                validateCheckoutItem(result, checkoutItem);
             }
         }
 
         return result;
+    }
+
+    private void validateCheckoutItem(Result<?> result, CheckoutItem checkoutItem) {
+        if (checkoutItem == null) {
+            result.addMessage(ResultType.INVALID, "Checkout item cannot be null.");
+            return;
+        }
+
+        if (checkoutItem.getItemId() <= 0) {
+            result.addMessage(ResultType.INVALID, "Item ID is required.");
+            return;
+        }
+
+        Item item = itemRepository.findById(checkoutItem.getItemId());
+        if (item == null || !item.isEnabled()) {
+            result.addMessage(ResultType.NOT_FOUND, "Item does not exist or is disabled.");
+            return;
+        }
+
+        if (checkoutItem.getQuantity() <= 0) {
+            result.addMessage(ResultType.INVALID,
+                    "Quantity for item " + item.getItemName() + " must be greater than 0.");
+        } else {
+            if (checkoutItem.getQuantity() > item.getCurrentCount()) {
+                result.addMessage(ResultType.INVALID,
+                        String.format("Quantity for item %s exceeds available stock (%d).",
+                                item.getItemName(), item.getCurrentCount()));
+            }
+
+            if (checkoutItem.getQuantity() > item.getItemLimit()) {
+                result.addMessage(ResultType.INVALID,
+                        String.format("Quantity for item %s exceeds limit (%d).",
+                                item.getItemName(), item.getItemLimit()));
+            }
+        }
+    }
+
+    private void validateAuthority(Result<?> result, int authorityId) {
+        if (authorityId <= 0) {
+            result.addMessage(ResultType.INVALID, "Authority ID is required.");
+            return;
+        }
+
+        AppUser authority = appUserRepository.findById(authorityId);
+        if (authority == null || !authority.isEnabled()) {
+            result.addMessage(ResultType.NOT_FOUND, "Authority does not exist or is disabled.");
+        }
     }
 
     private void enrichOrderWithItems(CheckoutOrder checkoutOrder) {

@@ -225,20 +225,6 @@ public class InventoryLogService {
         return result;
     }
 
-//    private void enrichLogWithItem (InventoryLog inventoryLog) {
-//        if (inventoryLog.getItemId() > 0
-//                && itemRepository.findById(inventoryLog.getItemId()) != null) {
-//            inventoryLog.setItem(itemRepository.findById(inventoryLog.getItemId()));
-//        }
-//    }
-//
-//    private void enrichLogWithAuthority (InventoryLog inventoryLog) {
-//        if (inventoryLog.getAuthorityId() > 0
-//                && appUserRepository.findById(inventoryLog.getAuthorityId()) != null) {
-//            inventoryLog.setAuthority(appUserRepository.findById(inventoryLog.getAuthorityId()));
-//        }
-//    }
-
     private void enrichLogWithItem(InventoryLog inventoryLog) {
         if (inventoryLog.getItemId() > 0) {
             Item item = itemRepository.findById(inventoryLog.getItemId());

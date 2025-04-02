@@ -31,11 +31,6 @@ public class CheckoutItemService {
         return checkoutItemRepository.findById(checkoutItemId);
     }
 
-    // Not used here, used by CheckoutOrderService to enrich CheckoutOrder with CheckoutItems
-//    public List<CheckoutItem> findByCheckoutOrderId(int checkoutOrderId) {
-//        return repository.findByCheckoutOrderId(checkoutOrderId);
-//    }
-
     public List<Map<String, Object>> findPopularItems() {
         return checkoutItemRepository.findPopularItems();
     }
@@ -43,8 +38,6 @@ public class CheckoutItemService {
     public List<Map<String, Object>> findPopularCategories() {
         return checkoutItemRepository.findPopularCategories();
     }
-
-    // Add handled by CheckoutOrderService
 
     @Transactional
     public Result<CheckoutItem> update(CheckoutItem checkoutItem) {
@@ -118,7 +111,6 @@ public class CheckoutItemService {
             }
         }
 
-        // Add check for duplicate (needed for update)
         List<CheckoutItem> existingItems = checkoutItemRepository.findByCheckoutOrderId(checkoutItem.getCheckoutOrderId());
         for (CheckoutItem existingItem : existingItems) {
             if (existingItem.equals(checkoutItem)
