@@ -25,7 +25,7 @@ public class VendorController {
         return service.findAll();
     }
 
-    @GetMapping("/{vendorId}")
+    @GetMapping("/vendor-id/{vendorId}")
     public ResponseEntity<Vendor> findById(@PathVariable int vendorId) {
         Vendor vendor = service.findById(vendorId);
         if (vendor == null) {

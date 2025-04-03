@@ -36,7 +36,6 @@ public class PurchaseOrderController {
     }
 
     @PostMapping
-    // @PreAuthorize("hasRole('ADMIN')") — add when security is configured
     public ResponseEntity<Object> add(@RequestBody PurchaseOrder purchaseOrder) {
         Result<PurchaseOrder> result = service.add(purchaseOrder);
 
@@ -48,7 +47,6 @@ public class PurchaseOrderController {
     }
 
     @PutMapping("/{purchaseId}")
-    // @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Object> update(@PathVariable int purchaseId, @RequestBody PurchaseOrder purchaseOrder) {
         if (purchaseId != purchaseOrder.getPurchaseId()) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
@@ -64,7 +62,6 @@ public class PurchaseOrderController {
     }
 
     @DeleteMapping("/{purchaseId}")
-    // @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteById(@PathVariable int purchaseId) {
         Result<PurchaseOrder> result = service.deleteById(purchaseId);
 

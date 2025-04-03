@@ -19,8 +19,16 @@ public class PurchaseItemController {
         this.service = service;
     }
 
+    @GetMapping("/{purchaseItemId}")
+    public ResponseEntity<PurchaseItem> findById(@PathVariable int purchaseItemId) {
+        PurchaseItem purchaseItem = service.findById(purchaseItemId);
+        if (purchaseItem == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(purchaseItem);
+    }
+
     @PutMapping("/{purchaseItemId}")
-    // @PreAuthorize("hasAnyRole('ADMIN', 'AUTHORITY')")
     public ResponseEntity<Object> update(@PathVariable int purchaseItemId, @RequestBody PurchaseItem purchaseItem) {
         if (purchaseItemId != purchaseItem.getPurchaseItemId()) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
@@ -33,9 +41,7 @@ public class PurchaseItemController {
         return ErrorResponse.build(result);
     }
 
-    // DELETE: Delete a purchase item from a purchase order (Admin/Authority only)
     @DeleteMapping("/{purchaseItemId}")
-    // @PreAuthorize("hasAnyRole('ADMIN', 'AUTHORITY')")
     public ResponseEntity<Void> deleteById(@PathVariable int purchaseItemId) {
         Result<PurchaseItem> result = service.deleteById(purchaseItemId);
 

@@ -243,7 +243,6 @@ public class InventoryLogService {
         }
     }
 
-
     private void enrichLogWithItemAndAuthority (InventoryLog inventoryLog) {
         enrichLogWithItem(inventoryLog);
         enrichLogWithAuthority(inventoryLog);

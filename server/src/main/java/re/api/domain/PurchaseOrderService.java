@@ -157,7 +157,6 @@ public class PurchaseOrderService {
         return result;
     }
 
-
     private void validatePurchaseItem(Result<?> result, PurchaseItem purchaseItem) {
         if (purchaseItem == null) {
             result.addMessage(ResultType.INVALID, "Purchase item cannot be null.");

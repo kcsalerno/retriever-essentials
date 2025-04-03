@@ -25,7 +25,7 @@ public class ItemController {
         return service.findAll();
     }
 
-    @GetMapping("/{itemId}")
+    @GetMapping("/item-id/{itemId}")
     public ResponseEntity<Item> findById(@PathVariable int itemId) {
         Item item = service.findById(itemId);
         if (item == null) {
