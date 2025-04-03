@@ -67,17 +67,6 @@ public class ItemService {
         return result;
     }
 
-//    @Transactional
-//    public Result<Item> deleteById(int itemId) {
-//        Result<Item> result = new Result<>();
-//
-//        if (!repository.deleteById(itemId)) {
-//            result.addMessage(ResultType.NOT_FOUND, "Item ID not found.");
-//        }
-//
-//        return result;
-//    }
-
     @Transactional
     public Result<Item> disableById(int itemId) {
         Result<Item> result = new Result<>();

@@ -44,7 +44,6 @@ public class ItemController {
     }
 
     @PostMapping
-    // @PreAuthorize("hasAnyRole('ADMIN', 'AUTHORITY')")
     public ResponseEntity<Object> add(@RequestBody Item item) {
         Result<Item> result = service.add(item);
         if (result.isSuccess()) {
@@ -54,7 +53,6 @@ public class ItemController {
     }
 
     @PutMapping("/{itemId}")
-    // @PreAuthorize("hasAnyRole('ADMIN', 'AUTHORITY')")
     public ResponseEntity<Object> update(@PathVariable int itemId, @RequestBody Item item) {
         if (itemId != item.getItemId()) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
@@ -68,9 +66,8 @@ public class ItemController {
     }
 
     @DeleteMapping("/{itemId}")
-    // @PreAuthorize("hasAnyRole('ADMIN', 'AUTHORITY')")
-    public ResponseEntity<Void> deleteById(@PathVariable int itemId) {
-        Result<Item> result = service.deleteById(itemId);
+    public ResponseEntity<Void> disableById(@PathVariable int itemId) {
+        Result<Item> result = service.disableById(itemId);
         if (result.getType() == ResultType.NOT_FOUND) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

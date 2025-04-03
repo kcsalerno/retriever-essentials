@@ -66,8 +66,8 @@ public class VendorController {
     }
 
     @DeleteMapping("/{vendorId}")
-    public ResponseEntity<Void> deleteById(@PathVariable int vendorId) {
-        Result<Vendor> result = service.deleteById(vendorId);
+    public ResponseEntity<Void> disableById(@PathVariable int vendorId) {
+        Result<Vendor> result = service.disableById(vendorId);
         if (result.getType() == ResultType.NOT_FOUND) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

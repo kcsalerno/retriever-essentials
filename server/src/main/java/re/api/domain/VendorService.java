@@ -58,17 +58,6 @@ public class VendorService {
         return result;
     }
 
-//    @Transactional
-//    public Result<Vendor> deleteById(int vendorId) {
-//        Result<Vendor> result = new Result<>();
-//
-//        if (!vendorRepository.deleteById(vendorId)) {
-//            result.addMessage(ResultType.INVALID, "Vendor ID not found..");
-//        }
-//
-//        return result;
-//    }
-
     @Transactional
     public Result<Vendor> disableById(int vendorId) {
         Result<Vendor> result = new Result<>();
