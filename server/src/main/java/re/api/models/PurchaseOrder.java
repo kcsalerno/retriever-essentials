@@ -1,5 +1,7 @@
 package re.api.models;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -11,8 +13,11 @@ public class PurchaseOrder {
     private LocalDateTime purchaseDate;
 
     // Enriched objects (for GET requests)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private AppUser admin;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Vendor vendor;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<PurchaseItem> purchaseItems;
 
     public PurchaseOrder() {}

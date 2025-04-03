@@ -1,5 +1,7 @@
 package re.api.models;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.util.Objects;
 
 public class CheckoutItem {
@@ -9,6 +11,7 @@ public class CheckoutItem {
     private int quantity;
 
     // Enriched object (for GET requests)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Item item;
 
     public CheckoutItem() {}

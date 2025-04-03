@@ -22,24 +22,26 @@ public class CheckoutItemController {
         this.service = service;
     }
 
-    // No findAll or findById or findByCheckOrderId?
+    @GetMapping("/{checkoutItemId}")
+    public ResponseEntity<CheckoutItem> findById(@PathVariable int checkoutItemId) {
+        CheckoutItem checkoutItem = service.findById(checkoutItemId);
+        if (checkoutItem == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(checkoutItem);
+    }
 
     @GetMapping("/popular-items")
-    // Enable when Spring Security is set up
-    // @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('AUTHORITY')")
     public List<Map<String, Object>> findPopularItems() {
         return service.findPopularItems();
     }
 
     @GetMapping("/popular-categories")
-    // @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('AUTHORITY')")
     public List<Map<String, Object>> findPopularCategories() {
         return service.findPopularCategories();
     }
 
-    // PUT: Update a checkout item quantity (Admin/Authority only)
     @PutMapping("/{checkoutItemId}")
-    // @PreAuthorize("hasAnyRole('ADMIN', 'AUTHORITY')")
     public ResponseEntity<Object> update(@PathVariable int checkoutItemId, @RequestBody CheckoutItem checkoutItem) {
         if (checkoutItemId != checkoutItem.getCheckoutItemId()) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
@@ -52,9 +54,7 @@ public class CheckoutItemController {
         return ErrorResponse.build(result);
     }
 
-    // DELETE: Delete a checkout item from a checkout order (Admin/Authority only)
     @DeleteMapping("/{checkoutItemId}")
-    // @PreAuthorize("hasAnyRole('ADMIN', 'AUTHORITY')")
     public ResponseEntity<Void> deleteById(@PathVariable int checkoutItemId) {
         Result<CheckoutItem> result = service.deleteById(checkoutItemId);
 

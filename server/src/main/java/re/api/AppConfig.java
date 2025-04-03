@@ -21,18 +21,12 @@ public class AppConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
+                        .allowedMethods("DELETE", "GET", "POST", "PUT")
+//                        .allowedOrigins("http://localhost:3000")
                         .allowedOrigins("*")
-                        .allowedMethods("*");
+                        .allowCredentials(true);
             }
         };
 
-//        @Override
-//        public void addCorsMappings(CorsRegistry registry) {
-//            registry.addMapping("/**")
-//                    .allowedMethods("DELETE", "GET", "POST", "PUT")
-//                    .allowedOrigins("http://localhost:3000")
-//                    .allowCredentials(true);
-//            }
-//        };
     }
 }

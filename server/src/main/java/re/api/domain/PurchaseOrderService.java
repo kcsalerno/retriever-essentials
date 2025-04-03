@@ -2,43 +2,57 @@ package re.api.domain;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import re.api.data.PurchaseOrderRepository;
-import re.api.data.PurchaseItemRepository;
-import re.api.models.PurchaseOrder;
-import re.api.models.PurchaseItem;
+import re.api.data.*;
+import re.api.models.*;
 import re.api.domain.Result;
 import re.api.domain.ResultType;
 import re.api.domain.Validations;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class PurchaseOrderService {
 
     private final PurchaseOrderRepository purchaseOrderRepository;
     private final PurchaseItemRepository purchaseItemRepository;
+    private final AppUserRepository appUserRepository;
+    private final VendorRepository vendorRepository;
+    private final ItemRepository itemRepository;
 
     public PurchaseOrderService(PurchaseOrderRepository purchaseOrderRepository,
-                                PurchaseItemRepository purchaseItemRepository) {
+                                PurchaseItemRepository purchaseItemRepository,
+                                AppUserRepository appUserRepository,
+                                VendorRepository vendorRepository,
+                                ItemRepository itemRepository) {
         this.purchaseOrderRepository = purchaseOrderRepository;
         this.purchaseItemRepository = purchaseItemRepository;
+        this.appUserRepository = appUserRepository;
+        this.vendorRepository = vendorRepository;
+        this.itemRepository = itemRepository;
     }
 
+
     public List<PurchaseOrder> findAll() {
-        List<PurchaseOrder> purchaseOrders = purchaseOrderRepository.findAll();
-        for (PurchaseOrder purchaseOrder : purchaseOrders) {
-            List<PurchaseItem> items = purchaseItemRepository.findByPurchaseOrderId(purchaseOrder.getPurchaseId());
-            purchaseOrder.setPurchaseItems(items);
+        List<PurchaseOrder> purchaseOrderList = purchaseOrderRepository.findAll();
+        if (purchaseOrderList == null || purchaseOrderList.isEmpty()) {
+            return purchaseOrderList;
         }
-        return purchaseOrders;
+
+        for (PurchaseOrder purchaseOrder : purchaseOrderList) {
+            enrichPurchaseWithItemsAdminAndVendor(purchaseOrder);
+        }
+
+        return purchaseOrderList;
     }
 
     public PurchaseOrder findById(int purchaseOrderId) {
         PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(purchaseOrderId);
         if (purchaseOrder != null) {
-            List<PurchaseItem> items = purchaseItemRepository.findByPurchaseOrderId(purchaseOrderId);
-            purchaseOrder.setPurchaseItems(items);
+            enrichPurchaseWithItemsAdminAndVendor(purchaseOrder);
         }
+
         return purchaseOrder;
     }
 
@@ -55,24 +69,25 @@ public class PurchaseOrderService {
             return result;
         }
 
-        PurchaseOrder added = purchaseOrderRepository.add(purchaseOrder);
+        PurchaseOrder addedPurchase = purchaseOrderRepository.add(purchaseOrder);
 
-        if (added == null) {
+        if (addedPurchase == null) {
             result.addMessage(ResultType.INVALID, "Failed to add purchase order.");
             return result;
         }
 
         if (purchaseOrder.getPurchaseItems() != null) {
-            for (PurchaseItem item : purchaseOrder.getPurchaseItems()) {
-                item.setPurchaseOrderId(added.getPurchaseId());
-                purchaseItemRepository.add(item);
+            for (PurchaseItem purchaseItem : purchaseOrder.getPurchaseItems()) {
+                purchaseItem.setPurchaseOrderId(addedPurchase.getPurchaseId());
+                purchaseItemRepository.add(purchaseItem);
             }
         }
 
-        result.setPayload(added);
+        result.setPayload(addedPurchase);
         return result;
     }
 
+    @Transactional
     public Result<PurchaseOrder> update(PurchaseOrder purchaseOrder) {
         Result<PurchaseOrder> result = validate(purchaseOrder);
 
@@ -117,12 +132,113 @@ public class PurchaseOrderService {
             return result;
         }
 
+        validateAdmin(result, purchaseOrder.getAdminId());
+        validateVendor(result, purchaseOrder.getVendorId());
+
         if (purchaseOrder.getPurchaseDate() == null) {
             result.addMessage(ResultType.INVALID, "Purchase date is required.");
         }
 
-        // Option to validate vendor/admin IDs or enriched objects, but skipping for now.
+        if (purchaseOrder.getPurchaseItems() != null && !purchaseOrder.getPurchaseItems().isEmpty()) {
+            Set<Integer> itemIds = new HashSet<>();
+
+            for (PurchaseItem item : purchaseOrder.getPurchaseItems()) {
+                // Check for duplicates
+                if (!itemIds.add(item.getItemId())) {
+                    result.addMessage(ResultType.INVALID,
+                            "Duplicate item in purchase order: Item ID " + item.getItemId());
+                    continue; // Skip further validation for this item
+                }
+
+                validatePurchaseItem(result, item);
+            }
+        }
 
         return result;
+    }
+
+    private void validatePurchaseItem(Result<?> result, PurchaseItem purchaseItem) {
+        if (purchaseItem == null) {
+            result.addMessage(ResultType.INVALID, "Purchase item cannot be null.");
+            return;
+        }
+
+        if (purchaseItem.getItemId() <= 0) {
+            result.addMessage(ResultType.INVALID, "Item ID is required.");
+            return;
+        }
+
+        if (purchaseItem.getQuantity() <= 0) {
+            result.addMessage(ResultType.INVALID, "Quantity must be greater than zero.");
+        }
+
+        Item item = itemRepository.findById(purchaseItem.getItemId());
+        if (item == null || !item.isEnabled()) {
+            result.addMessage(ResultType.NOT_FOUND, "Item ID " + purchaseItem.getItemId() + " not found or disabled.");
+        }
+    }
+
+    private void validateVendor(Result<?> result, int vendorId) {
+        if (vendorId <= 0) {
+            result.addMessage(ResultType.INVALID, "Vendor ID is required.");
+            return;
+        }
+
+        if (vendorRepository.findById(vendorId) == null) {
+            result.addMessage(ResultType.NOT_FOUND, "Vendor ID does not exist.");
+        }
+    }
+
+    private void validateAdmin(Result<?> result, int adminId) {
+        if (adminId <= 0) {
+            result.addMessage(ResultType.INVALID, "Admin ID is required.");
+            return;
+        }
+
+        AppUser admin = appUserRepository.findById(adminId);
+        if (admin == null || !admin.isEnabled()) {
+            result.addMessage(ResultType.NOT_FOUND, "Admin ID does not exist or is disabled.");
+        }
+    }
+
+    private void enrichPurchaseWithItems(PurchaseOrder purchaseOrder) {
+        List<PurchaseItem> purchaseItems = purchaseItemRepository.findByPurchaseOrderId(purchaseOrder.getPurchaseId());
+        if (purchaseItems == null || purchaseItems.isEmpty()) {
+            return;
+        }
+
+        // Fetch items from the item repository using the IDs from checkout items
+        for (PurchaseItem purchaseItem : purchaseItems) {
+            Item item  = itemRepository.findById(purchaseItem.getItemId());
+            if (item != null) {
+                purchaseItem.setItem(item);
+            }
+        }
+
+        purchaseOrder.setPurchaseItems(purchaseItems);
+    }
+
+    private void enrichPurchaseWithAdmin(PurchaseOrder purchaseOrder) {
+        if (purchaseOrder.getAdminId() > 0) {
+            AppUser admin = appUserRepository.findById(purchaseOrder.getAdminId());
+            if (admin != null) {
+                purchaseOrder.setAdmin(admin);
+            }
+        }
+    }
+
+    private void enrichPurchaseWithVendor(PurchaseOrder purchaseOrder) {
+        if (purchaseOrder.getVendorId() > 0) {
+            Vendor vendor = vendorRepository.findById(purchaseOrder.getVendorId());
+            if (vendor != null) {
+                purchaseOrder.setVendor(vendor);
+            }
+        }
+    }
+
+    private void enrichPurchaseWithItemsAdminAndVendor(PurchaseOrder purchaseOrder) {
+        enrichPurchaseWithItems(purchaseOrder);
+        enrichPurchaseWithAdmin(purchaseOrder);
+        enrichPurchaseWithVendor(purchaseOrder);
     }
 }

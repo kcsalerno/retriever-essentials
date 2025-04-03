@@ -1,5 +1,6 @@
 package re.api.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -10,7 +11,10 @@ import java.util.Objects;
 public class AppUser implements UserDetails {
     private int appUserId;
     private final String email;
+
+    @JsonIgnore
     private String passwordHash;
+
     private final UserRole userRole;
     private boolean enabled;
 
@@ -27,20 +31,19 @@ public class AppUser implements UserDetails {
         return List.of(userRole.toGrantedAuthority());
     }
 
+    @JsonIgnore
     @Override
     public String getPassword() {
         return passwordHash;
     }
 
-    // Could add methods to set password, username, or roles if needed later.
+    public void setPassword(String password) {
+        this.passwordHash = password;
+    }
 
     @Override
     public String getUsername() {
         return email;
-    }
-
-    public void setPassword(String password) {
-        this.passwordHash = password;
     }
 
     @Override
@@ -62,6 +65,24 @@ public class AppUser implements UserDetails {
 
     public void setAppUserId(int appUserId) {
         this.appUserId = appUserId;
+    }
+
+    @JsonIgnore
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @JsonIgnore
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @JsonIgnore
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
     }
 
     @Override

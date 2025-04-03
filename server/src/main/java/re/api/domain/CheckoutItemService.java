@@ -3,7 +3,11 @@ package re.api.domain;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import re.api.data.CheckoutItemRepository;
+import re.api.data.CheckoutOrderRepository;
+import re.api.data.ItemRepository;
 import re.api.models.CheckoutItem;
+import re.api.models.CheckoutOrder;
+import re.api.models.Item;
 
 import java.util.List;
 import java.util.Map;
@@ -11,30 +15,31 @@ import java.util.Map;
 @Service
 public class CheckoutItemService {
 
-    private final CheckoutItemRepository repository;
+    private final CheckoutItemRepository checkoutItemRepository;
+    private final CheckoutOrderRepository checkoutOrderRepository;
+    private final ItemRepository itemRepository;
 
-    public CheckoutItemService(CheckoutItemRepository repository) {
-        this.repository = repository;
+    public CheckoutItemService(CheckoutItemRepository checkoutItemRepository,
+                                CheckoutOrderRepository checkoutOrderRepository,
+                                ItemRepository itemRepository) {
+        this.checkoutItemRepository = checkoutItemRepository;
+        this.checkoutOrderRepository = checkoutOrderRepository;
+        this.itemRepository = itemRepository;
     }
 
     public CheckoutItem findById(int checkoutItemId) {
-        return repository.findById(checkoutItemId);
+        return checkoutItemRepository.findById(checkoutItemId);
     }
 
-//    public List<CheckoutItem> findByCheckoutOrderId(int checkoutOrderId) {
-//        return repository.findByCheckoutOrderId(checkoutOrderId);
-//    }
-
-    // Add handled by CheckoutOrderService
-
     public List<Map<String, Object>> findPopularItems() {
-        return repository.findPopularItems();
+        return checkoutItemRepository.findPopularItems();
     }
 
     public List<Map<String, Object>> findPopularCategories() {
-        return repository.findPopularCategories();
+        return checkoutItemRepository.findPopularCategories();
     }
 
+    @Transactional
     public Result<CheckoutItem> update(CheckoutItem checkoutItem) {
         Result<CheckoutItem> result = validate(checkoutItem);
 
@@ -47,7 +52,7 @@ public class CheckoutItemService {
             return result;
         }
 
-        if (!repository.update(checkoutItem)) {
+        if (!checkoutItemRepository.update(checkoutItem)) {
             result.addMessage(ResultType.NOT_FOUND, "Checkout item not found.");
         } else {
             result.setPayload(checkoutItem);
@@ -56,10 +61,11 @@ public class CheckoutItemService {
         return result;
     }
 
+    @Transactional
     public Result<CheckoutItem> deleteById(int checkoutItemId) {
         Result<CheckoutItem> result = new Result<>();
 
-        if (!repository.deleteById(checkoutItemId)) {
+        if (!checkoutItemRepository.deleteById(checkoutItemId)) {
             result.addMessage(ResultType.NOT_FOUND, "Checkout item ID not found.");
         }
 
@@ -74,16 +80,44 @@ public class CheckoutItemService {
             return result;
         }
 
+        CheckoutOrder checkoutOrder = null;
         if (checkoutItem.getCheckoutOrderId() <= 0) {
             result.addMessage(ResultType.INVALID, "Checkout order ID is required.");
+        } else {
+            checkoutOrder = checkoutOrderRepository.findById(checkoutItem.getCheckoutOrderId());
+            if (checkoutOrder == null) {
+                result.addMessage(ResultType.NOT_FOUND, "Checkout order not found.");
+            }
         }
 
+        Item item = null;
         if (checkoutItem.getItemId() <= 0) {
             result.addMessage(ResultType.INVALID, "Item ID is required.");
+        } else {
+            item = itemRepository.findById(checkoutItem.getItemId());
+            if (item == null || !item.isEnabled()) {
+                result.addMessage(ResultType.NOT_FOUND, "Item does not exist or is disabled.");
+            }
         }
 
         if (checkoutItem.getQuantity() <= 0) {
             result.addMessage(ResultType.INVALID, "Quantity must be greater than 0.");
+        } else if (item != null) {
+            if (checkoutItem.getQuantity() > item.getCurrentCount()) {
+                result.addMessage(ResultType.INVALID, "Quantity exceeds available stock.");
+            }
+            if (checkoutItem.getQuantity() > item.getItemLimit()) {
+                result.addMessage(ResultType.INVALID, "Quantity exceeds item limit.");
+            }
+        }
+
+        List<CheckoutItem> existingItems = checkoutItemRepository.findByCheckoutOrderId(checkoutItem.getCheckoutOrderId());
+        for (CheckoutItem existingItem : existingItems) {
+            if (existingItem.equals(checkoutItem)
+                    && existingItem.getCheckoutItemId() != checkoutItem.getCheckoutItemId()) {
+                result.addMessage(ResultType.INVALID, "Duplicate checkout item found.");
+                break;
+            }
         }
 
         return result;

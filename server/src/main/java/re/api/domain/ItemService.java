@@ -1,6 +1,7 @@
 package re.api.domain;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import re.api.data.ItemRepository;
 import re.api.models.Item;
 
@@ -27,6 +28,7 @@ public class ItemService {
         return repository.findByName(name);
     }
 
+    @Transactional
     public Result<Item> add(Item item) {
         Result<Item> result = validate(item);
 
@@ -44,6 +46,7 @@ public class ItemService {
         return result;
     }
 
+    @Transactional
     public Result<Item> update(Item item) {
         Result<Item> result = validate(item);
 
@@ -64,10 +67,11 @@ public class ItemService {
         return result;
     }
 
-    public Result<Item> deleteById(int itemId) {
+    @Transactional
+    public Result<Item> disableById(int itemId) {
         Result<Item> result = new Result<>();
 
-        if (!repository.deleteById(itemId)) {
+        if (!repository.disableById(itemId)) {
             result.addMessage(ResultType.NOT_FOUND, "Item ID not found.");
         }
 
@@ -106,17 +110,20 @@ public class ItemService {
             result.addMessage(ResultType.INVALID, "Item limit must be greater than or equal to 1");
         }
 
-        if (item.getPricePerUnit() != null && (item.getPricePerUnit().compareTo(BigDecimal.ZERO) < 0)) {
-            result.addMessage(ResultType.INVALID, "Price per unit cannot be negative");
-        }
-        else if (item.getPricePerUnit().scale() > 2) {
-            result.addMessage(ResultType.INVALID, "Price per unit cannot have more than 2 decimal places");
+        // Better null safety check
+        if (item.getPricePerUnit() != null) {
+            if (item.getPricePerUnit().compareTo(BigDecimal.ZERO) < 0) {
+                result.addMessage(ResultType.INVALID, "Price per unit cannot be negative");
+            } else if (item.getPricePerUnit().scale() > 2) {
+                result.addMessage(ResultType.INVALID, "Price per unit cannot have more than 2 decimal places");
+            }
         }
 
-        List<Item> items = repository.findAll();
-        for (Item existingItem : items) {
-            if (existingItem.equals(item)) {
-                result.addMessage(ResultType.DUPLICATE, "Duplicate item names are not allowed.");
+        List<Item> existingItems = repository.findAll();
+        for (Item existingItem : existingItems) {
+            if (existingItem.equals(item)
+                    && existingItem.getItemId() != item.getItemId()) {
+                result.addMessage(ResultType.DUPLICATE, "Duplicate items are not allowed.");
                 return result;
             }
         }

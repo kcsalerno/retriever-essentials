@@ -6,11 +6,11 @@ import java.util.List;
 public interface InventoryLogRepository {
     List<InventoryLog> findAll();
 
+    InventoryLog findById(int logId);
+
     List<InventoryLog> findByItemId(int itemId);
 
     List<InventoryLog> findByAuthorityId(int authorityId);
-
-    InventoryLog findById(int logId);
 
     InventoryLog add(InventoryLog log);
 

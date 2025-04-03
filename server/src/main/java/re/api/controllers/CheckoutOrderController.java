@@ -36,13 +36,12 @@ public class CheckoutOrderController {
         return ResponseEntity.ok(order);
     }
 
-    @GetMapping("/busiest")
+    @GetMapping("/busiest-hours")
     public List<Map<String, Object>> findBusiestHours() {
         return service.findTopBusiestHours();
     }
 
     @PostMapping
-    // @PreAuthorize("hasRole('ADMIN') or hasRole('AUTHORITY')")
     public ResponseEntity<Object> add(@RequestBody CheckoutOrder checkoutOrder) {
         Result<CheckoutOrder> result = service.add(checkoutOrder);
         if (result.isSuccess()) {
@@ -52,7 +51,6 @@ public class CheckoutOrderController {
     }
 
     @PutMapping("/{checkoutOrderId}")
-    // @PreAuthorize("hasRole('ADMIN') or hasRole('AUTHORITY')")
     public ResponseEntity<Object> update(@PathVariable int checkoutOrderId, @RequestBody CheckoutOrder checkoutOrder) {
         if (checkoutOrderId != checkoutOrder.getCheckoutOrderId()) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
@@ -66,7 +64,6 @@ public class CheckoutOrderController {
     }
 
     @DeleteMapping("/{checkoutOrderId}")
-    // @PreAuthorize("hasRole('ADMIN') or hasRole('AUTHORITY')")
     public ResponseEntity<Void> deleteById(@PathVariable int checkoutOrderId) {
         Result<CheckoutOrder> result = service.deleteById(checkoutOrderId);
 

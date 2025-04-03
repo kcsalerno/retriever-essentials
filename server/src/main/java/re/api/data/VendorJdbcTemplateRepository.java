@@ -99,12 +99,13 @@ public class VendorJdbcTemplateRepository implements VendorRepository{
     }
 
     @Override
-    public boolean deleteById(int vendorId) {
-       final String sql = """
-               DELETE FROM vendor
-               WHERE vendor_id = ?;
-               """;
+    public boolean disableById(int vendorId) {
+        final String sql = """
+                UPDATE vendor
+                SET enabled = FALSE
+                WHERE vendor_id = ?;
+                """;
 
-       return jdbcTemplate.update(sql, vendorId) > 0;
+        return jdbcTemplate.update(sql, vendorId) > 0;
     }
 }

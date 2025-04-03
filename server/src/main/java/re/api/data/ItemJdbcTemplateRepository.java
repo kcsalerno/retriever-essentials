@@ -116,9 +116,10 @@ public class ItemJdbcTemplateRepository implements ItemRepository {
     }
 
     @Override
-    public boolean deleteById(int itemId) {
+    public boolean disableById(int itemId) {
         final String sql = """
-                DELETE FROM item
+                UPDATE item
+                SET enabled = FALSE
                 WHERE item_id = ?;
                 """;
 

@@ -18,7 +18,8 @@ public class Item {
     public Item() {}
 
     public Item(int itemId, String itemName, String itemDescription, String nutritionFacts,
-                String picturePath, String category, int currentCount, int itemLimit, BigDecimal pricePerUnit) {
+                String picturePath, String category, int currentCount, int itemLimit,
+                BigDecimal pricePerUnit, boolean enabled) {
         this.itemId = itemId;
         this.itemName = itemName;
         this.itemDescription = itemDescription;
@@ -28,6 +29,7 @@ public class Item {
         this.currentCount = currentCount;
         this.itemLimit = itemLimit;
         this.pricePerUnit = pricePerUnit;
+        this.enabled = enabled;
     }
 
     public int getItemId() {
