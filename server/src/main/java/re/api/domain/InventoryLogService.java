@@ -95,7 +95,7 @@ public class InventoryLogService {
     }
 
     public List<InventoryLog> findByAuthorityEmail(String authorityEmail) {
-        Integer authorityId = appUserRepository.findIdByEmail(authorityEmail);
+        Integer authorityId = appUserRepository.findByEmail(authorityEmail).getAppUserId();
         if (authorityId == null) {
             return List.of();
         }

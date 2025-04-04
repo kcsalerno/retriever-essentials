@@ -14,7 +14,5 @@ public interface VendorRepository {
 
     boolean update(Vendor vendor);
 
-//    boolean deleteById(int vendorId);
-
     boolean disableById(int vendorId);
 }
