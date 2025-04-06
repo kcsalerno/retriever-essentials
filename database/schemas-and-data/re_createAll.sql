@@ -23,7 +23,7 @@ Unique Constraints:
 */
 CREATE TABLE app_user (
     app_user_id INT PRIMARY KEY AUTO_INCREMENT,
-    email VARCHAR(255) UNIQUE NOT NULL,
+    username VARCHAR(255) UNIQUE NOT NULL, -- UMBC email address
     password_hash VARCHAR(255) NOT NULL DEFAULT '$2a$10$ntB7CsRKQzuLoKY3rfoAQen5nNyiC/U60wBsWnnYrtQQi8Z3IZzQa', -- Passwords are set to "P@ssw0rd!" as default
     user_role ENUM('AUTHORITY', 'ADMIN') NOT NULL,
 	enabled BOOLEAN DEFAULT TRUE
@@ -172,6 +172,6 @@ SHOW INDEXES FROM purchase_order;
 SHOW INDEXES FROM checkout_item;
 
 -- Initial data to get started.
-insert into app_user (email, user_role) values
+insert into app_user (username, user_role) values
 	('admin@umbc.com', 'ADMIN'),
 	('authority@umbc.com', 'AUTHORITY');

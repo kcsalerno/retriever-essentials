@@ -10,7 +10,7 @@ import java.util.Objects;
 
 public class AppUser implements UserDetails {
     private int appUserId;
-    private final String email;
+    private final String username;
 
     @JsonIgnore
     private String passwordHash;
@@ -18,9 +18,9 @@ public class AppUser implements UserDetails {
     private final UserRole userRole;
     private boolean enabled;
 
-    public AppUser(int appUserId,String email, String passwordHash, UserRole userRole, boolean enabled) {
+    public AppUser(int appUserId, String username, String passwordHash, UserRole userRole, boolean enabled) {
         this.appUserId = appUserId;
-        this.email = email;
+        this.username = username;
         this.passwordHash = passwordHash;
         this.userRole = userRole;
         this.enabled = enabled;
@@ -43,7 +43,7 @@ public class AppUser implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email;
+        return username;
     }
 
     @Override
@@ -90,19 +90,19 @@ public class AppUser implements UserDetails {
         if (o == this) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AppUser appUser = (AppUser) o;
-        return Objects.equals(email, appUser.email);
+        return Objects.equals(username, appUser.username);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(email);
+        return Objects.hashCode(username);
     }
 
     @Override
     public String toString() {
         return "AppUser{" +
                 "appUserId=" + appUserId +
-                ", email='" + email + '\'' +
+                ", username='" + username + '\'' +
                 ", enabled=" + enabled +
                 ", role=" + userRole +
                 '}';

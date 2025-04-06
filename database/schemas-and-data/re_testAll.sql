@@ -17,7 +17,7 @@ SELECT * FROM vendor;
 -- Checkout Data, with Student and Authority Info
 SELECT co.checkout_id, 
        co.student_id, 
-       u.email AS authority_email, 
+       u.username AS authority_email, 
        co.self_checkout, 
        co.checkout_date
 FROM checkout_order co
@@ -25,7 +25,7 @@ LEFT JOIN app_user u ON co.authority_id = u.app_user_id;
 
 -- Purchase Data, with Admin and Vendor Info
 SELECT po.purchase_id, 
-       u.email AS admin_email, 
+       u.username AS admin_email, 
        v.vendor_name, 
        po.purchase_date
 FROM purchase_order po
@@ -35,7 +35,7 @@ LEFT JOIN vendor v ON po.vendor_id = v.vendor_id;
 -- Checkout Order Items Data
 SELECT ci.checkout_item_id, 
        co.student_id, 
-       u.email AS authority_email, 
+       u.username AS authority_email, 
        i.item_name, 
        ci.quantity, 
        co.checkout_date
@@ -47,7 +47,7 @@ JOIN item i ON ci.item_id = i.item_id;
 -- Purchased Items Data
 SELECT pi.purchase_item_id, 
        po.purchase_id, 
-       u.email AS admin_email, 
+       u.username AS admin_email, 
        v.vendor_name, 
        i.item_name, 
        pi.quantity, 
@@ -60,7 +60,7 @@ JOIN item i ON pi.item_id = i.item_id;
 
 -- Inventory Log Data
 SELECT il.log_id, 
-       u.email AS authority_email, 
+       u.username AS authority_email, 
        i.item_name, 
        il.quantity_change, 
        il.reason, 
@@ -68,3 +68,44 @@ SELECT il.log_id,
 FROM inventory_log il
 LEFT JOIN app_user u ON il.authority_id = u.app_user_id
 JOIN item i ON il.item_id = i.item_id;
+
+-- Popular Items Data
+SELECT i.item_name, SUM(ci.quantity) AS total_checkouts
+FROM checkout_item ci
+JOIN item i ON ci.item_id = i.item_id
+GROUP BY ci.item_id
+ORDER BY total_checkouts DESC
+LIMIT 5;
+
+-- Popular Categories Data
+SELECT i.category, SUM(ci.quantity) AS total_checkouts
+FROM checkout_item ci
+JOIN item i ON ci.item_id = i.item_id
+GROUP BY i.category
+ORDER BY total_checkouts DESC
+LIMIT 5;
+
+
+select * from checkout_item ci;
+-- Checkout Items Data
+SELECT 
+    ci.checkout_id,
+    ci.item_id,
+    ci.quantity,
+
+    i.item_name,
+    i.item_description,
+    i.category,
+    i.price_per_unit,
+
+    co.student_id,
+    co.authority_id,
+    co.self_checkout,
+
+    au.app_user_id AS authority_user_id,
+    au.username AS authority_email
+
+FROM checkout_item ci
+JOIN item i ON ci.item_id = i.item_id
+JOIN checkout_order co ON ci.checkout_id = co.checkout_id
+JOIN app_user au ON co.authority_id = au.app_user_id;

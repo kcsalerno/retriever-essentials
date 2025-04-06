@@ -13,7 +13,7 @@ public class AppUserMapper implements RowMapper<AppUser> {
         // No empty constructor in AppUser, so we need to use the constructor with parameters
         return new AppUser(
                 rs.getInt("app_user_id"),
-                rs.getString("email"),
+                rs.getString("username"),
                 rs.getString("password_hash"),
                 UserRole.valueOf(rs.getString("user_role").toUpperCase()),
                 rs.getBoolean("enabled")

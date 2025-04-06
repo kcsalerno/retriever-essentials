@@ -23,7 +23,7 @@ public class AppUserJdbcTemplateRepository implements AppUserRepository {
     @Override
     public List<AppUser> findAll() {
         final String sql = """
-                SELECT app_user_id, email, password_hash, user_role, enabled
+                SELECT app_user_id, username, password_hash, user_role, enabled
                 FROM app_user
                 """;
 
@@ -33,7 +33,7 @@ public class AppUserJdbcTemplateRepository implements AppUserRepository {
     @Override
     public AppUser findById(int appUserId) {
         final String sql = """
-                SELECT app_user_id, email, password_hash, user_role, enabled
+                SELECT app_user_id, username, password_hash, user_role, enabled
                 FROM app_user
                 WHERE app_user_id = ?
                 """;
@@ -46,9 +46,9 @@ public class AppUserJdbcTemplateRepository implements AppUserRepository {
     @Override
     public AppUser findByEmail(String email) {
         final String sql = """
-                SELECT app_user_id, email, password_hash, user_role, enabled
+                SELECT app_user_id, username, password_hash, user_role, enabled
                 FROM app_user
-                WHERE email = ?
+                WHERE username = ?
                 """;
 
         return jdbcTemplate.query(sql, new AppUserMapper(), email).stream()
@@ -59,7 +59,7 @@ public class AppUserJdbcTemplateRepository implements AppUserRepository {
     @Override
     public AppUser add(AppUser user) {
         final String sql = """
-                INSERT INTO app_user (email, user_role)
+                INSERT INTO app_user (username, user_role)
                 VALUES (?, ?)
                 """;
 

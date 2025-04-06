@@ -19,7 +19,7 @@ Unique Constraints:
 */
 CREATE TABLE app_user (
     app_user_id INT PRIMARY KEY AUTO_INCREMENT,
-    email VARCHAR(255) UNIQUE NOT NULL,
+    username VARCHAR(255) UNIQUE NOT NULL, -- UMBC Email address
     password_hash VARCHAR(255) NOT NULL DEFAULT '$2a$10$ntB7CsRKQzuLoKY3rfoAQen5nNyiC/U60wBsWnnYrtQQi8Z3IZzQa', -- Passwords are set to "P@ssw0rd!" as default
     user_role ENUM('AUTHORITY', 'ADMIN') NOT NULL,
 	enabled BOOLEAN DEFAULT TRUE
@@ -185,7 +185,7 @@ BEGIN
     -- -----------------------------------------------------
 
     -- Initial user data, passwords set to "P@ssw0rd!" for now.
-		INSERT INTO app_user (email, user_role) VALUES
+		INSERT INTO app_user (username, user_role) VALUES
         ('admin@umbc.com', 'ADMIN'),
         ('authority1@umbc.com', 'AUTHORITY'),
         ('authority2@umbc.com', 'AUTHORITY');
@@ -273,17 +273,17 @@ BEGIN
         (4, 7, 2), (4, 1, 1),
         (5, 8, 1), (5, 2, 1),
         (6, 9, 1), (6, 3, 2),
-        (7, 10, 2), (7, 4, 1),
-        (8, 11, 2), (8, 5, 2),
-        (9, 12, 2), (9, 6, 1),
-        (10, 13, 1);
+        (7, 10, 2), (7, 24, 1),
+        (8, 11, 2), (8, 25, 2),
+        (9, 12, 2), (9, 23, 1),
+        (10, 25, 1);
 
     -- Sample inventory log (tracking item adjustments)
     INSERT INTO inventory_log (authority_id, item_id, quantity_change, reason) VALUES
         (2, 4, -2, 'Damaged Packaging'),
         (2, 5, -2, 'Expired cookies removed'),
         (1, 6, 2, 'Re-stock correction'),
-        (1, 7, 1, 'Extra bag in box from vendor.');
+        (1, 4, 1, 'Extra bag in box from vendor.');
 
 END //
 

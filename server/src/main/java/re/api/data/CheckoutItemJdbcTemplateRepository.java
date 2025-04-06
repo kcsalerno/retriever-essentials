@@ -48,10 +48,11 @@ public class CheckoutItemJdbcTemplateRepository implements CheckoutItemRepositor
     @Override
     public List<Map<String, Object>> findPopularItems() {
         final String sql = """
-                SELECT ci.item_id, SUM(ci.quantity) AS total_quantity
+                SELECT i.item_name, SUM(ci.quantity) AS total_checkouts
                 FROM checkout_item ci
+                INNER JOIN item i ON ci.item_id = i.item_id
                 GROUP BY ci.item_id
-                ORDER BY total_quantity DESC
+                ORDER BY total_checkouts DESC
                 LIMIT 5;
                 """;
 
@@ -61,11 +62,11 @@ public class CheckoutItemJdbcTemplateRepository implements CheckoutItemRepositor
     @Override
     public List<Map<String, Object>> findPopularCategories() {
         final String sql = """
-                SELECT i.category, SUM(ci.quantity) AS total_quantity
+                SELECT i.category, SUM(ci.quantity) AS total_checkouts
                 FROM checkout_item ci
                 JOIN item i ON ci.item_id = i.item_id
                 GROUP BY i.category
-                ORDER BY total_quantity DESC
+                ORDER BY total_checkouts DESC
                 LIMIT 5;
                 """;
 

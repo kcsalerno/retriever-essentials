@@ -96,10 +96,8 @@ class ItemJdbcTemplateRepositoryTest {
         testItem.setCurrentCount(10);
         testItem.setItemLimit(5);
         testItem.setPricePerUnit(BigDecimal.valueOf(9.99));
-
         // Act
         Item addedItem = itemJdbcTemplateRepository.add(testItem);
-
         // Assert
         assertNotNull(addedItem);
         assertEquals(testItem.getItemName(), addedItem.getItemName());
@@ -113,12 +111,10 @@ class ItemJdbcTemplateRepositoryTest {
         Item itemToUpdate = itemJdbcTemplateRepository.findById(itemId);
         assertNotNull(itemToUpdate);
         itemToUpdate.setItemDescription("Updated Description");
-
         // Act
-        boolean success = itemJdbcTemplateRepository.update(itemToUpdate);
-
+        boolean updated = itemJdbcTemplateRepository.update(itemToUpdate);
         // Assert
-        assertTrue(success);
+        assertTrue(updated);
         assertEquals("Updated Description", itemJdbcTemplateRepository.findById(itemId).getItemDescription());
     }
 
@@ -128,12 +124,10 @@ class ItemJdbcTemplateRepositoryTest {
         Item itemToUpdate = new Item();
         itemToUpdate.setItemId(9999); // Non-existent ID
         itemToUpdate.setItemDescription("Updated Description");
-
         // Act
-        boolean success = itemJdbcTemplateRepository.update(itemToUpdate);
-
+        boolean updated = itemJdbcTemplateRepository.update(itemToUpdate);
         // Assert
-        assertFalse(success);
+        assertFalse(updated);
     }
 
     @Test
@@ -143,12 +137,10 @@ class ItemJdbcTemplateRepositoryTest {
         Item itemToDisable = itemJdbcTemplateRepository.findById(itemId);
         assertNotNull(itemToDisable);
         assertTrue(itemToDisable.isEnabled());
-
         // Act
-        boolean success = itemJdbcTemplateRepository.disableById(itemId);
-
+        boolean disabled = itemJdbcTemplateRepository.disableById(itemId);
         // Assert
-        assertTrue(success);
+        assertTrue(disabled);
         assertFalse(itemJdbcTemplateRepository.findById(itemId).isEnabled());
     }
 
@@ -156,11 +148,9 @@ class ItemJdbcTemplateRepositoryTest {
     void shouldNotDisableByBadId() {
         // Arrange
         int itemId = 9999; // Non-existent ID
-
         // Act
-        boolean success = itemJdbcTemplateRepository.disableById(itemId);
-
+        boolean disabled = itemJdbcTemplateRepository.disableById(itemId);
         // Assert
-        assertFalse(success);
+        assertFalse(disabled);
     }
 }
