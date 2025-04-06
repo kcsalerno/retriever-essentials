@@ -17,7 +17,7 @@ SELECT * FROM vendor;
 -- Checkout Data, with Student and Authority Info
 SELECT co.checkout_id, 
        co.student_id, 
-       u.email AS authority_email, 
+       u.username AS authority_email, 
        co.self_checkout, 
        co.checkout_date
 FROM checkout_order co
@@ -25,7 +25,7 @@ LEFT JOIN app_user u ON co.authority_id = u.app_user_id;
 
 -- Purchase Data, with Admin and Vendor Info
 SELECT po.purchase_id, 
-       u.email AS admin_email, 
+       u.username AS admin_email, 
        v.vendor_name, 
        po.purchase_date
 FROM purchase_order po
@@ -35,7 +35,7 @@ LEFT JOIN vendor v ON po.vendor_id = v.vendor_id;
 -- Checkout Order Items Data
 SELECT ci.checkout_item_id, 
        co.student_id, 
-       u.email AS authority_email, 
+       u.username AS authority_email, 
        i.item_name, 
        ci.quantity, 
        co.checkout_date
@@ -47,7 +47,7 @@ JOIN item i ON ci.item_id = i.item_id;
 -- Purchased Items Data
 SELECT pi.purchase_item_id, 
        po.purchase_id, 
-       u.email AS admin_email, 
+       u.username AS admin_email, 
        v.vendor_name, 
        i.item_name, 
        pi.quantity, 
@@ -60,7 +60,7 @@ JOIN item i ON pi.item_id = i.item_id;
 
 -- Inventory Log Data
 SELECT il.log_id, 
-       u.email AS authority_email, 
+       u.username AS authority_email, 
        i.item_name, 
        il.quantity_change, 
        il.reason, 

@@ -19,7 +19,7 @@ Unique Constraints:
 */
 CREATE TABLE app_user (
     app_user_id INT PRIMARY KEY AUTO_INCREMENT,
-    email VARCHAR(255) UNIQUE NOT NULL,
+    username VARCHAR(255) UNIQUE NOT NULL, -- UMBC Email address
     password_hash VARCHAR(255) NOT NULL DEFAULT '$2a$10$ntB7CsRKQzuLoKY3rfoAQen5nNyiC/U60wBsWnnYrtQQi8Z3IZzQa', -- Passwords are set to "P@ssw0rd!" as default
     user_role ENUM('AUTHORITY', 'ADMIN') NOT NULL,
 	enabled BOOLEAN DEFAULT TRUE
@@ -185,7 +185,7 @@ BEGIN
     -- -----------------------------------------------------
 
     -- Initial user data, passwords set to "P@ssw0rd!" for now.
-		INSERT INTO app_user (email, user_role) VALUES
+		INSERT INTO app_user (username, user_role) VALUES
         ('admin@umbc.com', 'ADMIN'),
         ('authority1@umbc.com', 'AUTHORITY'),
         ('authority2@umbc.com', 'AUTHORITY');
