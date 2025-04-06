@@ -37,11 +37,11 @@ Unique Constraint:
 */
 CREATE TABLE item (
     item_id INT PRIMARY KEY AUTO_INCREMENT,
-    item_name VARCHAR(20) UNIQUE NOT NULL,
+    item_name VARCHAR(55) UNIQUE NOT NULL,
     item_description TEXT NULL,
     nutrition_facts TEXT NULL,
 	picture_path VARCHAR(255) NULL,
-    category VARCHAR(20) NOT NULL,
+    category VARCHAR(55) NOT NULL,
     current_count INT NOT NULL DEFAULT 0 CHECK (current_count >= 0),
     item_limit INT NOT NULL DEFAULT 1 CHECK (item_limit >= 1),
     price_per_unit DECIMAL(7,2) NOT NULL CHECK (price_per_unit >= 0),
