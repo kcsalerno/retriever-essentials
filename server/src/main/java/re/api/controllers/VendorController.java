@@ -25,7 +25,7 @@ public class VendorController {
         return service.findAll();
     }
 
-    @GetMapping("/{vendorId}")
+    @GetMapping("/vendor-id/{vendorId}")
     public ResponseEntity<Vendor> findById(@PathVariable int vendorId) {
         Vendor vendor = service.findById(vendorId);
         if (vendor == null) {
@@ -44,7 +44,7 @@ public class VendorController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> create(@RequestBody Vendor vendor) {
+    public ResponseEntity<Object> add(@RequestBody Vendor vendor) {
         Result<Vendor> result = service.add(vendor);
         if (result.isSuccess()) {
             return new ResponseEntity<>(result.getPayload(), HttpStatus.CREATED);
@@ -66,8 +66,8 @@ public class VendorController {
     }
 
     @DeleteMapping("/{vendorId}")
-    public ResponseEntity<Void> deleteById(@PathVariable int vendorId) {
-        Result<Vendor> result = service.deleteById(vendorId);
+    public ResponseEntity<Void> disableById(@PathVariable int vendorId) {
+        Result<Vendor> result = service.disableById(vendorId);
         if (result.getType() == ResultType.NOT_FOUND) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

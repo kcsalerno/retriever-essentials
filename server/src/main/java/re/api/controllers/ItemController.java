@@ -25,12 +25,12 @@ public class ItemController {
         return service.findAll();
     }
 
-    @GetMapping("/popular")
-    public List<Item> findMostPopularItems() {
-        return service.findMostPopularItems();
+    @GetMapping("/test")
+    public ResponseEntity<String> test() {
+        return ResponseEntity.ok("Hello from ItemController!");
     }
 
-    @GetMapping("/{itemId}")
+    @GetMapping("/item-id/{itemId}")
     public ResponseEntity<Item> findById(@PathVariable int itemId) {
         Item item = service.findById(itemId);
         if (item == null) {
@@ -39,7 +39,7 @@ public class ItemController {
         return ResponseEntity.ok(item);
     }
 
-    @GetMapping("/{itemName}")
+    @GetMapping("/name/{itemName}")
     public ResponseEntity<Item> findByName(@PathVariable String itemName) {
         Item item = service.findByName(itemName);
         if (item == null) {
@@ -48,8 +48,17 @@ public class ItemController {
         return ResponseEntity.ok(item);
     }
 
+    @GetMapping("/category/{category}")
+    public ResponseEntity<List<Item>> findByCategory(@PathVariable String category) {
+        List<Item> items = service.findByCategory(category);
+        if (items.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(items);
+    }
+
     @PostMapping
-    public ResponseEntity<Object> create(@RequestBody Item item) {
+    public ResponseEntity<Object> add(@RequestBody Item item) {
         Result<Item> result = service.add(item);
         if (result.isSuccess()) {
             return new ResponseEntity<>(result.getPayload(), HttpStatus.CREATED);
@@ -71,8 +80,8 @@ public class ItemController {
     }
 
     @DeleteMapping("/{itemId}")
-    public ResponseEntity<Void> deleteById(@PathVariable int itemId) {
-        Result<Item> result = service.deleteById(itemId);
+    public ResponseEntity<Void> disableById(@PathVariable int itemId) {
+        Result<Item> result = service.disableById(itemId);
         if (result.getType() == ResultType.NOT_FOUND) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

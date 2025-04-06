@@ -23,6 +23,22 @@ public class InventoryLogController {
         return service.findAll();
     }
 
+    @GetMapping("/{logId}")
+    public ResponseEntity<InventoryLog> findById(@PathVariable int logId) {
+        InventoryLog log = service.findById(logId);
+        return log != null ? ResponseEntity.ok(log) : ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/item-id/{itemId}")
+    public List<InventoryLog> findByItemId(@PathVariable int itemId) {
+        return service.findByItemId(itemId);
+    }
+
+    @GetMapping("/authority-id/{authorityId}")
+    public List<InventoryLog> findByAuthorityId(@PathVariable int authorityId) {
+        return service.findByAuthorityId(authorityId);
+    }
+
     @GetMapping("/item/{itemName}")
     public List<InventoryLog> findByItemName(@PathVariable String itemName) {
         return service.findByItemName(itemName);
@@ -31,12 +47,6 @@ public class InventoryLogController {
     @GetMapping("/authority/{authorityEmail}")
     public List<InventoryLog> findByAuthorityEmail(@PathVariable String authorityEmail) {
         return service.findByAuthorityEmail(authorityEmail);
-    }
-
-    @GetMapping("/{logId}")
-    public ResponseEntity<InventoryLog> findById(@PathVariable int logId) {
-        InventoryLog log = service.findById(logId);
-        return log != null ? ResponseEntity.ok(log) : ResponseEntity.notFound().build();
     }
 
     @PostMapping

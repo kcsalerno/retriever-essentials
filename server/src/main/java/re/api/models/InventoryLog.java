@@ -1,30 +1,33 @@
 package re.api.models;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class InventoryLog {
     private int logId;
-    private Integer authorityId; // Nullable in case an authority is deleted
+    private int authorityId;
     private int itemId;
     private int quantityChange;
     private String reason;
     private LocalDateTime timeStamp;
-    // Additional fields for display
-    private String authorityEmail; // (Username) Retrieved from app_user
-    private String itemName; // Retrieved from item
+
+    // Enriched objects (for GET requests)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private AppUser authority;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Item item;
 
     public InventoryLog() {}
 
-    public InventoryLog(int logId, Integer authorityId, int itemId, int quantityChange, String reason, LocalDateTime timeStamp, String authorityEmail, String itemName) {
+    public InventoryLog(int logId, int authorityId, int itemId, int quantityChange, String reason, LocalDateTime timeStamp) {
         this.logId = logId;
         this.authorityId = authorityId;
         this.itemId = itemId;
         this.quantityChange = quantityChange;
         this.reason = reason;
         this.timeStamp = timeStamp;
-        this.authorityEmail = authorityEmail;
-        this.itemName = itemName;
     }
 
     public int getLogId() {
@@ -35,11 +38,11 @@ public class InventoryLog {
         this.logId = logId;
     }
 
-    public Integer getAuthorityId() {
+    public int getAuthorityId() {
         return authorityId;
     }
 
-    public void setAuthorityId(Integer authorityId) {
+    public void setAuthorityId(int authorityId) {
         this.authorityId = authorityId;
     }
 
@@ -75,33 +78,33 @@ public class InventoryLog {
         this.timeStamp = timeStamp;
     }
 
-    public String getAuthorityEmail() {
-        return authorityEmail;
+    public AppUser getAuthority() {
+        return authority;
     }
 
-    public void setAuthorityEmail(String authorityEmail) {
-        this.authorityEmail = authorityEmail;
+    public void setAuthority(AppUser authority) {
+        this.authority = authority;
     }
 
-    public String getItemName() {
-        return itemName;
+    public Item getItem() {
+        return item;
     }
 
-    public void setItemName(String itemName) {
-        this.itemName = itemName;
+    public void setItem(Item item) {
+        this.item = item;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (o == this) return true;     // Self-check
+        if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         InventoryLog that = (InventoryLog) o;
-        return logId == that.logId;
+        return authorityId == that.authorityId && itemId == that.itemId && quantityChange == that.quantityChange && Objects.equals(timeStamp, that.timeStamp);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(logId);
+        return Objects.hash(authorityId, itemId, quantityChange, timeStamp);
     }
 
     @Override
@@ -113,8 +116,8 @@ public class InventoryLog {
                 ", quantityChange=" + quantityChange +
                 ", reason='" + reason + '\'' +
                 ", timeStamp=" + timeStamp +
-                ", authorityEmail='" + authorityEmail + '\'' +
-                ", itemName='" + itemName + '\'' +
+                ", authority=" + authority +
+                ", item=" + item +
                 '}';
     }
 }

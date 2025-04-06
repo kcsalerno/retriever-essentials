@@ -1,7 +1,6 @@
 package re.api.data.mappers;
 
 import org.springframework.jdbc.core.RowMapper;
-import re.api.models.Item;
 import re.api.models.Vendor;
 
 import java.sql.ResultSet;
@@ -15,7 +14,7 @@ public class VendorMapper implements RowMapper<Vendor> {
         vendor.setVendorName(rs.getString("vendor_name"));
         vendor.setPhoneNumber(rs.getString("phone_number"));
         vendor.setContactEmail(rs.getString("contact_email"));
-
+        vendor.setEnabled(rs.getBoolean("enabled"));
         return vendor;
     }
 }
