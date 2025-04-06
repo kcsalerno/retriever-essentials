@@ -34,5 +34,3 @@ function CategoryPage({ addToCart, category }) {
 }
 
 export default CategoryPage;
-
-
