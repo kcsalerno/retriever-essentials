@@ -33,11 +33,11 @@ Unique Constraint:
 */
 CREATE TABLE item (
     item_id INT PRIMARY KEY AUTO_INCREMENT,
-    item_name VARCHAR(20) UNIQUE NOT NULL,
+    item_name VARCHAR(55) UNIQUE NOT NULL,
     item_description TEXT NULL,
     nutrition_facts TEXT NULL,
 	picture_path VARCHAR(255) NULL,
-    category VARCHAR(20) NOT NULL,
+    category VARCHAR(55) NOT NULL,
     current_count INT NOT NULL DEFAULT 0 CHECK (current_count >= 0),
     item_limit INT NOT NULL DEFAULT 1 CHECK (item_limit >= 1),
     price_per_unit DECIMAL(7,2) NULL,
@@ -187,43 +187,103 @@ BEGIN
     -- Initial user data, passwords set to "P@ssw0rd!" for now.
 		INSERT INTO app_user (email, user_role) VALUES
         ('admin@umbc.com', 'ADMIN'),
-        ('authority@umbc.com', 'AUTHORITY');
+        ('authority1@umbc.com', 'AUTHORITY'),
+        ('authority2@umbc.com', 'AUTHORITY');
 
     -- Test data for Vendor
     INSERT INTO vendor (vendor_name, phone_number, contact_email) VALUES
-        ('Patel Brothers', '999-555-1234', 'patel@brothers.com'),
-        ('Test Vendor', '111-555-4321', 'test@vendor.com');
+        ('Patel Brothers', '999-555-1234', 'contact@patelbros.com'),
+        ('Sunrise Foods', '888-555-9876', 'hello@sunrisefoods.com');
 
-    -- Test data for Item (storing picture paths instead of BLOBs)
+   -- Items with unified "Region - Type" categories
     INSERT INTO item (item_name, item_description, nutrition_facts, picture_path, category, current_count, price_per_unit) VALUES
-        ('Rice', 'Long grain basmati rice', 'Calories: 200 per 100g', 'https://cloudinary.com/rice123', 'Grain', 100, 2.50),
-        ('Milk', 'Organic whole milk', 'Calories: 150 per cup', 'https://cloudinary.com/milk123', 'Dairy', 50, 3.99),
-        ('Bread', 'Whole wheat bread', 'Calories: 80 per slice', 'https://cloudinary.com/bread123', 'Bakery', 30, 2.25),
-        ('Eggs', 'Free-range eggs', 'Calories: 70 per egg', 'https://cloudinary.com/eggs123', 'Dairy', 60, 4.50);
+        -- South Asian - Staples
+        ('Sona Masoori Rice', '1 lb of 20 lb bag', 'Calories: 160 per 1/4 cup', 'https://cloudinary.com/item1', 'South Asian - Staple', 200, 25.00),
+        ('Toor Dahl (Red Lentils)', '1 lb of 179 lbs bulk', 'Calories: 180 per 1/4 cup', 'https://cloudinary.com/item2', 'South Asian - Staple', 300, 1.25),
+        ('Black Chickpeas (Channa)', '1 lb of 85 lbs bulk', 'Calories: 170 per 1/4 cup', 'https://cloudinary.com/item3', 'South Asian - Staple', 200, 1.25),
 
-    -- Sample purchase order data
+        -- South Asian - Snacks
+        ('Maggi Noodles', 'Instant noodles 1 pack', 'Calories: 350', 'https://cloudinary.com/item4', 'South Asian - Snack', 400, 0.50),
+        ('PARLE KREAM BOUR', 'Pack of cookies', 'Calories: 90 per 2 cookies', 'https://cloudinary.com/item5', 'South Asian - Snack', 100, 1.00),
+        ('HID SEEK BOURB', 'Sweet biscuit', 'Calories: 120 per 3 pieces', 'https://cloudinary.com/item6', 'South Asian - Snack', 100, 0.49),
+        ('SW MASL BANA', 'Banana chips', 'Calories: 150 per oz', 'https://cloudinary.com/item7', 'South Asian - Snack', 100, 1.99),
+        ('GOP SNACK PE CHO', 'Chickpea snack', 'Calories: 140 per oz', 'https://cloudinary.com/item8', 'South Asian - Snack', 100, 1.29),
+        ('AD BANGA MIX', 'Spicy snack mix', 'Calories: 180 per oz', 'https://cloudinary.com/item9', 'South Asian - Snack', 100, 1.99),
+        ('SW BHEL CUP', 'Instant bhel puri', 'Calories: 160 per cup', 'https://cloudinary.com/item10', 'South Asian - Snack', 100, 1.29),
+        ('MAGIC MAS UPMA', 'Ready-to-eat upma', 'Calories: 200 per container', 'https://cloudinary.com/item11', 'South Asian - Snack', 100, 1.29),
+        ('KURKURE MSL', 'Masala chips', 'Calories: 110 per 20g', 'https://cloudinary.com/item12', 'South Asian - Snack', 100, 1.29),
+        ('LAYS CHILE LIMON', 'Spicy lime chips', 'Calories: 150 per oz', 'https://cloudinary.com/item13', 'South Asian - Snack', 100, 0.89),
+
+        -- South Asian - Prepared Meals
+        ('MTR navaratan korma', 'Vegetable curry', 'Calories: 220 per pouch', 'https://cloudinary.com/item14', 'South Asian - Prepared Meal', 100, 2.99),
+        ('MTR alu muttar', 'Potato peas curry', 'Calories: 210 per pouch', 'https://cloudinary.com/item15', 'South Asian - Prepared Meal', 100, 2.99),
+        ('MTR mutter paneer', 'Peas with cheese', 'Calories: 230 per pouch', 'https://cloudinary.com/item16', 'South Asian - Prepared Meal', 100, 2.99),
+        ('Mixed vegetable curry', 'Assorted veggie curry', 'Calories: 200', 'https://cloudinary.com/item17', 'South Asian - Prepared Meal', 100, 2.99),
+        ('MTR palak paneer', 'Spinach cheese curry', 'Calories: 240', 'https://cloudinary.com/item18', 'South Asian - Prepared Meal', 100, 2.99),
+        ('MTR shahi paneer', 'Rich cottage cheese curry', 'Calories: 250', 'https://cloudinary.com/item19', 'South Asian - Prepared Meal', 100, 2.99),
+        ('MTR bhindi masala', 'Okra curry', 'Calories: 180', 'https://cloudinary.com/item20', 'South Asian - Prepared Meal', 100, 2.99),
+        ('MTR chana masala', 'Chickpea curry', 'Calories: 210', 'https://cloudinary.com/item21', 'South Asian - Prepared Meal', 100, 2.99),
+        ('MTR kadhi pakora', 'Yogurt curry', 'Calories: 200', 'https://cloudinary.com/item22', 'South Asian - Prepared Meal', 100, 2.99),
+
+        -- Global Snacks and Staples (Sunrise Foods)
+        ('Japanese Rice Crackers', 'Crunchy rice snack mix', 'Calories: 110 per oz', 'https://cloudinary.com/item23', 'East Asian - Snack', 100, 1.89),
+        ('Plantain Chips', 'Fried plantain slices', 'Calories: 150 per oz', 'https://cloudinary.com/item24', 'Latin American - Snack', 100, 1.99),
+        ('Spicy Seaweed Snacks', 'Thin roasted seaweed', 'Calories: 25 per pack', 'https://cloudinary.com/item25', 'Korean - Snack', 100, 2.29),
+        ('Hummus & Pita Chips', 'Chickpea dip and pita chips', 'Calories: 220 per pack', 'https://cloudinary.com/item26', 'Mediterranean - Snack', 100, 2.99),
+        ('Nacho Cheese Tortilla Chips', 'Cheesy corn chips', 'Calories: 140 per oz', 'https://cloudinary.com/item27', 'Western - Snack', 100, 1.49),
+        ('Jasmine Rice', 'Aromatic Thai rice', 'Calories: 160 per 1/4 cup', 'https://cloudinary.com/item28', 'Thai - Staple', 200, 2.99),
+        ('Canned Black Beans', 'Cooked black beans', 'Calories: 110 per 1/2 cup', 'https://cloudinary.com/item29', 'Latin American - Staple', 200, 1.19),
+        ('Olive Oil', 'Extra virgin olive oil', 'Calories: 120 per tbsp', 'https://cloudinary.com/item30', 'Mediterranean - Staple', 100, 5.99),
+        ('Pasta', 'Durum wheat spaghetti', 'Calories: 200 per 2 oz', 'https://cloudinary.com/item31', 'Italian - Staple', 150, 1.49),
+        ('Cornmeal', 'Stone-ground yellow cornmeal', 'Calories: 110 per 1/4 cup', 'https://cloudinary.com/item32', 'West African - Staple', 150, 2.59),
+        ('Frozen Chicken Tikka Masala', 'Chicken curry with rice', 'Calories: 320 per meal', 'https://cloudinary.com/item33', 'South Asian - Prepared Meal', 100, 4.99),
+        ('Frozen Bulgogi Beef Bowl', 'Korean marinated beef with rice', 'Calories: 450 per bowl', 'https://cloudinary.com/item34', 'Korean - Prepared Meal', 100, 5.49),
+        ('Microwave Pad Thai', 'Thai-style noodle dish', 'Calories: 400 per container', 'https://cloudinary.com/item35', 'Thai - Prepared Meal', 100, 3.99),
+        ('Frozen Burrito', 'Beans, cheese & rice', 'Calories: 300 per burrito', 'https://cloudinary.com/item36', 'Mexican-American - Prepared Meal', 100, 2.29),
+        ('Mac & Cheese Cup', 'Creamy pasta in a cup', 'Calories: 250 per cup', 'https://cloudinary.com/item37', 'Western - Prepared Meal', 100, 1.49);
+
+    -- Purchase Orders (admin_id = 1, vendor_id = 1 = Patel Brothers)
     INSERT INTO purchase_order (admin_id, vendor_id) VALUES
-        (1, 1), (1, 2);
+        (1, 1),
+        (1, 1);
 
-    -- Sample purchased items
+    -- Purchase Items
     INSERT INTO purchase_item (purchase_id, item_id, quantity) VALUES
-        (1, 1, 20), (1, 2, 30), (2, 3, 40), (2, 4, 50);
+        (1, 1, 10), (1, 2, 20), (1, 4, 50), (1, 5, 30), (1, 6, 30),
+        (2, 23, 5), (2, 27, 10), (2, 29, 60), (2, 32, 20), (2, 36, 10);
+   
+    -- Checkout Orders
+    INSERT INTO checkout_order (student_id, authority_id, self_checkout) VALUES        
+        ('VF21042', 2, FALSE),
+        ('VF74878', 2, TRUE),
+        ('VF87923', 3, TRUE),
+        ('VF96841', 2, FALSE),
+        ('VF21221', 2, TRUE),
+        ('VF72705', 3, FALSE),
+        ('VF28040', 2, TRUE),
+        ('VF16549', 3, FALSE),
+        ('VF39336', 2, TRUE),
+        ('VF73068', 3, TRUE);
 
-    -- Sample checkout orders (admin processing the orders)
-    INSERT INTO checkout_order (student_id, authority_id, self_checkout) VALUES
-        ('VF63056', 2, FALSE),
-        ('VF99099', 2, TRUE);
-
-    -- Sample checked-out items (students purchasing items)
+    -- Checkout Items
     INSERT INTO checkout_item (checkout_id, item_id, quantity) VALUES
-        (1, 1, 2), (1, 2, 1), (2, 3, 3), (2, 4, 2);
+        (1, 1, 2), (1, 4, 1),
+        (2, 2, 3), (2, 5, 1),
+        (3, 3, 1), (3, 6, 2),
+        (4, 7, 2), (4, 1, 1),
+        (5, 8, 1), (5, 2, 1),
+        (6, 9, 1), (6, 3, 2),
+        (7, 10, 2), (7, 4, 1),
+        (8, 11, 2), (8, 5, 2),
+        (9, 12, 2), (9, 6, 1),
+        (10, 13, 1);
 
     -- Sample inventory log (tracking item adjustments)
     INSERT INTO inventory_log (authority_id, item_id, quantity_change, reason) VALUES
-        (2, 1, -2, 'Spoiled'),
-        (2, 2, -1, 'Package Damaged'),
-        (1, 3, -3, 'Shrink'),
-        (1, 4, 2, 'Corrected Item Count');
+        (2, 4, -2, 'Damaged Packaging'),
+        (2, 5, -2, 'Expired cookies removed'),
+        (1, 6, 2, 'Re-stock correction'),
+        (1, 7, 1, 'Extra bag in box from vendor.');
 
 END //
 
