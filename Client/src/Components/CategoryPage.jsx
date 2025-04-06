@@ -4,20 +4,20 @@ import ProductGrid from './Grid';
 import Pagination from './Pages';
 import './Grid.css';
 
-function Produce({ addToCart }) {
+function CategoryPage({ addToCart, category }) {
   const [products, setProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 3;
 
   useEffect(() => {
-    axios.get('http://localhost:8080/api/item/category/Produce')  // Adjust the API endpoint
+    axios.get(`http://localhost:8080/api/item/category/${category}`)  // Dynamic category
       .then((response) => {
         setProducts(response.data);
       })
       .catch((error) => {
-        console.error('Error fetching Produce products:', error);
+        console.error(`Error fetching ${category} products:`, error);
       });
-  }, []);
+  }, [category]);  // Re-run the effect when the category changes
 
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
@@ -33,4 +33,4 @@ function Produce({ addToCart }) {
   );
 }
 
-export default Produce;
+export default CategoryPage;
