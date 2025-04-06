@@ -97,6 +97,17 @@ class ItemJdbcTemplateRepositoryTest {
     }
 
     @Test
+    void shouldNotFindByBadCategory() {
+        // Arrange
+        String category = "Bad Category";
+        // Act
+        List<Item> items = itemJdbcTemplateRepository.findByCategory(category);
+        // Assert
+        assertNotNull(items);
+        assertTrue(items.isEmpty());
+    }
+
+    @Test
     void shouldAdd() {
         // Arrange
         Item testItem = new Item();
@@ -159,7 +170,7 @@ class ItemJdbcTemplateRepositoryTest {
     @Test
     void shouldNotDisableByBadId() {
         // Arrange
-        int itemId = 9999; // Non-existent ID
+        int itemId = 9999;
         // Act
         boolean disabled = itemJdbcTemplateRepository.disableById(itemId);
         // Assert
