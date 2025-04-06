@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -34,26 +35,132 @@ class ItemJdbcTemplateRepositoryTest {
         assertNotNull(items);
         assertFalse(items.isEmpty());
         assertTrue(items.size() == ITEM_COUNT
-                || items.size() == ITEM_COUNT - 1); // Tests may run out of order; if delete is called, we may have one less item.
+                || items.size() == ITEM_COUNT + 1); // Tests may run out of order; if add is called, we may have one more item.
     }
 
     @Test
-    void findById() {
+    void shouldFindById() {
+        // Arrange
+        int itemId = 1;
+        // Act
+        Item item = itemJdbcTemplateRepository.findById(itemId);
+        // Assert
+        assertNotNull(item);
+        assertEquals(itemId, item.getItemId());
+        assertEquals("Sona Masoori Rice", item.getItemName());
+        assertEquals("South Asian - Staple", item.getCategory());
     }
 
     @Test
-    void findByName() {
+    void shouldNotFindByBadId() {
+        // Arrange
+        int itemId = 9999;
+        // Act
+        Item item = itemJdbcTemplateRepository.findById(itemId);
+        // Assert
+        assertNull(item);
     }
 
     @Test
-    void add() {
+    void shouldFindByName() {
+        // Arrange
+        String itemName = "Sona Masoori Rice";
+        // Act
+        Item item = itemJdbcTemplateRepository.findByName(itemName);
+        // Assert
+        assertNotNull(item);
+        assertEquals(1, item.getItemId());
+        assertEquals(itemName, item.getItemName());
+        assertEquals("South Asian - Staple", item.getCategory());
     }
 
     @Test
-    void update() {
+    void shouldNotFindByBadName() {
+        // Arrange
+        String itemName = "Bad Name";
+        // Act
+        Item item = itemJdbcTemplateRepository.findByName(itemName);
+        // Assert
+        assertNull(item);
     }
 
     @Test
-    void disableById() {
+    void shouldAdd() {
+        // Arrange
+        Item testItem = new Item();
+        testItem.setItemName("Test Item");
+        testItem.setItemDescription("Test Description");
+        testItem.setNutritionFacts("Test Nutrition Facts");
+        testItem.setPicturePath("Test Picture Path");
+        testItem.setCategory("Test Category");
+        testItem.setCurrentCount(10);
+        testItem.setItemLimit(5);
+        testItem.setPricePerUnit(BigDecimal.valueOf(9.99));
+
+        // Act
+        Item addedItem = itemJdbcTemplateRepository.add(testItem);
+
+        // Assert
+        assertNotNull(addedItem);
+        assertEquals(testItem.getItemName(), addedItem.getItemName());
+        assertEquals(ITEM_COUNT + 1, addedItem.getItemId());
+    }
+
+    @Test
+    void shouldUpdate() {
+        // Arrange
+        int itemId = 2;
+        Item itemToUpdate = itemJdbcTemplateRepository.findById(itemId);
+        assertNotNull(itemToUpdate);
+        itemToUpdate.setItemDescription("Updated Description");
+
+        // Act
+        boolean success = itemJdbcTemplateRepository.update(itemToUpdate);
+
+        // Assert
+        assertTrue(success);
+        assertEquals("Updated Description", itemJdbcTemplateRepository.findById(itemId).getItemDescription());
+    }
+
+    @Test
+    void shouldNotUpdateBadId() {
+        // Arrange
+        Item itemToUpdate = new Item();
+        itemToUpdate.setItemId(9999); // Non-existent ID
+        itemToUpdate.setItemDescription("Updated Description");
+
+        // Act
+        boolean success = itemJdbcTemplateRepository.update(itemToUpdate);
+
+        // Assert
+        assertFalse(success);
+    }
+
+    @Test
+    void shouldDisableById() {
+        // Arrange
+        int itemId = 3;
+        Item itemToDisable = itemJdbcTemplateRepository.findById(itemId);
+        assertNotNull(itemToDisable);
+        assertTrue(itemToDisable.isEnabled());
+
+        // Act
+        boolean success = itemJdbcTemplateRepository.disableById(itemId);
+
+        // Assert
+        assertTrue(success);
+        assertFalse(itemJdbcTemplateRepository.findById(itemId).isEnabled());
+    }
+
+    @Test
+    void shouldNotDisableByBadId() {
+        // Arrange
+        int itemId = 9999; // Non-existent ID
+
+        // Act
+        boolean success = itemJdbcTemplateRepository.disableById(itemId);
+
+        // Assert
+        assertFalse(success);
     }
 }
