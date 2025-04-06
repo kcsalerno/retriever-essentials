@@ -85,6 +85,18 @@ class ItemJdbcTemplateRepositoryTest {
     }
 
     @Test
+    void shouldFindByCategory() {
+        // Arrange
+        String category = "South Asian - Staple";
+        // Act
+        List<Item> items = itemJdbcTemplateRepository.findByCategory(category);
+        // Assert
+        assertNotNull(items);
+        assertFalse(items.isEmpty());
+        assertEquals(3, items.size());
+    }
+
+    @Test
     void shouldAdd() {
         // Arrange
         Item testItem = new Item();

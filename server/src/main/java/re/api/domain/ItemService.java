@@ -28,6 +28,10 @@ public class ItemService {
         return repository.findByName(name);
     }
 
+    public List<Item> findByCategory(String category) {
+        return repository.findByCategory(category);
+    }
+
     @Transactional
     public Result<Item> add(Item item) {
         Result<Item> result = validate(item);

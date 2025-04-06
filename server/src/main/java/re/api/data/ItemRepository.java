@@ -10,6 +10,8 @@ public interface ItemRepository {
 
     Item findByName(String name);
 
+    List<Item> findByCategory(String category);
+
     Item add(Item item);
 
     boolean update(Item item);

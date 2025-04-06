@@ -62,6 +62,18 @@ public class ItemJdbcTemplateRepository implements ItemRepository {
     }
 
     @Override
+    public List<Item> findByCategory(String category) {
+        final String sql = """
+                SELECT item_id, item_name, item_description, nutrition_facts,
+                       picture_path, category, current_count, item_limit, price_per_unit, enabled
+                FROM item
+                WHERE category = ?;
+                """;
+
+        return jdbcTemplate.query(sql, new ItemMapper(), category);
+    }
+
+    @Override
     public Item add(Item item) {
         final String sql = """
                 INSERT INTO item (item_name, item_description, nutrition_facts,

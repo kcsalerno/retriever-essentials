@@ -22,7 +22,6 @@ public class ItemController {
 
     @GetMapping
     public List<Item> findAll() {
-        System.out.println("Inside ItemController.findAll()");
         return service.findAll();
     }
 
@@ -47,6 +46,15 @@ public class ItemController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(item);
+    }
+
+    @GetMapping("/category/{category}")
+    public ResponseEntity<List<Item>> findByCategory(@PathVariable String category) {
+        List<Item> items = service.findByCategory(category);
+        if (items.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(items);
     }
 
     @PostMapping
