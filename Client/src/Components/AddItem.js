@@ -35,7 +35,7 @@ function AddItem() {
 
   const uploadImageToCloudinary = async () => {
     const cloudinaryUrl = 'https://api.cloudinary.com/v1_1/re-images/image/upload'; // Cloudinary URL
-    const uploadPreset = 'YOUR_UPLOAD_PRESET'; // Use your upload preset
+    const uploadPreset = 'unsigned_upload'; // Use your upload preset
 
     const formData = new FormData();
     formData.append('file', imageFile);
@@ -53,23 +53,25 @@ function AddItem() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     // Upload the image to Cloudinary before submitting the form
     const imageUrl = await uploadImageToCloudinary();
     if (!imageUrl) {
       alert('Image upload failed!');
       return;
     }
-
+  
     const newItem = {
-      name: formData.name,
-      category: formData.category,
-      description: formData.description,
-      quantity: formData.quantity,
-      nutrition: formData.nutrition,
-      imageUrl: imageUrl, // Use the image URL returned from Cloudinary
+      itemName: formData.name,              
+      itemDescription: formData.description,  
+      nutritionFacts: `Calories: ${formData.nutrition.calories} per serving`, 
+      picturePath: imageUrl,                  
+      category: formData.category,            
+      currentCount: formData.quantity,        
+      itemLimit: 5,                          
+      pricePerUnit: 1.99                      
     };
-
+  
     try {
       await axios.post('http://localhost:8080/api/item', newItem);
       alert('Item added successfully!');
@@ -88,6 +90,7 @@ function AddItem() {
       alert('Error adding item');
     }
   };
+  
 
   return (
     <div>
