@@ -273,10 +273,10 @@ BEGIN
         (4, 7, 2), (4, 1, 1),
         (5, 8, 1), (5, 2, 1),
         (6, 9, 1), (6, 3, 2),
-        (7, 10, 2), (7, 4, 1),
-        (8, 11, 2), (8, 5, 2),
-        (9, 12, 2), (9, 6, 1),
-        (10, 13, 1);
+        (7, 10, 2), (7, 24, 1),
+        (8, 11, 2), (8, 25, 2),
+        (9, 12, 2), (9, 23, 1),
+        (10, 25, 1);
 
     -- Sample inventory log (tracking item adjustments)
     INSERT INTO inventory_log (authority_id, item_id, quantity_change, reason) VALUES

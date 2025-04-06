@@ -68,3 +68,44 @@ SELECT il.log_id,
 FROM inventory_log il
 LEFT JOIN app_user u ON il.authority_id = u.app_user_id
 JOIN item i ON il.item_id = i.item_id;
+
+-- Popular Items Data
+SELECT i.item_name, SUM(ci.quantity) AS total_checkouts
+FROM checkout_item ci
+JOIN item i ON ci.item_id = i.item_id
+GROUP BY ci.item_id
+ORDER BY total_checkouts DESC
+LIMIT 5;
+
+-- Popular Categories Data
+SELECT i.category, SUM(ci.quantity) AS total_checkouts
+FROM checkout_item ci
+JOIN item i ON ci.item_id = i.item_id
+GROUP BY i.category
+ORDER BY total_checkouts DESC
+LIMIT 5;
+
+
+select * from checkout_item ci;
+-- Checkout Items Data
+SELECT 
+    ci.checkout_id,
+    ci.item_id,
+    ci.quantity,
+
+    i.item_name,
+    i.item_description,
+    i.category,
+    i.price_per_unit,
+
+    co.student_id,
+    co.authority_id,
+    co.self_checkout,
+
+    au.app_user_id AS authority_user_id,
+    au.username AS authority_email
+
+FROM checkout_item ci
+JOIN item i ON ci.item_id = i.item_id
+JOIN checkout_order co ON ci.checkout_id = co.checkout_id
+JOIN app_user au ON co.authority_id = au.app_user_id;

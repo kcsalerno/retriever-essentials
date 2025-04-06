@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "*") // Allow all cross-origin requests
+@CrossOrigin
 @RequestMapping("/api/item")
 public class ItemController {
     private final ItemService service;
@@ -22,7 +22,13 @@ public class ItemController {
 
     @GetMapping
     public List<Item> findAll() {
+        System.out.println("Inside ItemController.findAll()");
         return service.findAll();
+    }
+
+    @GetMapping("/test")
+    public ResponseEntity<String> test() {
+        return ResponseEntity.ok("Hello from ItemController!");
     }
 
     @GetMapping("/item-id/{itemId}")
@@ -34,7 +40,7 @@ public class ItemController {
         return ResponseEntity.ok(item);
     }
 
-    @GetMapping("/{itemName}")
+    @GetMapping("/name/{itemName}")
     public ResponseEntity<Item> findByName(@PathVariable String itemName) {
         Item item = service.findByName(itemName);
         if (item == null) {
