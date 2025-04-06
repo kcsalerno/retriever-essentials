@@ -8,20 +8,12 @@ import Pagination from './Components/Pages';
 import BottomNav from './Components/Nav';
 import FAQ from './Components/FAQ';
 import Location from './Components/Location';
-import Pantry from './Components/Pantry';
-import Produce from './Components/Produce';
-import Meat from './Components/Meat';
-import Frozen from './Components/Frozen';
-import American from './Components/American';
-import Mexican from './Components/Mexican';
-import Indian from './Components/Indian';
-import Bread from './Components/Bread';
-import Asian from './Components/Asian';
+import CategoryPage from './Components/CategoryPage';  // Import the new CategoryPage component
 import AboutUs from './Components/AboutUs';
 import ScanID from './Components/Scan';
 import Checkout from './Components/Checkout';
 import ProductDetails from './Components/ProductDetails';
-import AddItem from './Components/AddItem'; // New Add Item Page
+import AddItem from './Components/AddItem';  // New Add Item Page
 import './App.css';
 
 function App() {
@@ -86,15 +78,15 @@ function App() {
               <Route path="/" element={<ScanID />} />
               <Route path="/about-us" element={<AboutUs />} />
               <Route path="/location" element={<Location />} />
-              <Route path="/pantry" element={<Pantry addToCart={addToCart} />} />
-              <Route path="/produce" element={<Produce addToCart={addToCart} />} />
-              <Route path="/meat" element={<Meat addToCart={addToCart} />} />
-              <Route path="/frozen" element={<Frozen addToCart={addToCart} />} />
-              <Route path="/american" element={<American addToCart={addToCart} />} />
-              <Route path="/mexican" element={<Mexican addToCart={addToCart} />} />
-              <Route path="/indian" element={<Indian addToCart={addToCart} />} />
-              <Route path="/bread" element={<Bread addToCart={addToCart} />} />
-              <Route path="/asian" element={<Asian addToCart={addToCart} />} />
+              <Route path="/pantry" element={<CategoryPage addToCart={addToCart} category="Pantry" />} />
+              <Route path="/produce" element={<CategoryPage addToCart={addToCart} category="Produce" />} />
+              <Route path="/meat" element={<CategoryPage addToCart={addToCart} category="Meat" />} />
+              <Route path="/frozen" element={<CategoryPage addToCart={addToCart} category="Frozen" />} />
+              <Route path="/american" element={<CategoryPage addToCart={addToCart} category="American" />} />
+              <Route path="/mexican" element={<CategoryPage addToCart={addToCart} category="Mexican" />} />
+              <Route path="/indian" element={<CategoryPage addToCart={addToCart} category="Indian" />} />
+              <Route path="/bread" element={<CategoryPage addToCart={addToCart} category="Bread" />} />
+              <Route path="/asian" element={<CategoryPage addToCart={addToCart} category="Asian" />} />
               <Route path="/faq" element={<FAQ />} />
               <Route path='/checkout' element={<Checkout cart={cart} clearCart={clearCart} />} />
               <Route path="/product-grid" element={<ProductGridWithPagination products={products} />} />
@@ -137,6 +129,7 @@ function App() {
 }
 
 export default App;
+
 
 
 
