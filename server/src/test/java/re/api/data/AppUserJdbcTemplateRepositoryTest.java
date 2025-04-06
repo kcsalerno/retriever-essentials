@@ -105,10 +105,8 @@ class AppUserJdbcTemplateRepositoryTest {
         AppUser userToUpdate = appUserJdbcTemplateRepository.findById(userId);
         assertNotNull(userToUpdate);
         String newPassword = "newPassword";
-
         // Act
         boolean updatedUser = appUserJdbcTemplateRepository.updatePassword(userToUpdate.getAppUserId(),newPassword);
-
         // Assert
         assertTrue(updatedUser);
         assertTrue(appUserJdbcTemplateRepository.findById(userId).getPassword().equals(newPassword));
@@ -121,10 +119,8 @@ class AppUserJdbcTemplateRepositoryTest {
         AppUser userToUpdate = appUserJdbcTemplateRepository.findById(userId);
         assertNull(userToUpdate);
         String newPassword = "newPassword";
-
         // Act
         boolean updatedUser = appUserJdbcTemplateRepository.updatePassword(userId, newPassword);
-
         // Assert
         assertFalse(updatedUser);
     }
@@ -132,14 +128,12 @@ class AppUserJdbcTemplateRepositoryTest {
     @Test
     void shouldDisableById() {
         // Arrange
-        int userId = 3;
+        int userId = 2;
         AppUser userToDisable = appUserJdbcTemplateRepository.findById(userId);
         assertNotNull(userToDisable);
         assertTrue(userToDisable.isEnabled());
-
         // Act
         boolean disabledUser = appUserJdbcTemplateRepository.disableById(userToDisable.getAppUserId());
-
         // Assert
         assertTrue(disabledUser);
         assertFalse(appUserJdbcTemplateRepository.findById(userId).isEnabled());
@@ -151,10 +145,8 @@ class AppUserJdbcTemplateRepositoryTest {
         int userId = 9999;
         AppUser userToDisable = appUserJdbcTemplateRepository.findById(userId);
         assertNull(userToDisable);
-
         // Act
         boolean disabledUser = appUserJdbcTemplateRepository.disableById(userId);
-
         // Assert
         assertFalse(disabledUser);
     }
@@ -162,16 +154,14 @@ class AppUserJdbcTemplateRepositoryTest {
     @Test
     void shouldEnableById() {
         // Arrange
-        int userId = 4;
+        int userId = 3;
         AppUser testUser = appUserJdbcTemplateRepository.findById(userId);
         assertNotNull(testUser);
         assertTrue(testUser.isEnabled());
         boolean disabled = appUserJdbcTemplateRepository.disableById(testUser.getAppUserId());
         assertTrue(disabled);
-
         // Act
         boolean enabled = appUserJdbcTemplateRepository.enableById(testUser.getAppUserId());
-
         // Assert
         assertTrue(enabled);
         assertTrue(appUserJdbcTemplateRepository.findById(userId).isEnabled());
@@ -183,10 +173,8 @@ class AppUserJdbcTemplateRepositoryTest {
         int userId = 9999;
         AppUser testUser = appUserJdbcTemplateRepository.findById(userId);
         assertNull(testUser);
-
         // Act
         boolean enabled = appUserJdbcTemplateRepository.enableById(userId);
-
         // Assert
         assertFalse(enabled);
     }

@@ -283,7 +283,7 @@ BEGIN
         (2, 4, -2, 'Damaged Packaging'),
         (2, 5, -2, 'Expired cookies removed'),
         (1, 6, 2, 'Re-stock correction'),
-        (1, 7, 1, 'Extra bag in box from vendor.');
+        (1, 4, 1, 'Extra bag in box from vendor.');
 
 END //
 

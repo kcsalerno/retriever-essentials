@@ -90,10 +90,8 @@ class VendorJdbcTemplateRepositoryTest {
         testVendor.setVendorName("Test Vendor");
         testVendor.setPhoneNumber("123-456-7890");
         testVendor.setContactEmail("test@email.com");
-
         // Act
         Vendor addedVendor = vendorJdbcTemplateRepository.add(testVendor);
-
         // Assert
         assertNotNull(addedVendor);
         assertEquals(testVendor.getVendorName(), addedVendor.getVendorName());
@@ -107,10 +105,8 @@ class VendorJdbcTemplateRepositoryTest {
         Vendor vendorToUpdate = vendorJdbcTemplateRepository.findById(vendorId);
         assertNotNull(vendorToUpdate);
         vendorToUpdate.setVendorName("Updated Vendor");
-
         // Act
         boolean updated = vendorJdbcTemplateRepository.update(vendorToUpdate);
-
         // Assert
         assertTrue(updated);
         assertEquals("Updated Vendor", vendorJdbcTemplateRepository.findById(vendorId).getVendorName());
@@ -122,10 +118,8 @@ class VendorJdbcTemplateRepositoryTest {
         Vendor vendorToUpdate = new Vendor();
         vendorToUpdate.setVendorId(9999);
         vendorToUpdate.setVendorName("Updated Vendor");
-
         // Act
         boolean updated = vendorJdbcTemplateRepository.update(vendorToUpdate);
-
         // Assert
         assertFalse(updated);
     }
@@ -137,10 +131,8 @@ class VendorJdbcTemplateRepositoryTest {
         Vendor vendorToDisable = vendorJdbcTemplateRepository.findById(vendorId);
         assertNotNull(vendorToDisable);
         assertTrue(vendorToDisable.isEnabled());
-
         // Act
         boolean disabled = vendorJdbcTemplateRepository.disableById(vendorId);
-
         // Assert
         assertTrue(disabled);
         assertFalse(vendorJdbcTemplateRepository.findById(vendorId).isEnabled());
@@ -152,10 +144,8 @@ class VendorJdbcTemplateRepositoryTest {
         int vendorId = 9999;
         Vendor vendorToDisable = vendorJdbcTemplateRepository.findById(vendorId);
         assertNull(vendorToDisable);
-
         // Act
         boolean disabled = vendorJdbcTemplateRepository.disableById(vendorId);
-
         // Assert
         assertFalse(disabled);
     }

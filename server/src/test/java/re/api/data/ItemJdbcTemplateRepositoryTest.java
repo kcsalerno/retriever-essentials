@@ -96,10 +96,8 @@ class ItemJdbcTemplateRepositoryTest {
         testItem.setCurrentCount(10);
         testItem.setItemLimit(5);
         testItem.setPricePerUnit(BigDecimal.valueOf(9.99));
-
         // Act
         Item addedItem = itemJdbcTemplateRepository.add(testItem);
-
         // Assert
         assertNotNull(addedItem);
         assertEquals(testItem.getItemName(), addedItem.getItemName());
@@ -113,10 +111,8 @@ class ItemJdbcTemplateRepositoryTest {
         Item itemToUpdate = itemJdbcTemplateRepository.findById(itemId);
         assertNotNull(itemToUpdate);
         itemToUpdate.setItemDescription("Updated Description");
-
         // Act
         boolean updated = itemJdbcTemplateRepository.update(itemToUpdate);
-
         // Assert
         assertTrue(updated);
         assertEquals("Updated Description", itemJdbcTemplateRepository.findById(itemId).getItemDescription());
@@ -128,10 +124,8 @@ class ItemJdbcTemplateRepositoryTest {
         Item itemToUpdate = new Item();
         itemToUpdate.setItemId(9999); // Non-existent ID
         itemToUpdate.setItemDescription("Updated Description");
-
         // Act
         boolean updated = itemJdbcTemplateRepository.update(itemToUpdate);
-
         // Assert
         assertFalse(updated);
     }
@@ -143,10 +137,8 @@ class ItemJdbcTemplateRepositoryTest {
         Item itemToDisable = itemJdbcTemplateRepository.findById(itemId);
         assertNotNull(itemToDisable);
         assertTrue(itemToDisable.isEnabled());
-
         // Act
         boolean disabled = itemJdbcTemplateRepository.disableById(itemId);
-
         // Assert
         assertTrue(disabled);
         assertFalse(itemJdbcTemplateRepository.findById(itemId).isEnabled());
@@ -156,10 +148,8 @@ class ItemJdbcTemplateRepositoryTest {
     void shouldNotDisableByBadId() {
         // Arrange
         int itemId = 9999; // Non-existent ID
-
         // Act
         boolean disabled = itemJdbcTemplateRepository.disableById(itemId);
-
         // Assert
         assertFalse(disabled);
     }
