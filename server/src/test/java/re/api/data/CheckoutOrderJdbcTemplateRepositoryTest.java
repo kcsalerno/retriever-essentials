@@ -143,4 +143,14 @@ class CheckoutOrderJdbcTemplateRepositoryTest {
         assertTrue(CHECKOUT_ORDER_COUNT == checkoutOrderJdbcTemplateRepository.findAll().size()
                 || CHECKOUT_ORDER_COUNT - 1 == checkoutOrderJdbcTemplateRepository.findAll().size());
     }
+
+    @Test
+    void shouldNotDeleteByBadId() {
+        // Arrange
+        int checkoutOrderId = 9999;
+        // Act
+        boolean deleted = checkoutOrderJdbcTemplateRepository.deleteById(checkoutOrderId);
+        // Assert
+        assertFalse(deleted);
+    }
 }

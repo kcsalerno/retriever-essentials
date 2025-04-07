@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class PurchaseItemJdbcTemplateRepositoryTest {
-    private final int PURCHASE_ITEM_COUNT = 10;
+    private final int PURCHASE_ITEM_COUNT = 15;
 
     @Autowired
     PurchaseItemJdbcTemplateRepository purchaseItemJdbcTemplateRepository;
@@ -53,16 +53,7 @@ class PurchaseItemJdbcTemplateRepositoryTest {
         assertNull(purchaseItem);
     }
 
-    //-- Purchase Orders (admin_id = 1, vendor_id = 1 = Patel Brothers)
-    //    INSERT INTO purchase_order (admin_id, vendor_id) VALUES
-    //        (1, 1),
-    //        (1, 1);
-    //
-    //    -- Purchase Items
-    //    INSERT INTO purchase_item (purchase_id, item_id, quantity) VALUES
-    //        (1, 1, 10), (1, 2, 20), (1, 4, 50), (1, 5, 30), (1, 6, 30),
-    //        (2, 23, 5), (2, 27, 10), (2, 29, 60), (2, 32, 20), (2, 36, 10);
-
+    // (1, 1, 10), (1, 2, 20), (1, 4, 50), (1, 5, 30), (1, 6, 30),
     @Test
     void shouldFindByPurchaseOrderId() {
         // Arrange
@@ -89,28 +80,92 @@ class PurchaseItemJdbcTemplateRepositoryTest {
     @Test
     void shouldAdd() {
         // Arrange
-        PurchaseItem purchaseItem = new PurchaseItem();
-        purchaseItem.setPurchaseOrderId(2);
-        purchaseItem.setItemId(24);
-        purchaseItem.setQuantity(10);
+        PurchaseItem testPurchaseItem = new PurchaseItem();
+        testPurchaseItem.setPurchaseOrderId(2);
+        testPurchaseItem.setItemId(24);
+        testPurchaseItem.setQuantity(10);
         // Act
-        PurchaseItem addedPurchaseItem = purchaseItemJdbcTemplateRepository.add(purchaseItem);
+        PurchaseItem addedPurchaseItem = purchaseItemJdbcTemplateRepository.add(testPurchaseItem);
         // Assert
         assertNotNull(addedPurchaseItem);
+        assertEquals(testPurchaseItem.getItemId(), addedPurchaseItem.getItemId());
+        assertEquals(testPurchaseItem.getQuantity(), addedPurchaseItem.getQuantity());
         assertEquals(PURCHASE_ITEM_COUNT + 1, addedPurchaseItem.getPurchaseItemId());
-        assertEquals(purchaseItem.getItemId(), addedPurchaseItem.getItemId());
-        assertEquals(purchaseItem.getQuantity(), addedPurchaseItem.getQuantity());
     }
 
     @Test
-    void update() {
+    void shouldUpdate() {
+        // Arrange
+        int purchaseItemId = 2;
+        int testQuantity = 30;
+        PurchaseItem purchaseItemToUpdate = purchaseItemJdbcTemplateRepository.findById(purchaseItemId);
+        assertNotNull(purchaseItemToUpdate);
+        int initialQuantity = purchaseItemToUpdate.getQuantity();
+        purchaseItemToUpdate.setQuantity(testQuantity);
+        // Act
+        boolean updated = purchaseItemJdbcTemplateRepository.update(purchaseItemToUpdate);
+        // Assert
+        assertTrue(updated);
+        assertNotEquals(initialQuantity, purchaseItemJdbcTemplateRepository.findById(purchaseItemId).getQuantity());
+        assertEquals(testQuantity, purchaseItemJdbcTemplateRepository.findById(purchaseItemId).getQuantity());
     }
 
     @Test
-    void deleteById() {
+    void shouldNotUpdateBadId() {
+        // Arrange
+        PurchaseItem purchaseItemToUpdate = new PurchaseItem();
+        purchaseItemToUpdate.setPurchaseItemId(9999);
+        purchaseItemToUpdate.setQuantity(30);
+        // Act
+        boolean updated = purchaseItemJdbcTemplateRepository.update(purchaseItemToUpdate);
+        // Assert
+        assertFalse(updated);
     }
 
     @Test
-    void deleteByPurchaseOrderId() {
+    void shouldDeleteById() {
+        // Arrange
+        int purchaseItemId = 11;
+        PurchaseItem purchaseItemToDelete = purchaseItemJdbcTemplateRepository.findById(purchaseItemId);
+        assertNotNull(purchaseItemToDelete);
+        int initialItemCountFromParentOrder = purchaseItemJdbcTemplateRepository.findByPurchaseOrderId(
+                purchaseItemToDelete.getPurchaseOrderId()).size();
+        // Act
+        boolean deleted = purchaseItemJdbcTemplateRepository.deleteById(purchaseItemId);
+        // Assert
+        assertTrue(deleted);
+        assertNull(purchaseItemJdbcTemplateRepository.findById(purchaseItemId));
+        assertEquals(initialItemCountFromParentOrder - 1,
+                purchaseItemJdbcTemplateRepository.findByPurchaseOrderId(
+                        purchaseItemToDelete.getPurchaseOrderId()).size());
+    }
+
+    @Test
+    void shouldNotDeleteByBadId() {
+        // Arrange
+        int purchaseItemId = 9999;
+        // Act
+        boolean deleted = purchaseItemJdbcTemplateRepository.deleteById(purchaseItemId);
+        // Assert
+        assertFalse(deleted);
+    }
+
+    @Test
+    void shouldDeleteByPurchaseOrderId() {
+        // Arrange
+        int purchaseOrderId = 3;
+        List<PurchaseItem> purchaseItemsToDelete = purchaseItemJdbcTemplateRepository.findByPurchaseOrderId(purchaseOrderId);
+        assertNotNull(purchaseItemsToDelete);
+        assertFalse(purchaseItemsToDelete.isEmpty());
+        int initialItemCountFromParentOrder = purchaseItemJdbcTemplateRepository.findByPurchaseOrderId(
+                purchaseOrderId).size();
+        // Act
+        boolean deleted = purchaseItemJdbcTemplateRepository.deleteByPurchaseOrderId(purchaseOrderId);
+        // Assert
+        assertTrue(deleted);
+        for (PurchaseItem purchaseItem : purchaseItemsToDelete) {
+            assertNull(purchaseItemJdbcTemplateRepository.findById(purchaseItem.getPurchaseItemId()));
+        }
+        assertEquals(0, purchaseItemJdbcTemplateRepository.findByPurchaseOrderId(purchaseOrderId).size());
     }
 }

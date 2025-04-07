@@ -243,15 +243,17 @@ BEGIN
         ('Mac & Cheese Cup', 'Creamy pasta in a cup', 'Calories: 250 per cup', 'https://cloudinary.com/item37', 'Western - Prepared Meal', 100, 1.49);
 
     -- Purchase Orders (admin_id = 1, vendor_id = 1 = Patel Brothers)
-    INSERT INTO purchase_order (admin_id, vendor_id) VALUES
-        (1, 1),
-        (1, 1);
+    INSERT INTO purchase_order (admin_id, vendor_id, purchase_date) VALUES
+        (1, 1, '2025-03-18 12:15:00'),
+        (1, 1, '2025-03-20 15:45:00'),
+        (1, 2, '2025-03-27 11:05:00');
 
     -- Purchase Items
     INSERT INTO purchase_item (purchase_id, item_id, quantity) VALUES
         (1, 1, 10), (1, 2, 20), (1, 4, 50), (1, 5, 30), (1, 6, 30),
-        (2, 23, 5), (2, 27, 10), (2, 29, 60), (2, 32, 20), (2, 36, 10);
-   
+        (2, 13, 5), (2, 17, 10), (2, 19, 60), (2, 12, 20), (2, 16, 10),
+        (3, 23, 12), (3, 27, 8), (3, 29, 4), (3, 28, 20), (3, 26, 10);
+        
 	-- Adjusted Checkout Orders to simulate busiest hours per open day
 	INSERT INTO checkout_order (student_id, authority_id, self_checkout, checkout_date) VALUES        
 		-- Monday (2 checkouts around 12 PM)

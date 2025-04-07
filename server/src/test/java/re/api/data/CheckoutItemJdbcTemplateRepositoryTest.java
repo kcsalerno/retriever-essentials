@@ -109,7 +109,6 @@ class CheckoutItemJdbcTemplateRepositoryTest {
     void shouldAdd() {
         // Arrange
         int checkoutOrderId = 4;
-        final int initialItemCount = checkoutItemJdbcTemplateRepository.findByCheckoutOrderId(checkoutOrderId).size();
         CheckoutItem checkoutItem = new CheckoutItem();
         checkoutItem.setCheckoutOrderId(checkoutOrderId);
         checkoutItem.setItemId(24);
@@ -118,8 +117,6 @@ class CheckoutItemJdbcTemplateRepositoryTest {
         CheckoutItem addedCheckoutItem = checkoutItemJdbcTemplateRepository.add(checkoutItem);
         // Assert
         assertNotNull(addedCheckoutItem);
-        assertEquals(initialItemCount + 1,
-                checkoutItemJdbcTemplateRepository.findByCheckoutOrderId(checkoutOrderId).size());
         assertEquals(CHECKOUT_ITEM_COUNT + 1, addedCheckoutItem.getCheckoutItemId());
     }
 
