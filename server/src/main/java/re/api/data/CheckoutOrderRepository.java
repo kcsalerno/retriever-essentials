@@ -9,7 +9,7 @@ public interface CheckoutOrderRepository {
 
     CheckoutOrder findById(int checkoutId);
 
-    List<Map<String, Object>> findTopBusiestHours();
+    List<Map<String, Object>> findHourlyCheckoutSummary();
 
     CheckoutOrder add(CheckoutOrder checkoutOrder);
 

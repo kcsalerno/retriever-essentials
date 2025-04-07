@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class CheckoutItemJdbcTemplateRepositoryTest {
+    private final int CHECKOUT_ITEM_COUNT = 19;
 
     @Autowired
     CheckoutItemJdbcTemplateRepository checkoutItemJdbcTemplateRepository;
@@ -79,6 +80,7 @@ class CheckoutItemJdbcTemplateRepositoryTest {
         assertTrue(checkoutItems.isEmpty());
     }
 
+    // Top Result: ('Sona Masoori Rice', '3')
     @Test
     void findPopularItems() {
         // Arrange
@@ -88,8 +90,10 @@ class CheckoutItemJdbcTemplateRepositoryTest {
         assertNotNull(popularItems);
         assertFalse(popularItems.isEmpty());
         assertEquals(5, popularItems.size());
+        assertEquals("Toor Dahl (Red Lentils)", popularItems.getFirst().get("item_name"));
     }
 
+    // Top Result: ('South Asian - Snack', '14')
     @Test
     void findPopularCategories() {
         // Arrange
@@ -99,6 +103,7 @@ class CheckoutItemJdbcTemplateRepositoryTest {
         assertNotNull(popularCategories);
         assertFalse(popularCategories.isEmpty());
         assertEquals(5, popularCategories.size());
+        assertEquals("South Asian - Snack", popularCategories.getFirst().get("category"));
     }
 
     @Test
@@ -116,6 +121,7 @@ class CheckoutItemJdbcTemplateRepositoryTest {
         assertNotNull(addedCheckoutItem);
         assertEquals(initialItemCount + 1,
                 checkoutItemJdbcTemplateRepository.findByCheckoutOrderId(checkoutOrderId).size());
+        assertEquals(CHECKOUT_ITEM_COUNT + 1, addedCheckoutItem.getCheckoutItemId());
     }
 
     @Test
@@ -149,7 +155,7 @@ class CheckoutItemJdbcTemplateRepositoryTest {
     @Test
     void shouldDeleteById() {
         // Arrange
-        int checkoutItemId = 3;
+        int checkoutItemId = 15;
         CheckoutItem checkoutItemToDelete = checkoutItemJdbcTemplateRepository.findById(checkoutItemId);
         assertNotNull(checkoutItemToDelete);
         int initialItemCountFromParentOrder = checkoutItemJdbcTemplateRepository.findByCheckoutOrderId(

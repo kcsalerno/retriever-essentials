@@ -52,8 +52,8 @@ public class CheckoutOrderService {
         return checkoutOrder;
     }
 
-    public List<Map<String, Object>> findTopBusiestHours() {
-        return checkoutOrderRepository.findTopBusiestHours();
+    public List<Map<String, Object>> findHourlyCheckoutSummary() {
+        return checkoutOrderRepository.findHourlyCheckoutSummary();
     }
 
     @Transactional

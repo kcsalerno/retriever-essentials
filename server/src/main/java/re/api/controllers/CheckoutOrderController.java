@@ -36,9 +36,9 @@ public class CheckoutOrderController {
         return ResponseEntity.ok(order);
     }
 
-    @GetMapping("/busiest-hours")
-    public List<Map<String, Object>> findBusiestHours() {
-        return service.findTopBusiestHours();
+    @GetMapping("/hourly-checkout-summary")
+    public List<Map<String, Object>> findHourlyCheckoutSummary() {
+        return service.findHourlyCheckoutSummary();
     }
 
     @PostMapping
