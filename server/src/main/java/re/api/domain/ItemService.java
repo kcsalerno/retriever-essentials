@@ -92,18 +92,20 @@ public class ItemService {
 
         if (Validations.isNullOrBlank(item.getItemName())) {
             result.addMessage(ResultType.INVALID, "Item name is required");
-        } else if (item.getItemName().length() > 20) {
-            result.addMessage(ResultType.INVALID, "Item name must be 20 characters or fewer");
+        } else if (item.getItemName().length() > 55) {
+            result.addMessage(ResultType.INVALID, "Item name must be 55 characters or fewer");
         }
 
         if (!Validations.isNullOrBlank(item.getPicturePath()) && !Validations.isValidUrl(item.getPicturePath())) {
             result.addMessage(ResultType.INVALID, "Picture path must be a valid URL");
+        } else if (item.getPicturePath().length() > 255) {
+            result.addMessage(ResultType.INVALID, "Picture path must be 255 characters or fewer");
         }
 
         if (Validations.isNullOrBlank(item.getCategory())) {
             result.addMessage(ResultType.INVALID, "Category is required");
-        } else if (item.getCategory().length() > 20) {
-            result.addMessage(ResultType.INVALID, "Category must be 20 characters or fewer");
+        } else if (item.getCategory().length() > 55) {
+            result.addMessage(ResultType.INVALID, "Category must be 55 characters or fewer");
         }
 
         if (item.getCurrentCount() < 0) {
