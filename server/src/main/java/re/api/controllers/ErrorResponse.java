@@ -4,7 +4,6 @@ import re.api.domain.Result;
 import re.api.domain.ResultType;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.time.LocalDateTime;
 
