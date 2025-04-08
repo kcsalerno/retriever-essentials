@@ -53,7 +53,7 @@ public class PurchaseOrderJdbcTemplateRepository implements PurchaseOrderReposit
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, purchaseOrder.getAdminId());
             ps.setInt(2, purchaseOrder.getVendorId());
-            ps.setObject(3, purchaseOrder.getPurchaseDate());
+            ps.setTimestamp(3, java.sql.Timestamp.valueOf(purchaseOrder.getPurchaseDate()));
             return ps;
         }, keyHolder);
 

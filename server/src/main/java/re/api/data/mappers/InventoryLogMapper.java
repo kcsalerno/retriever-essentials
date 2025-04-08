@@ -5,7 +5,6 @@ import re.api.models.InventoryLog;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 
 public class InventoryLogMapper implements RowMapper<InventoryLog> {
     @Override

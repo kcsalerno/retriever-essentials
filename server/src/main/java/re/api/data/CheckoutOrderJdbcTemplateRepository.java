@@ -43,7 +43,7 @@ public class CheckoutOrderJdbcTemplateRepository implements CheckoutOrderReposit
     }
 
     @Override
-    public List<Map<String, Object>> findTopBusiestHours() {
+    public List<Map<String, Object>> findHourlyCheckoutSummary() {
         final String sql = """
                 SELECT
                     DAYNAME(checkout_date) AS day,
@@ -51,7 +51,8 @@ public class CheckoutOrderJdbcTemplateRepository implements CheckoutOrderReposit
                     COUNT(*) AS total_checkouts
                 FROM checkout_order
                 GROUP BY day, hour
-                ORDER BY FIELD(day, 'Sunday', 'Monday', 'Tuesday', 'Wednesday','Thursday', 'Friday', 'Saturday'), hour;
+                ORDER BY
+                    FIELD(day, 'Sunday', 'Monday', 'Tuesday', 'Wednesday','Thursday', 'Friday', 'Saturday'), hour;
                 """;
 
         return jdbcTemplate.queryForList(sql);

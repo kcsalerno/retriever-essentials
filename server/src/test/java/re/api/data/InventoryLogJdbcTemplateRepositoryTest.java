@@ -124,15 +124,14 @@ class InventoryLogJdbcTemplateRepositoryTest {
         testLog.setTimeStamp(LocalDateTime.now());
         // Act
         InventoryLog addedLog = inventoryLogJdbcTemplateRepository.add(testLog);
-        InventoryLog foundLog = inventoryLogJdbcTemplateRepository.findById(addedLog.getLogId());
         // Assert
         assertNotNull(addedLog);
-        assertEquals(testLog.getAuthorityId(), foundLog.getAuthorityId());
-        assertEquals(testLog.getItemId(), foundLog.getItemId());
-        assertEquals(testLog.getQuantityChange(), foundLog.getQuantityChange());
-        assertEquals(testLog.getReason(), foundLog.getReason());
-        assertNotNull(foundLog.getTimeStamp());
-        assertEquals(LOG_COUNT + 1, foundLog.getLogId());
+        assertEquals(testLog.getAuthorityId(), addedLog.getAuthorityId());
+        assertEquals(testLog.getItemId(), addedLog.getItemId());
+        assertEquals(testLog.getQuantityChange(), addedLog.getQuantityChange());
+        assertEquals(testLog.getReason(), addedLog.getReason());
+        assertNotNull(addedLog.getTimeStamp());
+        assertEquals(LOG_COUNT + 1, addedLog.getLogId());
     }
 
     @Test
@@ -175,8 +174,8 @@ class InventoryLogJdbcTemplateRepositoryTest {
         // Assert
         assertTrue(deleted);
         assertNull(inventoryLogJdbcTemplateRepository.findById(logId));
-        assertTrue(LOG_COUNT == inventoryLogJdbcTemplateRepository.findAll().size() // If add occurs first
-                || LOG_COUNT - 1 == inventoryLogJdbcTemplateRepository.findAll().size()); // If delete occurs first
+        assertTrue(LOG_COUNT == inventoryLogJdbcTemplateRepository.findAll().size()
+                || LOG_COUNT - 1 == inventoryLogJdbcTemplateRepository.findAll().size());
     }
 
     @Test

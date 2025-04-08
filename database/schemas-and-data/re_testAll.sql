@@ -85,9 +85,7 @@ GROUP BY i.category
 ORDER BY total_checkouts DESC
 LIMIT 5;
 
-
-select * from checkout_item ci;
--- Checkout Items Data
+-- Alternate Checkout Items Data
 SELECT 
     ci.checkout_id,
     ci.item_id,
@@ -109,3 +107,31 @@ FROM checkout_item ci
 JOIN item i ON ci.item_id = i.item_id
 JOIN checkout_order co ON ci.checkout_id = co.checkout_id
 JOIN app_user au ON co.authority_id = au.app_user_id;
+
+-- Unjoined Checkout Item Data
+select * from checkout_item;
+
+-- Unjoined Purchase Item Data
+select * from purchase_item;
+
+-- Unjoined Checkout Order Data
+select * from checkout_order;
+
+-- Unjoined Purchase Order Data
+select * from purchase_order;
+
+-- By Category Check
+SELECT item_id, item_name, item_description, nutrition_facts,
+	   picture_path, category, current_count, item_limit, price_per_unit, enabled
+FROM item
+WHERE category = "South Asian - Staple";
+
+-- Hourly Checkout Summary (to be used for determining Busiest Hours by frontend)
+SELECT
+    DAYNAME(checkout_date) AS day,
+    HOUR(checkout_date) AS hour,
+    COUNT(*) AS total_checkouts
+FROM checkout_order
+GROUP BY day, hour
+ORDER BY 
+    FIELD(day, 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'), hour;

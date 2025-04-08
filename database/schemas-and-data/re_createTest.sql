@@ -243,27 +243,36 @@ BEGIN
         ('Mac & Cheese Cup', 'Creamy pasta in a cup', 'Calories: 250 per cup', 'https://cloudinary.com/item37', 'Western - Prepared Meal', 100, 1.49);
 
     -- Purchase Orders (admin_id = 1, vendor_id = 1 = Patel Brothers)
-    INSERT INTO purchase_order (admin_id, vendor_id) VALUES
-        (1, 1),
-        (1, 1);
+    INSERT INTO purchase_order (admin_id, vendor_id, purchase_date) VALUES
+        (1, 1, '2025-03-18 12:15:00'),
+        (1, 1, '2025-03-20 15:45:00'),
+        (1, 2, '2025-03-27 11:05:00');
 
     -- Purchase Items
     INSERT INTO purchase_item (purchase_id, item_id, quantity) VALUES
         (1, 1, 10), (1, 2, 20), (1, 4, 50), (1, 5, 30), (1, 6, 30),
-        (2, 23, 5), (2, 27, 10), (2, 29, 60), (2, 32, 20), (2, 36, 10);
-   
-    -- Checkout Orders
-    INSERT INTO checkout_order (student_id, authority_id, self_checkout) VALUES        
-        ('VF21042', 2, FALSE),
-        ('VF74878', 2, TRUE),
-        ('VF87923', 3, TRUE),
-        ('VF96841', 2, FALSE),
-        ('VF21221', 2, TRUE),
-        ('VF72705', 3, FALSE),
-        ('VF28040', 2, TRUE),
-        ('VF16549', 3, FALSE),
-        ('VF39336', 2, TRUE),
-        ('VF73068', 3, TRUE);
+        (2, 13, 5), (2, 17, 10), (2, 19, 60), (2, 12, 20), (2, 16, 10),
+        (3, 23, 12), (3, 27, 8), (3, 29, 4), (3, 28, 20), (3, 26, 10);
+        
+	-- Adjusted Checkout Orders to simulate busiest hours per open day
+	INSERT INTO checkout_order (student_id, authority_id, self_checkout, checkout_date) VALUES        
+		-- Monday (2 checkouts around 12 PM)
+		('VF21042', 2, FALSE, '2025-03-31 12:15:00'), -- Mon
+		('VF16549', 3, FALSE, '2025-03-31 12:45:00'), -- Mon
+
+		-- Tuesday (2 checkouts around 11 AM)
+		('VF74878', 2, TRUE,  '2025-04-01 11:05:00'), -- Tue
+		('VF21221', 2, TRUE,  '2025-04-01 11:50:00'), -- Tue
+
+		-- Wednesday (3 checkouts, 2 around 1 PM, 1 at 4 PM)
+		('VF87923', 3, TRUE,  '2025-04-02 13:00:00'), -- Wed
+		('VF72705', 3, FALSE, '2025-04-02 13:30:00'), -- Wed
+		('VF39336', 2, TRUE,  '2025-04-02 16:15:00'), -- Wed
+
+		-- Friday (3 checkouts, 2 around 3 PM, 1 at 11 AM)
+		('VF96841', 2, FALSE, '2025-04-04 15:10:00'), -- Fri
+		('VF28040', 2, TRUE,  '2025-04-04 15:45:00'), -- Fri
+		('VF73068', 3, TRUE,  '2025-04-04 11:00:00'); -- Fri
 
     -- Checkout Items
     INSERT INTO checkout_item (checkout_id, item_id, quantity) VALUES

@@ -1,6 +1,6 @@
 package re.api.data;
 
-import org.junit.jupiter.api.BeforeEach;
+    import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class CheckoutItemJdbcTemplateRepositoryTest {
+    private final int CHECKOUT_ITEM_COUNT = 19;
 
     @Autowired
     CheckoutItemJdbcTemplateRepository checkoutItemJdbcTemplateRepository;
@@ -78,6 +79,7 @@ class CheckoutItemJdbcTemplateRepositoryTest {
         assertTrue(checkoutItems.isEmpty());
     }
 
+    // Top Result: ('Sona Masoori Rice', '3')
     @Test
     void findPopularItems() {
         // Arrange
@@ -87,8 +89,10 @@ class CheckoutItemJdbcTemplateRepositoryTest {
         assertNotNull(popularItems);
         assertFalse(popularItems.isEmpty());
         assertEquals(5, popularItems.size());
+        assertEquals("Toor Dahl (Red Lentils)", popularItems.getFirst().get("item_name"));
     }
 
+    // Top Result: ('South Asian - Snack', '14')
     @Test
     void findPopularCategories() {
         // Arrange
@@ -98,32 +102,105 @@ class CheckoutItemJdbcTemplateRepositoryTest {
         assertNotNull(popularCategories);
         assertFalse(popularCategories.isEmpty());
         assertEquals(5, popularCategories.size());
+        assertEquals("South Asian - Snack", popularCategories.getFirst().get("category"));
     }
 
     @Test
     void shouldAdd() {
         // Arrange
+        int checkoutOrderId = 4;
         CheckoutItem checkoutItem = new CheckoutItem();
-        checkoutItem.setCheckoutOrderId(1);
+        checkoutItem.setCheckoutOrderId(checkoutOrderId);
         checkoutItem.setItemId(24);
         checkoutItem.setQuantity(1);
         // Act
         CheckoutItem addedCheckoutItem = checkoutItemJdbcTemplateRepository.add(checkoutItem);
         // Assert
         assertNotNull(addedCheckoutItem);
-        assertEquals(3, checkoutItemJdbcTemplateRepository.findByCheckoutOrderId(1).size());
-
+        assertEquals(CHECKOUT_ITEM_COUNT + 1, addedCheckoutItem.getCheckoutItemId());
     }
 
     @Test
-    void update() {
+    void shouldUpdate() {
+        // Arrange
+        int checkoutItemId = 2;
+        CheckoutItem checkoutItemToUpdate = checkoutItemJdbcTemplateRepository.findById(checkoutItemId);
+        assertNotNull(checkoutItemToUpdate);
+        int initialQuantity = checkoutItemToUpdate.getQuantity();
+        checkoutItemToUpdate.setQuantity(3);
+        // Act
+        boolean updated = checkoutItemJdbcTemplateRepository.update(checkoutItemToUpdate);
+        // Assert
+        assertTrue(updated);
+        assertNotEquals(initialQuantity, checkoutItemJdbcTemplateRepository.findById(checkoutItemId).getQuantity());
+        assertEquals(3, checkoutItemJdbcTemplateRepository.findById(checkoutItemId).getQuantity());
     }
 
     @Test
-    void deleteById() {
+    void shouldNotUpdateBadId() {
+        // Arrange
+        CheckoutItem checkoutItemToUpdate = new CheckoutItem();
+        checkoutItemToUpdate.setCheckoutItemId(9999);
+        checkoutItemToUpdate.setQuantity(3);
+        // Act
+        boolean updated = checkoutItemJdbcTemplateRepository.update(checkoutItemToUpdate);
+        // Assert
+        assertFalse(updated);
     }
 
     @Test
-    void deleteByCheckoutOrderId() {
+    void shouldDeleteById() {
+        // Arrange
+        int checkoutItemId = 15;
+        CheckoutItem checkoutItemToDelete = checkoutItemJdbcTemplateRepository.findById(checkoutItemId);
+        assertNotNull(checkoutItemToDelete);
+        int initialItemCountFromParentOrder = checkoutItemJdbcTemplateRepository.findByCheckoutOrderId(
+                checkoutItemToDelete.getCheckoutOrderId()).size();
+        // Act
+        boolean deleted = checkoutItemJdbcTemplateRepository.deleteById(checkoutItemId);
+        // Assert
+        assertTrue(deleted);
+        assertNull(checkoutItemJdbcTemplateRepository.findById(checkoutItemId));
+        assertEquals(initialItemCountFromParentOrder - 1,
+                checkoutItemJdbcTemplateRepository.findByCheckoutOrderId(
+                        checkoutItemToDelete.getCheckoutOrderId()).size());
+    }
+
+    @Test
+    void shouldNotDeleteByBadId() {
+        // Arrange
+        int checkoutItemId = 9999;
+        // Act
+        boolean deleted = checkoutItemJdbcTemplateRepository.deleteById(checkoutItemId);
+        // Assert
+        assertFalse(deleted);
+    }
+
+    @Test
+    void shouldDeleteByCheckoutOrderId() {
+        // Arrange
+        int checkoutOrderId = 9;
+        List<CheckoutItem> checkoutItemsToDelete = checkoutItemJdbcTemplateRepository.findByCheckoutOrderId(
+                checkoutOrderId);
+        assertNotNull(checkoutItemsToDelete);
+        int initialItemCount = checkoutItemsToDelete.size();
+        // Act
+        boolean deleted = checkoutItemJdbcTemplateRepository.deleteByCheckoutOrderId(checkoutOrderId);
+        // Assert
+        assertTrue(deleted);
+        List<CheckoutItem> checkoutItems = checkoutItemJdbcTemplateRepository.findByCheckoutOrderId(checkoutOrderId);
+        int finalItemCount = checkoutItems.size();
+        assertNotEquals(initialItemCount, finalItemCount);
+        assertEquals(0, finalItemCount);
+    }
+
+    @Test
+    void shouldNotDeleteByBadCheckoutOrderId() {
+        // Arrange
+        int checkoutOrderId = 9999;
+        // Act
+        boolean deleted = checkoutItemJdbcTemplateRepository.deleteByCheckoutOrderId(checkoutOrderId);
+        // Assert
+        assertFalse(deleted);
     }
 }

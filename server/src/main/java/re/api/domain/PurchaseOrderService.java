@@ -4,9 +4,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import re.api.data.*;
 import re.api.models.*;
-import re.api.domain.Result;
-import re.api.domain.ResultType;
-import re.api.domain.Validations;
 
 import java.util.HashSet;
 import java.util.List;
