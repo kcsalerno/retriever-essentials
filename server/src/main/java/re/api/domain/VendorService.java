@@ -69,7 +69,7 @@ public class VendorService {
         return result;
     }
 
-    public Result<Vendor> validate(Vendor vendor) {
+    private Result<Vendor> validate(Vendor vendor) {
         Result<Vendor> result = new Result<>();
 
         if (vendor == null) {
@@ -85,15 +85,16 @@ public class VendorService {
 
         if (Validations.isNullOrBlank(vendor.getContactEmail())) {
             result.addMessage(ResultType.INVALID, "Vendor contact email is required");
-        } else if (vendor.getContactEmail().length() > 255) {
-            result.addMessage(ResultType.INVALID, "Vendor contact email is too long");
         } else if (!Validations.isValidEmail(vendor.getContactEmail())) {
             result.addMessage(ResultType.INVALID, "Vendor contact email is not valid");
+        } else if (vendor.getContactEmail().length() > 255) {
+            result.addMessage(ResultType.INVALID, "Vendor contact email must be 255 characters or less");
         }
 
-        // Null safety check
-        if (!Validations.isNullOrBlank(vendor.getPhoneNumber()) && vendor.getPhoneNumber().length() > 20) {
-            result.addMessage(ResultType.INVALID, "Phone number must be 20 characters or fewer");
+        if (!Validations.isNullOrBlank(vendor.getPhoneNumber())) {
+            result.addMessage(ResultType.INVALID, "Phone number is required");
+        } else if (vendor.getPhoneNumber().length() > 20) {
+            result.addMessage(ResultType.INVALID, "Phone number must be 20 characters or less");
         }
 
         List<Vendor> vendors = vendorRepository.findAll();

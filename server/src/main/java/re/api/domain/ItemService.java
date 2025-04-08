@@ -40,7 +40,7 @@ public class ItemService {
             return result;
         }
         if (item.getItemId() != 0) {
-            result.addMessage(ResultType.INVALID, "Item ID cannot be set for `add` operation.");
+            result.addMessage(ResultType.INVALID, "Item ID cannot be set for `add` operation");
         }
         if (result.isSuccess()) {
             item = repository.add(item);
@@ -58,13 +58,13 @@ public class ItemService {
             return result;
         }
         if (item.getItemId() <= 0) {
-            result.addMessage(ResultType.INVALID, "Item ID must be set for `update` operation.");
+            result.addMessage(ResultType.INVALID, "Item ID must be set for `update` operation");
         }
         if (result.isSuccess()) {
             if (repository.update(item)) {
                 result.setPayload(item);
             } else {
-                result.addMessage(ResultType.NOT_FOUND, "Item ID not found.");
+                result.addMessage(ResultType.NOT_FOUND, "Item ID not found");
             }
         }
 
@@ -76,7 +76,7 @@ public class ItemService {
         Result<Item> result = new Result<>();
 
         if (!repository.disableById(itemId)) {
-            result.addMessage(ResultType.NOT_FOUND, "Item ID not found.");
+            result.addMessage(ResultType.NOT_FOUND, "Item ID not found");
         }
 
         return result;
@@ -86,26 +86,28 @@ public class ItemService {
         Result<Item> result = new Result<>();
 
         if (item == null) {
-            result.addMessage(ResultType.INVALID, "Item cannot be null.");
+            result.addMessage(ResultType.INVALID, "Item cannot be null");
             return result;
         }
 
         if (Validations.isNullOrBlank(item.getItemName())) {
             result.addMessage(ResultType.INVALID, "Item name is required");
         } else if (item.getItemName().length() > 55) {
-            result.addMessage(ResultType.INVALID, "Item name must be 55 characters or fewer");
+            result.addMessage(ResultType.INVALID, "Item name must be 55 characters or less");
         }
 
-        if (!Validations.isNullOrBlank(item.getPicturePath()) && !Validations.isValidUrl(item.getPicturePath())) {
+        if (Validations.isNullOrBlank(item.getPicturePath())){
+            result.addMessage(ResultType.INVALID, "Picture path cannot be null or blank");
+        } else if (!Validations.isValidUrl(item.getPicturePath())){
             result.addMessage(ResultType.INVALID, "Picture path must be a valid URL");
         } else if (item.getPicturePath().length() > 255) {
-            result.addMessage(ResultType.INVALID, "Picture path must be 255 characters or fewer");
+            result.addMessage(ResultType.INVALID, "Picture path must be 255 characters or less");
         }
 
         if (Validations.isNullOrBlank(item.getCategory())) {
             result.addMessage(ResultType.INVALID, "Category is required");
         } else if (item.getCategory().length() > 55) {
-            result.addMessage(ResultType.INVALID, "Category must be 55 characters or fewer");
+            result.addMessage(ResultType.INVALID, "Category must be 55 characters or less");
         }
 
         if (item.getCurrentCount() < 0) {
@@ -123,6 +125,9 @@ public class ItemService {
             } else if (item.getPricePerUnit().scale() > 2) {
                 result.addMessage(ResultType.INVALID, "Price per unit cannot have more than 2 decimal places");
             }
+        }
+        else {
+            result.addMessage(ResultType.INVALID, "Price per unit cannot be null");
         }
 
         List<Item> existingItems = repository.findAll();

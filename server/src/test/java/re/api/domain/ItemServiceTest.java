@@ -86,6 +86,32 @@ class ItemServiceTest {
     }
 
     @Test
+    void shouldFindByCategory() {
+        // Given
+        List<Item> testItems = makeTestItems();
+        // When
+        when(itemRepository.findByCategory("Category 1")).thenReturn(List.of(testItems.get(0)));
+        // Then
+        List<Item> items = itemService.findByCategory("Category 1");
+        assertNotNull(items);
+        assertEquals(1, items.size());
+        assertEquals("Test Item 1", items.get(0).getItemName());
+    }
+
+    @Test
+    void shouldNotFindByCategory() {
+        // Given
+        List<Item> testItems = makeTestItems();
+        // When
+        when(itemRepository.findByCategory("Nonexistent Category")).thenReturn(List.of());
+        // Then
+        List<Item> items = itemService.findByCategory("Nonexistent Category");
+        assertNotNull(items);
+        assertTrue(items.isEmpty());
+        assertNotEquals(testItems.size(), items.size());
+    }
+
+    @Test
     void shouldAdd() {
         // Given
         Item newItem = new Item(0, "Test Item 4", "Description 4", "Nutrition Facts 4",
@@ -112,19 +138,238 @@ class ItemServiceTest {
         Result<Item> result = itemService.add(newItem);
         assertFalse(result.isSuccess());
         assertEquals(1, result.getMessages().size());
-        assertEquals("Item ID cannot be set for `add` operation.", result.getMessages().get(0));
+        assertEquals("Item ID cannot be set for `add` operation", result.getMessages().get(0));
     }
 
-    // Validations tests
-    // null item
-    // no item name, name less than 55
-    // null picture path, less than 255
-    // null category, less than 55
-    // current count, less than 0
-    // item limit, less than 1
-    // price per unit, less than 0
-    // price per unit, decimal, 2 digits
+    @Test
+    void shouldNotAddWithNullItem() {
+        // Given
+        Item newItem = null;
+        // When
+        when(itemRepository.add(newItem)).thenReturn(newItem);
+        // Then
+        Result<Item> result = itemService.add(newItem);
+        assertFalse(result.isSuccess());
+        assertEquals(1, result.getMessages().size());
+        assertEquals("Item cannot be null", result.getMessages().get(0));
+    }
+
+    @Test
+    void shouldNotAddWithNullOrBlankName() {
+        // Given
+        Item newItem = new Item(0, null, "Description 4", "Nutrition Facts 4",
+                "https://cloudinary.com/item4", "Category 4", 40, 20,
+                BigDecimal.valueOf(39.99), true);
+        // When
+        when(itemRepository.add(newItem)).thenReturn(newItem);
+        // Then
+        Result<Item> result = itemService.add(newItem);
+        assertFalse(result.isSuccess());
+        assertEquals(1, result.getMessages().size());
+        assertEquals("Item name is required", result.getMessages().get(0));
+    }
+
+    @Test
+    void shouldNotAddWithNameTooLong() {
+        // Given
+        Item newItem = new Item(0, "This is a very long item name that exceeds the maximum length of 55 characters",
+                "Description 4", "Nutrition Facts 4",
+                "https://cloudinary.com/item4", "Category 4", 40, 20,
+                BigDecimal.valueOf(39.99), true);
+        // When
+        when(itemRepository.add(newItem)).thenReturn(newItem);
+        // Then
+        Result<Item> result = itemService.add(newItem);
+        assertFalse(result.isSuccess());
+        assertEquals(1, result.getMessages().size());
+        assertEquals("Item name must be 55 characters or less", result.getMessages().get(0));
+    }
+
+    // null picture path
+    @Test
+    void shouldNotAddWithNullPicturePath() {
+        // Given
+        Item newItem = new Item(0, "Test Item 4", "Description 4", "Nutrition Facts 4",
+                null, "Category 4", 40, 20,
+                BigDecimal.valueOf(39.99), true);
+        // When
+        when(itemRepository.add(newItem)).thenReturn(newItem);
+        // Then
+        Result<Item> result = itemService.add(newItem);
+        assertFalse(result.isSuccess());
+        assertEquals(1, result.getMessages().size());
+        assertEquals("Picture path cannot be null or blank", result.getMessages().get(0));
+    }
+
+    @Test
+    void shouldNotAddWithBlankPicturePath() {
+        // Given
+        Item newItem = new Item(0, "Test Item 4", "Description 4", "Nutrition Facts 4",
+                "", "Category 4", 40, 20,
+                BigDecimal.valueOf(39.99), true);
+        // When
+        when(itemRepository.add(newItem)).thenReturn(newItem);
+        // Then
+        Result<Item> result = itemService.add(newItem);
+        assertFalse(result.isSuccess());
+        assertEquals(1, result.getMessages().size());
+        assertEquals("Picture path cannot be null or blank", result.getMessages().get(0));
+    }
+
+    @Test
+    void shouldNotAddWithInvalidURLPicturePath() {
+        // Given
+        Item newItem = new Item(0, "Test Item 4", "Description 4", "Nutrition Facts 4",
+                "invalid-url", "Category 4", 40, 20,
+                BigDecimal.valueOf(39.99), true);
+        // When
+        when(itemRepository.add(newItem)).thenReturn(newItem);
+        // Then
+        Result<Item> result = itemService.add(newItem);
+        assertFalse(result.isSuccess());
+        assertEquals(1, result.getMessages().size());
+        assertEquals("Picture path must be a valid URL", result.getMessages().get(0));
+    }
+
+    @Test
+    void shouldNotAddWithPicturePathTooLong() {
+        // Given
+        Item newItem = new Item(0, "Test Item 4", "Description 4", "Nutrition Facts 4",
+                "https://cloudinary.com/item4/this-is-a-very-long-url-that-exceeds-the-maximum-length-of" +
+                        "-255-characters-and-continues-to-go-on-and-on-to-make-sure-it-is-long-enough-to-exceed-the-" +
+                        "maximum-length-limit-of-255-characters-which-is-necessary-for-this-test-case-to-fail",
+                "Category 4", 40, 20,
+                BigDecimal.valueOf(39.99), true);
+        // When
+        when(itemRepository.add(newItem)).thenReturn(newItem);
+        // Then
+        Result<Item> result = itemService.add(newItem);
+        assertFalse(result.isSuccess());
+        assertEquals(1, result.getMessages().size());
+        assertEquals("Picture path must be 255 characters or less", result.getMessages().get(0));
+    }
+
+    @Test
+    void shouldNotAddWithNullCategory() {
+        // Given
+        Item newItem = new Item(0, "Test Item 4", "Description 4", "Nutrition Facts 4",
+                "https://cloudinary.com/item4", null, 40, 20,
+                BigDecimal.valueOf(39.99), true);
+        // When
+        when(itemRepository.add(newItem)).thenReturn(newItem);
+        // Then
+        Result<Item> result = itemService.add(newItem);
+        assertFalse(result.isSuccess());
+        assertEquals(1, result.getMessages().size());
+        assertEquals("Category is required", result.getMessages().get(0));
+    }
+
+    @Test
+    void shouldNotAddWithCategoryTooLong() {
+        // Given
+        Item newItem = new Item(0, "Test Item 4", "Description 4", "Nutrition Facts 4",
+                "https://cloudinary.com/item4", "This is a very long category name that exceeds the maximum length of 55 characters",
+                40, 20, BigDecimal.valueOf(39.99), true);
+        // When
+        when(itemRepository.add(newItem)).thenReturn(newItem);
+        // Then
+        Result<Item> result = itemService.add(newItem);
+        assertFalse(result.isSuccess());
+        assertEquals(1, result.getMessages().size());
+        assertEquals("Category must be 55 characters or less", result.getMessages().get(0));
+    }
+
+    @Test
+    void shouldNotAddWithNegativeCurrentCount() {
+        // Given
+        Item newItem = new Item(0, "Test Item 4", "Description 4", "Nutrition Facts 4",
+                "https://cloudinary.com/item4", "Category 4", -1, 20,
+                BigDecimal.valueOf(39.99), true);
+        // When
+        when(itemRepository.add(newItem)).thenReturn(newItem);
+        // Then
+        Result<Item> result = itemService.add(newItem);
+        assertFalse(result.isSuccess());
+        assertEquals(1, result.getMessages().size());
+        assertEquals("Current count cannot be negative", result.getMessages().get(0));
+    }
+
+    @Test
+    void shouldNotAddWithItemLimitLessThan1() {
+        // Given
+        Item newItem = new Item(0, "Test Item 4", "Description 4", "Nutrition Facts 4",
+                "https://cloudinary.com/item4", "Category 4", 40, 0,
+                BigDecimal.valueOf(39.99), true);
+        // When
+        when(itemRepository.add(newItem)).thenReturn(newItem);
+        // Then
+        Result<Item> result = itemService.add(newItem);
+        assertFalse(result.isSuccess());
+        assertEquals(1, result.getMessages().size());
+        assertEquals("Item limit must be greater than or equal to 1", result.getMessages().get(0));
+    }
+
+    @Test
+    void shouldNotAddWithNullPricePerUnit() {
+        // Given
+        Item newItem = new Item(0, "Test Item 4", "Description 4", "Nutrition Facts 4",
+                "https://cloudinary.com/item4", "Category 4", 40, 20,
+                null, true);
+        // When
+        when(itemRepository.add(newItem)).thenReturn(newItem);
+        // Then
+        Result<Item> result = itemService.add(newItem);
+        assertFalse(result.isSuccess());
+        assertEquals(1, result.getMessages().size());
+        assertEquals("Price per unit cannot be null", result.getMessages().get(0));
+    }
+
+    @Test
+    void shouldNotAddWithNegativePricePerUnit() {
+        // Given
+        Item newItem = new Item(0, "Test Item 4", "Description 4", "Nutrition Facts 4",
+                "https://cloudinary.com/item4", "Category 4", 40, 20,
+                BigDecimal.valueOf(-1.99), true);
+        // When
+        when(itemRepository.add(newItem)).thenReturn(newItem);
+        // Then
+        Result<Item> result = itemService.add(newItem);
+        assertFalse(result.isSuccess());
+        assertEquals(1, result.getMessages().size());
+        assertEquals("Price per unit cannot be negative", result.getMessages().get(0));
+    }
+
+    @Test
+    void shouldNotAddWithPricePerUnitMoreThanTwoDecimalPlaces() {
+        // Given
+        Item newItem = new Item(0, "Test Item 4", "Description 4", "Nutrition Facts 4",
+                "https://cloudinary.com/item4", "Category 4", 40, 20,
+                BigDecimal.valueOf(1.999), true);
+        // When
+        when(itemRepository.add(newItem)).thenReturn(newItem);
+        // Then
+        Result<Item> result = itemService.add(newItem);
+        assertFalse(result.isSuccess());
+        assertEquals(1, result.getMessages().size());
+        assertEquals("Price per unit cannot have more than 2 decimal places", result.getMessages().get(0));
+    }
+
     // duplicates not allowed for add
+    @Test
+    void shouldNotAddWithDuplicateItem() {
+        // Given
+        Item newItem = new Item(0, "Test Item 1", "Description 1", "Nutrition Facts 1",
+                "https://cloudinary.com/item1", "Category 1", 10, 5,
+                BigDecimal.valueOf(9.99), true);
+        // When
+        when(itemRepository.add(newItem)).thenReturn(newItem);
+        when(itemRepository.findAll()).thenReturn(makeTestItems());
+        // Then
+        Result<Item> result = itemService.add(newItem);
+        assertFalse(result.isSuccess());
+        assertEquals(1, result.getMessages().size());
+        assertEquals("Duplicate items are not allowed.", result.getMessages().get(0));
+    }
 
     @Test
     void shouldUpdate() {
@@ -153,7 +398,7 @@ class ItemServiceTest {
         Result<Item> result = itemService.update(updatedItem);
         assertFalse(result.isSuccess());
         assertEquals(1, result.getMessages().size());
-        assertEquals("Item ID must be set for `update` operation.", result.getMessages().get(0));
+        assertEquals("Item ID must be set for `update` operation", result.getMessages().get(0));
     }
 
     @Test
@@ -168,7 +413,7 @@ class ItemServiceTest {
         Result<Item> result = itemService.update(updatedItem);
         assertFalse(result.isSuccess());
         assertEquals(1, result.getMessages().size());
-        assertEquals("Item ID not found.", result.getMessages().get(0));
+        assertEquals("Item ID not found", result.getMessages().get(0));
     }
 
     @Test
@@ -198,7 +443,7 @@ class ItemServiceTest {
         Result<Item> result = itemService.disableById(4);
         assertFalse(result.isSuccess());
         assertEquals(1, result.getMessages().size());
-        assertEquals("Item ID not found.", result.getMessages().get(0));
+        assertEquals("Item ID not found", result.getMessages().get(0));
         assertEquals("NOT_FOUND", result.getType().name());
     }
 
