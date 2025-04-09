@@ -1,31 +1,49 @@
-
+/* Ensure pagination container has proper alignment */
 .pagination-container {
-    display: flex;
-    justify-content: center; 
-    align-items: center;
-    margin-top: 20px; 
-  }
-  
-  /* Pagination style */
-  .pagination {
-    list-style: none;
-    display: flex;
-    gap: 10px; 
-    padding: 0;
-    margin: 0;
-  }
-  
-  /* Style for individual page button */
-  .pagination li {
-    padding: 5px 10px;
-    background-color: #444;
-    color: #fff;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  /* Hover effect for pagination buttons */
-  .pagination li:hover {
-    background-color: #888;
-  }
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+/* Style for pagination buttons container */
+.pagination {
+  list-style: none;
+  display: flex;
+  gap: 10px;
+  padding: 0;
+  margin: 0;
+}
+
+/* Style for individual pagination button */
+.pagination button {
+  padding: 10px 20px; /* Increase padding for larger buttons */
+  background-color: #4CAF50; /* Hardcoded Green color */
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  border: none; /* Remove button default border */
+  font-size: 16px; /* Adjust font size */
+  min-width: 60px; /* Ensure a minimum width */
+  height: 40px; /* Set a consistent height */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Hover effect for pagination buttons */
+.pagination button:hover {
+  background-color: #45a049; /* Slightly darker green */
+}
+
+/* Style for active pagination button */
+.pagination button.active {
+  background-color: #3e8e41; /* Darker green for active page */
+}
+
+
+
+
+
   

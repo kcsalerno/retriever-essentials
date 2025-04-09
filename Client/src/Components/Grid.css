@@ -52,7 +52,7 @@
 
 /* Styling for Add to Cart button */
 .add-to-cart-btn {
-  background-color: #4CAF50; /* Green */
+  background-color: #0fb715; /* Green */
   color: white;
   padding: 8px 15px;
   font-size: 14px;
@@ -82,7 +82,7 @@
 
 .empty-state p {
   font-size: 1.2rem;
-  color: #555;
+  color: #f80000;
   margin-top: 20px;
 }
 
