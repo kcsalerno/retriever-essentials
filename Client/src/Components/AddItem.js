@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import ProductGrid from './Grid';
 
 function AddItem() {
   const [formData, setFormData] = useState({
@@ -189,7 +190,7 @@ function AddItem() {
           />
         </div>
 
-        <button type="submit">Add Item</button>
+        <button class="add-to-cart-btn">Add Item</button>
       </form>
 
       {imageUrl && (
