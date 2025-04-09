@@ -62,18 +62,26 @@ function AddItem() {
     }
   
     const newItem = {
-      itemName: formData.name,              
-      itemDescription: formData.description,  
-      nutritionFacts: `Calories: ${formData.nutrition.calories} per serving`, 
-      picturePath: imageUrl,                  
-      category: formData.category,            
-      currentCount: formData.quantity,        
-      itemLimit: 5,                          
-      pricePerUnit: 1.99                      
+      itemName: formData.name,
+      itemDescription: formData.description,
+      nutritionFacts: `Calories: ${formData.nutrition.calories} per serving`,
+      picturePath: imageUrl,
+      category: formData.category,
+      currentCount: Number(formData.quantity),
+      itemLimit: Number(5),
+      pricePerUnit: 1.99,
+      enabled: false
     };
-  
+    
+    
+    console.log('Sending newItem to backend:', newItem);
+
     try {
-      await axios.post('http://localhost:8080/api/item', newItem);
+      await axios.post('http://localhost:8080/api/item', newItem, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
       alert('Item added successfully!');
       setFormData({
         name: '',
@@ -86,7 +94,7 @@ function AddItem() {
       setImageFile(null);
       setImageUrl('');
     } catch (error) {
-      console.error('Error adding item:', error);
+      console.error('Error adding item:', error.response ? error.response.data : error.message);
       alert('Error adding item');
     }
   };
