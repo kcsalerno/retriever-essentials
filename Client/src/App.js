@@ -8,23 +8,24 @@ import Pagination from './Components/Pages';
 import BottomNav from './Components/Nav';
 import FAQ from './Components/FAQ';
 import Location from './Components/Location';
-import Pantry from './Components/Pantry';
-import Produce from './Components/Produce';
-import Meat from './Components/Meat';
-import Frozen from './Components/Frozen';
-import American from './Components/American';
-import Mexican from './Components/Mexican';
-import Indian from './Components/Indian';
-import Bread from './Components/Bread';
-import Asian from './Components/Asian';
+import CategoryPage from './Components/CategoryPage'; 
 import AboutUs from './Components/AboutUs';
 import ScanID from './Components/Scan';
 import Checkout from './Components/Checkout';
 import ProductDetails from './Components/ProductDetails';
-import AddItem from './Components/AddItem'; // New Add Item Page
+import AddItem from './Components/AddItem'; 
+import SearchResults from './Components/SearchResults';
+import EditProduct from './Components/EditProduct';
 import './App.css';
 
 function App() {
+  useEffect(() => {
+    const storedCart = localStorage.getItem('cart');
+    if (storedCart) {
+      setCart(JSON.parse(storedCart));
+    }
+  }, []);
+  
   const [cart, setCart] = useState([]);
   const [products, setProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -42,20 +43,25 @@ function App() {
 
   const clearCart = () => {
     setCart([]);
+    localStorage.removeItem('cart');
   };
+  
 
   const addToCart = (product) => {
     setCart(prevCart => {
-      const productExists = prevCart.find(item => item.id === product.id);
-      if (productExists) {
-        return prevCart.map(item =>
+      const existing = prevCart.find(item => item.id === product.id);
+      let updatedCart;
+      if (existing) {
+        updatedCart = prevCart.map(item =>
           item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
         );
       } else {
-        return [...prevCart, { ...product, quantity: 1 }];
+        updatedCart = [...prevCart, { ...product, quantity: 1 }];
       }
+      localStorage.setItem('cart', JSON.stringify(updatedCart));
+      return updatedCart;
     });
-  };
+  };  
 
   function ProductGridWithPagination({ products }) {
     const location = useLocation();
@@ -86,20 +92,14 @@ function App() {
               <Route path="/" element={<ScanID />} />
               <Route path="/about-us" element={<AboutUs />} />
               <Route path="/location" element={<Location />} />
-              <Route path="/pantry" element={<Pantry addToCart={addToCart} />} />
-              <Route path="/produce" element={<Produce addToCart={addToCart} />} />
-              <Route path="/meat" element={<Meat addToCart={addToCart} />} />
-              <Route path="/frozen" element={<Frozen addToCart={addToCart} />} />
-              <Route path="/american" element={<American addToCart={addToCart} />} />
-              <Route path="/mexican" element={<Mexican addToCart={addToCart} />} />
-              <Route path="/indian" element={<Indian addToCart={addToCart} />} />
-              <Route path="/bread" element={<Bread addToCart={addToCart} />} />
-              <Route path="/asian" element={<Asian addToCart={addToCart} />} />
+              <Route path="/:category" element={<CategoryPage addToCart={addToCart} />} />
               <Route path="/faq" element={<FAQ />} />
               <Route path='/checkout' element={<Checkout cart={cart} clearCart={clearCart} />} />
               <Route path="/product-grid" element={<ProductGridWithPagination products={products} />} />
-              <Route path="/product/:id" element={<ProductDetails addToCart={addToCart} />} />
-              <Route path="/add-item" element={<AddItem />} /> {/* New Add Item Page */}
+              <Route path="/product/:name" element={<ProductDetails addToCart={addToCart} />} />
+              <Route path="/add-item" element={<AddItem />} />
+              <Route path="/search/:searchTerm" element={<SearchResults addToCart={addToCart} />} />
+              <Route path="/edit-product/:name" element={<EditProduct />} />
             </Routes>
           </div>
         </div>
@@ -137,6 +137,7 @@ function App() {
 }
 
 export default App;
+
 
 
 

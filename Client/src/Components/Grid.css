@@ -52,7 +52,7 @@
 
 /* Styling for Add to Cart button */
 .add-to-cart-btn {
-  background-color: #4CAF50; /* Green */
+  background-color: #0fb715; /* Green */
   color: white;
   padding: 8px 15px;
   font-size: 14px;
@@ -70,7 +70,39 @@
 .add-to-cart-btn:active {
   transform: scale(0.98);
 }
+.empty-state {
+  text-align: center;
+  padding: 50px;
+}
 
+.empty-state img {
+  max-width: 100%;
+  height: auto;
+}
+
+.empty-state p {
+  font-size: 1.2rem;
+  color: #f80000;
+  margin-top: 20px;
+}
+
+.product-quantity {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.quantity-low {
+  color: red;
+}
+
+.quantity-medium {
+  color: orange;
+}
+
+.quantity-high {
+  color: green;
+}
 
 
 

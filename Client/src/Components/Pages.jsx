@@ -1,4 +1,5 @@
 import React from 'react';
+import './Pages.css';
 
 function Pagination({ currentPage, totalPages, onPageChange }) {
   const handlePageChange = (page) => {
@@ -9,18 +10,29 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
 
   return (
     <div className="pagination">
-      <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
-        Prev
-      </button>
+      <li>
+        <button 
+          onClick={() => handlePageChange(currentPage - 1)} 
+          disabled={currentPage === 1}
+        >
+          Prev
+        </button>
+      </li>
       <span>{currentPage} of {totalPages}</span>
-      <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>
-        Next
-      </button>
+      <li>
+        <button 
+          onClick={() => handlePageChange(currentPage + 1)} 
+          disabled={currentPage === totalPages}
+        >
+          Next
+        </button>
+      </li>
     </div>
   );
 }
 
 export default Pagination;
+
 
 
   
