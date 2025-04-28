@@ -16,5 +16,7 @@ public interface ItemRepository {
 
     boolean update(Item item);
 
+    boolean updateCurrentCount(int itemId, int updateAmount);
+
     boolean disableById(int itemId);
 }

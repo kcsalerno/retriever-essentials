@@ -128,6 +128,17 @@ public class ItemJdbcTemplateRepository implements ItemRepository {
     }
 
     @Override
+    public boolean updateCurrentCount(int itemId, int updateAmount) {
+        final String sql = """
+                UPDATE item
+                SET current_count = current_count + ?
+                WHERE item_id = ?;
+                """;
+
+        return jdbcTemplate.update(sql, updateAmount, itemId) > 0;
+    }
+
+    @Override
     public boolean disableById(int itemId) {
         final String sql = """
                 UPDATE item

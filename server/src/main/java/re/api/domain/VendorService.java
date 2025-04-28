@@ -63,7 +63,7 @@ public class VendorService {
         Result<Vendor> result = new Result<>();
 
         if (!vendorRepository.disableById(vendorId)) {
-            result.addMessage(ResultType.INVALID, "Vendor ID not found.");
+            result.addMessage(ResultType.NOT_FOUND, "Vendor ID not found.");
         }
 
         return result;
@@ -86,28 +86,27 @@ public class VendorService {
         if (Validations.isNullOrBlank(vendor.getContactEmail())) {
             result.addMessage(ResultType.INVALID, "Vendor contact email is required");
         } else if (!Validations.isValidEmail(vendor.getContactEmail())) {
-            result.addMessage(ResultType.INVALID, "Vendor contact email is not valid");
+            result.addMessage(ResultType.INVALID, "Vendor contact email is invalid");
         } else if (vendor.getContactEmail().length() > 255) {
             result.addMessage(ResultType.INVALID, "Vendor contact email must be 255 characters or less");
         }
 
-        if (!Validations.isNullOrBlank(vendor.getPhoneNumber())) {
-            result.addMessage(ResultType.INVALID, "Phone number is required");
+        if (Validations.isNullOrBlank(vendor.getPhoneNumber())) {
+            result.addMessage(ResultType.INVALID, "Vendor phone number is required");
         } else if (vendor.getPhoneNumber().length() > 20) {
-            result.addMessage(ResultType.INVALID, "Phone number must be 20 characters or less");
+            result.addMessage(ResultType.INVALID, "Vendor phone number must be 20 characters or less");
         }
 
-        List<Vendor> vendors = vendorRepository.findAll();
-        for (Vendor existingVendor : vendors) {
-            if (existingVendor.equals(vendor)
-                    && existingVendor.getVendorId() != vendor.getVendorId()) {
-                result.addMessage(ResultType.INVALID, "Duplicate vendors are not allowed");
-            }
-            if (existingVendor.getVendorName().equalsIgnoreCase(vendor.getVendorName())
-                    && existingVendor.getVendorId() != vendor.getVendorId()) {
-                result.addMessage(ResultType.INVALID, "Vendor name already exists");
-            }
-        }
+        // Duplicate check
+        vendorRepository.findAll().stream()
+                .filter(existingVendor -> existingVendor.getVendorId() != vendor.getVendorId())
+                .forEach(existingVendor -> {
+                    if (existingVendor.equals(vendor)) {
+                        result.addMessage(ResultType.INVALID, "Duplicate vendors are not allowed");
+                    } else if (existingVendor.getVendorName().equalsIgnoreCase(vendor.getVendorName())) {
+                        result.addMessage(ResultType.INVALID, "Vendor name already exists");
+                    }
+                });
 
         return result;
     }

@@ -33,7 +33,7 @@ class ItemServiceTest {
         assertNotNull(items);
         assertEquals(3, items.size());
         assertEquals(testItems, items);
-        assertEquals("Test Item 1", items.get(0).getItemName());
+        assertEquals("Test Item 1", items.getFirst().getItemName());
     }
 
     @Test
@@ -41,7 +41,7 @@ class ItemServiceTest {
         // Given
         List<Item> testItems = makeTestItems();
         // When
-        when(itemRepository.findById(1)).thenReturn(testItems.get(0));
+        when(itemRepository.findById(1)).thenReturn(testItems.getFirst());
         // Then
         Item item = itemService.findById(1);
         assertNotNull(item);
@@ -90,12 +90,12 @@ class ItemServiceTest {
         // Given
         List<Item> testItems = makeTestItems();
         // When
-        when(itemRepository.findByCategory("Category 1")).thenReturn(List.of(testItems.get(0)));
+        when(itemRepository.findByCategory("Category 1")).thenReturn(List.of(testItems.getFirst()));
         // Then
         List<Item> items = itemService.findByCategory("Category 1");
         assertNotNull(items);
         assertEquals(1, items.size());
-        assertEquals("Test Item 1", items.get(0).getItemName());
+        assertEquals("Test Item 1", items.getFirst().getItemName());
     }
 
     @Test
@@ -121,6 +121,7 @@ class ItemServiceTest {
         when(itemRepository.add(newItem)).thenReturn(newItem);
         // Then
         Result<Item> result = itemService.add(newItem);
+        assertNotNull(result);
         assertTrue(result.isSuccess());
         assertEquals(newItem, result.getPayload());
     }
@@ -136,9 +137,11 @@ class ItemServiceTest {
         when(itemRepository.add(newItem)).thenReturn(newItem);
         // Then
         Result<Item> result = itemService.add(newItem);
+        assertNotNull(result);
         assertFalse(result.isSuccess());
+        assertEquals(ResultType.INVALID, result.getType());
         assertEquals(1, result.getMessages().size());
-        assertEquals("Item ID cannot be set for `add` operation", result.getMessages().get(0));
+        assertEquals("Item ID cannot be set for `add` operation", result.getMessages().getFirst());
     }
 
     @Test
@@ -149,9 +152,11 @@ class ItemServiceTest {
         when(itemRepository.add(newItem)).thenReturn(newItem);
         // Then
         Result<Item> result = itemService.add(newItem);
+        assertNotNull(result);
         assertFalse(result.isSuccess());
+        assertEquals(ResultType.INVALID, result.getType());
         assertEquals(1, result.getMessages().size());
-        assertEquals("Item cannot be null", result.getMessages().get(0));
+        assertEquals("Item cannot be null", result.getMessages().getFirst());
     }
 
     @Test
@@ -164,9 +169,11 @@ class ItemServiceTest {
         when(itemRepository.add(newItem)).thenReturn(newItem);
         // Then
         Result<Item> result = itemService.add(newItem);
+        assertNotNull(result);
         assertFalse(result.isSuccess());
+        assertEquals(ResultType.INVALID, result.getType());
         assertEquals(1, result.getMessages().size());
-        assertEquals("Item name is required", result.getMessages().get(0));
+        assertEquals("Item name is required", result.getMessages().getFirst());
     }
 
     @Test
@@ -180,9 +187,11 @@ class ItemServiceTest {
         when(itemRepository.add(newItem)).thenReturn(newItem);
         // Then
         Result<Item> result = itemService.add(newItem);
+        assertNotNull(result);
         assertFalse(result.isSuccess());
+        assertEquals(ResultType.INVALID, result.getType());
         assertEquals(1, result.getMessages().size());
-        assertEquals("Item name must be 55 characters or less", result.getMessages().get(0));
+        assertEquals("Item name must be 55 characters or less", result.getMessages().getFirst());
     }
 
     // null picture path
@@ -198,7 +207,7 @@ class ItemServiceTest {
         Result<Item> result = itemService.add(newItem);
         assertFalse(result.isSuccess());
         assertEquals(1, result.getMessages().size());
-        assertEquals("Picture path cannot be null or blank", result.getMessages().get(0));
+        assertEquals("Picture path cannot be null or blank", result.getMessages().getFirst());
     }
 
     @Test
@@ -213,7 +222,7 @@ class ItemServiceTest {
         Result<Item> result = itemService.add(newItem);
         assertFalse(result.isSuccess());
         assertEquals(1, result.getMessages().size());
-        assertEquals("Picture path cannot be null or blank", result.getMessages().get(0));
+        assertEquals("Picture path cannot be null or blank", result.getMessages().getFirst());
     }
 
     @Test
@@ -228,7 +237,7 @@ class ItemServiceTest {
         Result<Item> result = itemService.add(newItem);
         assertFalse(result.isSuccess());
         assertEquals(1, result.getMessages().size());
-        assertEquals("Picture path must be a valid URL", result.getMessages().get(0));
+        assertEquals("Picture path must be a valid URL", result.getMessages().getFirst());
     }
 
     @Test
@@ -246,7 +255,7 @@ class ItemServiceTest {
         Result<Item> result = itemService.add(newItem);
         assertFalse(result.isSuccess());
         assertEquals(1, result.getMessages().size());
-        assertEquals("Picture path must be 255 characters or less", result.getMessages().get(0));
+        assertEquals("Picture path must be 255 characters or less", result.getMessages().getFirst());
     }
 
     @Test
@@ -261,7 +270,7 @@ class ItemServiceTest {
         Result<Item> result = itemService.add(newItem);
         assertFalse(result.isSuccess());
         assertEquals(1, result.getMessages().size());
-        assertEquals("Category is required", result.getMessages().get(0));
+        assertEquals("Category is required", result.getMessages().getFirst());
     }
 
     @Test
@@ -276,7 +285,7 @@ class ItemServiceTest {
         Result<Item> result = itemService.add(newItem);
         assertFalse(result.isSuccess());
         assertEquals(1, result.getMessages().size());
-        assertEquals("Category must be 55 characters or less", result.getMessages().get(0));
+        assertEquals("Category must be 55 characters or less", result.getMessages().getFirst());
     }
 
     @Test
@@ -291,7 +300,7 @@ class ItemServiceTest {
         Result<Item> result = itemService.add(newItem);
         assertFalse(result.isSuccess());
         assertEquals(1, result.getMessages().size());
-        assertEquals("Current count cannot be negative", result.getMessages().get(0));
+        assertEquals("Current count cannot be negative", result.getMessages().getFirst());
     }
 
     @Test
@@ -306,7 +315,7 @@ class ItemServiceTest {
         Result<Item> result = itemService.add(newItem);
         assertFalse(result.isSuccess());
         assertEquals(1, result.getMessages().size());
-        assertEquals("Item limit must be greater than or equal to 1", result.getMessages().get(0));
+        assertEquals("Item limit must be greater than or equal to 1", result.getMessages().getFirst());
     }
 
     @Test
@@ -321,7 +330,7 @@ class ItemServiceTest {
         Result<Item> result = itemService.add(newItem);
         assertFalse(result.isSuccess());
         assertEquals(1, result.getMessages().size());
-        assertEquals("Price per unit cannot be null", result.getMessages().get(0));
+        assertEquals("Price per unit cannot be null", result.getMessages().getFirst());
     }
 
     @Test
@@ -336,7 +345,7 @@ class ItemServiceTest {
         Result<Item> result = itemService.add(newItem);
         assertFalse(result.isSuccess());
         assertEquals(1, result.getMessages().size());
-        assertEquals("Price per unit cannot be negative", result.getMessages().get(0));
+        assertEquals("Price per unit cannot be negative", result.getMessages().getFirst());
     }
 
     @Test
@@ -351,10 +360,9 @@ class ItemServiceTest {
         Result<Item> result = itemService.add(newItem);
         assertFalse(result.isSuccess());
         assertEquals(1, result.getMessages().size());
-        assertEquals("Price per unit cannot have more than 2 decimal places", result.getMessages().get(0));
+        assertEquals("Price per unit cannot have more than 2 decimal places", result.getMessages().getFirst());
     }
 
-    // duplicates not allowed for add
     @Test
     void shouldNotAddWithDuplicateItem() {
         // Given
@@ -368,22 +376,23 @@ class ItemServiceTest {
         Result<Item> result = itemService.add(newItem);
         assertFalse(result.isSuccess());
         assertEquals(1, result.getMessages().size());
-        assertEquals("Duplicate items are not allowed.", result.getMessages().get(0));
+        assertEquals("Duplicate items are not allowed.", result.getMessages().getFirst());
     }
 
     @Test
     void shouldUpdate() {
         // Given
         List<Item> testItems = makeTestItems();
-        Item updatedItem = testItems.get(0);
-        updatedItem.setItemName("Updated Item 1");
+        Item updatedItem = testItems.get(1);
+        updatedItem.setItemName("Updated Item 2");
         // When
         when(itemRepository.update(updatedItem)).thenReturn(true);
-        when(itemRepository.findById(1)).thenReturn(updatedItem);
+        when(itemRepository.findById(2)).thenReturn(updatedItem);
         // Then
         Result<Item> result = itemService.update(updatedItem);
         assertTrue(result.isSuccess());
         assertEquals(updatedItem, result.getPayload());
+        assertEquals("Updated Item 2", itemRepository.findById(2).getItemName());
     }
 
     @Test
@@ -398,7 +407,7 @@ class ItemServiceTest {
         Result<Item> result = itemService.update(updatedItem);
         assertFalse(result.isSuccess());
         assertEquals(1, result.getMessages().size());
-        assertEquals("Item ID must be set for `update` operation", result.getMessages().get(0));
+        assertEquals("Item ID must be set for `update` operation", result.getMessages().getFirst());
     }
 
     @Test
@@ -413,22 +422,39 @@ class ItemServiceTest {
         Result<Item> result = itemService.update(updatedItem);
         assertFalse(result.isSuccess());
         assertEquals(1, result.getMessages().size());
-        assertEquals("Item ID not found", result.getMessages().get(0));
+        assertEquals("Item ID not found", result.getMessages().getFirst());
+    }
+
+    @Test
+    void shouldNotUpdateWithNullOrBlankName() {
+        // Given
+        Item updatedItem = new Item(1, null, "Description 1", "Nutrition Facts 1",
+                "https://cloudinary.com/item1", "Category 1", 10, 5,
+                BigDecimal.valueOf(9.99), true);
+        // When
+        when(itemRepository.update(updatedItem)).thenReturn(true);
+        // Then
+        Result<Item> result = itemService.update(updatedItem);
+        assertNotNull(result);
+        assertFalse(result.isSuccess());
+        assertEquals(ResultType.INVALID, result.getType());
+        assertEquals(1, result.getMessages().size());
+        assertEquals("Item name is required", result.getMessages().getFirst());
     }
 
     @Test
     void shouldDisableById() {
         // Given
         List<Item> testItems = makeTestItems();
-        Item diasbledItem = testItems.get(0);
+        Item diasbledItem = testItems.get(2);
         diasbledItem.setEnabled(false);
         // When
-        when(itemRepository.disableById(1)).thenReturn(true);
-        when(itemRepository.findById(1)).thenReturn(diasbledItem);
+        when(itemRepository.disableById(3)).thenReturn(true);
+        when(itemRepository.findById(3)).thenReturn(diasbledItem);
         // Then
-        Result<Item> result = itemService.disableById(1);
+        Result<Item> result = itemService.disableById(3);
         assertTrue(result.isSuccess());
-        Item item = itemService.findById(1);
+        Item item = itemService.findById(3);
         assertNotNull(item);
         assertFalse(item.isEnabled());
     }
@@ -443,7 +469,7 @@ class ItemServiceTest {
         Result<Item> result = itemService.disableById(4);
         assertFalse(result.isSuccess());
         assertEquals(1, result.getMessages().size());
-        assertEquals("Item ID not found", result.getMessages().get(0));
+        assertEquals("Item ID not found", result.getMessages().getFirst());
         assertEquals("NOT_FOUND", result.getType().name());
     }
 
