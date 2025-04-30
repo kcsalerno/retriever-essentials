@@ -123,12 +123,20 @@ public class InventoryLogService {
 
         if (inventoryLog.getLogId() != 0) {
             result.addMessage(ResultType.INVALID, "Inventory Log ID cannot be set for add operation.");
+            return result;
         }
 
         InventoryLog addedLog = logRepository.add(inventoryLog);
 
         if (addedLog == null) {
             result.addMessage(ResultType.INVALID, "Failed to add inventory log.");
+            return result;
+        }
+
+        // Need to make sure the quantity change is reflected in the item count
+        boolean updatedCount = itemRepository.updateCurrentCount(inventoryLog.getItemId(), inventoryLog.getQuantityChange());
+        if (!updatedCount) {
+            result.addMessage(ResultType.INVALID, "Failed to update item count for item ID: " + inventoryLog.getItemId());
             return result;
         }
 
@@ -149,6 +157,22 @@ public class InventoryLogService {
             return result;
         }
 
+        InventoryLog existing = logRepository.findById(inventoryLog.getLogId());
+        if (existing == null) {
+            result.addMessage(ResultType.NOT_FOUND, "Inventory Log ID not found.");
+            return result;
+        }
+
+        // Need to make sure the quantity change is reflected in the item count
+        int quantityChange = inventoryLog.getQuantityChange() - existing.getQuantityChange();
+        if (quantityChange != 0) {
+            boolean updatedCount = itemRepository.updateCurrentCount(inventoryLog.getItemId(), quantityChange);
+            if (!updatedCount) {
+                result.addMessage(ResultType.INVALID, "Failed to update item count for item ID: " + inventoryLog.getItemId());
+                return result;
+            }
+        }
+
         boolean updated = logRepository.update(inventoryLog);
 
         if (!updated) {
@@ -163,6 +187,20 @@ public class InventoryLogService {
     @Transactional
     public Result<InventoryLog> deleteById(int logId) {
         Result<InventoryLog> result = new Result<>();
+
+        InventoryLog existing = logRepository.findById(logId);
+        if (existing == null) {
+            result.addMessage(ResultType.NOT_FOUND, "Inventory Log ID not found.");
+            return result;
+        }
+
+        // Need to make sure the quantity change is reflected in the item count
+        int quantityChange = existing.getQuantityChange();
+        boolean updatedInventory = itemRepository.updateCurrentCount(existing.getItemId(), quantityChange);
+        if (!updatedInventory) {
+            result.addMessage(ResultType.INVALID, "Failed to update item count for item ID: " + existing.getItemId());
+            return result;
+        }
 
         if (!logRepository.deleteById(logId)) {
             result.addMessage(ResultType.NOT_FOUND, "Inventory Log ID not found.");
