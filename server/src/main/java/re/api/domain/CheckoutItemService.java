@@ -59,9 +59,10 @@ public class CheckoutItemService {
             return result;
         }
 
+        // Quantity change needs to be negative, opposite of purchase
         int quantityChange = checkoutItem.getQuantity() - existing.getQuantity();
         if (quantityChange != 0) {
-            boolean updatedCount = itemRepository.updateCurrentCount(checkoutItem.getItemId(), quantityChange);
+            boolean updatedCount = itemRepository.updateCurrentCount(checkoutItem.getItemId(), -quantityChange);
             if (!updatedCount) {
                 result.addMessage(ResultType.INVALID, "Failed to update item count for item ID: " + checkoutItem.getItemId());
                 return result;
@@ -89,8 +90,8 @@ public class CheckoutItemService {
         }
 
         // I think this should be to add, not subtract
-        int quantityToSubtract = existing.getQuantity();
-        boolean updatedInventory = itemRepository.updateCurrentCount(existing.getItemId(), -quantityToSubtract);
+        int quantityToAdd = existing.getQuantity();
+        boolean updatedInventory = itemRepository.updateCurrentCount(existing.getItemId(), quantityToAdd);
         if (!updatedInventory) {
             result.addMessage(ResultType.INVALID, "Failed to update item count for item ID: " + existing.getItemId());
             return result;

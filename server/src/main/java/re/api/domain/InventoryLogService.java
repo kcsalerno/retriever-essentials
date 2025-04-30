@@ -196,7 +196,7 @@ public class InventoryLogService {
 
         // Need to make sure the quantity change is reflected in the item count
         int quantityChange = existing.getQuantityChange();
-        boolean updatedInventory = itemRepository.updateCurrentCount(existing.getItemId(), quantityChange);
+        boolean updatedInventory = itemRepository.updateCurrentCount(existing.getItemId(), -quantityChange);
         if (!updatedInventory) {
             result.addMessage(ResultType.INVALID, "Failed to update item count for item ID: " + existing.getItemId());
             return result;

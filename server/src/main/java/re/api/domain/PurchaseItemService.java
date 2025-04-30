@@ -49,7 +49,6 @@ public class PurchaseItemService {
             return result;
         }
 
-        // Is this right? Are we subtracting or adding?
         int quantityChange = purchaseItem.getQuantity() - existing.getQuantity();
         if (quantityChange != 0) {
             boolean updatedCount = itemRepository.updateCurrentCount(purchaseItem.getItemId(), quantityChange);
