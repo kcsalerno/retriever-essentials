@@ -79,6 +79,12 @@ public class CheckoutOrderService {
             for (CheckoutItem checkoutItem : checkoutOrder.getCheckoutItems()) {
                 checkoutItem.setCheckoutOrderId(addedOrder.getCheckoutOrderId());
                 checkoutItemRepository.add(checkoutItem);
+
+                // Update the item count in the inventory
+                boolean updatedCount = itemRepository.updateCurrentCount(checkoutItem.getItemId(), -checkoutItem.getQuantity());
+                if (!updatedCount) {
+                    result.addMessage(ResultType.INVALID, "Failed to update item count for item ID: " + checkoutItem.getItemId());
+                }
             }
         }
 
@@ -114,8 +120,27 @@ public class CheckoutOrderService {
     public Result<CheckoutOrder> deleteById(int checkoutOrderId) {
         Result<CheckoutOrder> result = new Result<>();
 
+        CheckoutOrder existing = checkoutOrderRepository.findById(checkoutOrderId);
+        if (existing == null) {
+            result.addMessage(ResultType.NOT_FOUND, "Checkout order ID not found.");
+            return result;
+        }
+
+        // Update the item count in the inventory
+        List<CheckoutItem> checkoutItems = checkoutItemRepository.findByCheckoutOrderId(checkoutOrderId);
+        if (checkoutItems != null) {
+            for (CheckoutItem checkoutItem : checkoutItems) {
+                boolean updatedCount = itemRepository.updateCurrentCount(checkoutItem.getItemId(), checkoutItem.getQuantity());
+                if (!updatedCount) {
+                    result.addMessage(ResultType.INVALID, "Failed to update item count for item ID: " + checkoutItem.getItemId());
+                }
+            }
+        }
+
+        // Delete checkout items associated with the order
         checkoutItemRepository.deleteByCheckoutOrderId(checkoutOrderId);
 
+        // Delete the checkout order
         if (!checkoutOrderRepository.deleteById(checkoutOrderId)) {
             result.addMessage(ResultType.NOT_FOUND, "Checkout order not found.");
         }

@@ -52,6 +52,22 @@ public class CheckoutItemService {
             return result;
         }
 
+        // Add functionality to update the item count in the inventory
+        CheckoutItem existing = checkoutItemRepository.findById(checkoutItem.getCheckoutItemId());
+        if (existing == null) {
+            result.addMessage(ResultType.NOT_FOUND, "Checkout item ID not found.");
+            return result;
+        }
+
+        int quantityChange = checkoutItem.getQuantity() - existing.getQuantity();
+        if (quantityChange != 0) {
+            boolean updatedCount = itemRepository.updateCurrentCount(checkoutItem.getItemId(), quantityChange);
+            if (!updatedCount) {
+                result.addMessage(ResultType.INVALID, "Failed to update item count for item ID: " + checkoutItem.getItemId());
+                return result;
+            }
+        }
+
         if (!checkoutItemRepository.update(checkoutItem)) {
             result.addMessage(ResultType.NOT_FOUND, "Checkout item not found.");
         } else {
@@ -64,6 +80,21 @@ public class CheckoutItemService {
     @Transactional
     public Result<CheckoutItem> deleteById(int checkoutItemId) {
         Result<CheckoutItem> result = new Result<>();
+
+        // Add the functionality to update the item count in the inventory
+        CheckoutItem existing = checkoutItemRepository.findById(checkoutItemId);
+        if (existing == null) {
+            result.addMessage(ResultType.NOT_FOUND, "Checkout item ID not found.");
+            return result;
+        }
+
+        // I think this should be to add, not subtract
+        int quantityToSubtract = existing.getQuantity();
+        boolean updatedInventory = itemRepository.updateCurrentCount(existing.getItemId(), -quantityToSubtract);
+        if (!updatedInventory) {
+            result.addMessage(ResultType.INVALID, "Failed to update item count for item ID: " + existing.getItemId());
+            return result;
+        }
 
         if (!checkoutItemRepository.deleteById(checkoutItemId)) {
             result.addMessage(ResultType.NOT_FOUND, "Checkout item ID not found.");
