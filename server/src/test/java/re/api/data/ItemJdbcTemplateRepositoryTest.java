@@ -154,6 +154,21 @@ class ItemJdbcTemplateRepositoryTest {
     }
 
     @Test
+    void shouldUpdateCurrentCount() {
+        // Arrange
+        int itemId = 2;
+        int updateAmount = 5;
+        Item itemToUpdate = itemJdbcTemplateRepository.findById(itemId);
+        assertNotNull(itemToUpdate);
+        int originalCount = itemToUpdate.getCurrentCount();
+        // Act
+        boolean updated = itemJdbcTemplateRepository.updateCurrentCount(itemId, updateAmount);
+        // Assert
+        assertTrue(updated);
+        assertEquals(originalCount + updateAmount, itemJdbcTemplateRepository.findById(itemId).getCurrentCount());
+    }
+
+    @Test
     void shouldDisableById() {
         // Arrange
         int itemId = 3;

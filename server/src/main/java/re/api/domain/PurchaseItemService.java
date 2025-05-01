@@ -14,20 +14,20 @@ import java.util.List;
 @Service
 public class PurchaseItemService {
 
-    private final PurchaseItemRepository repository;
+    private final PurchaseItemRepository purchaseItemRepository;
     private final PurchaseOrderRepository purchaseOrderRepository;
     private final ItemRepository itemRepository;
 
-    public PurchaseItemService(PurchaseItemRepository repository,
+    public PurchaseItemService(PurchaseItemRepository purchaseItemRepository,
                                PurchaseOrderRepository purchaseOrderRepository,
                                ItemRepository itemRepository) {
-        this.repository = repository;
+        this.purchaseItemRepository = purchaseItemRepository;
         this.purchaseOrderRepository = purchaseOrderRepository;
         this.itemRepository = itemRepository;
     }
 
     public PurchaseItem findById(int purchaseItemId) {
-        return repository.findById(purchaseItemId);
+        return purchaseItemRepository.findById(purchaseItemId);
     }
 
     @Transactional
@@ -39,11 +39,26 @@ public class PurchaseItemService {
         }
 
         if (purchaseItem.getPurchaseItemId() <= 0) {
-            result.addMessage(ResultType.INVALID, "Purchase item ID must be set for update.");
+            result.addMessage(ResultType.INVALID, "Purchase item ID must be set for `update` operation.");
             return result;
         }
 
-        if (!repository.update(purchaseItem)) {
+        PurchaseItem existing = purchaseItemRepository.findById(purchaseItem.getPurchaseItemId());
+        if (existing == null) {
+            result.addMessage(ResultType.NOT_FOUND, "Purchase item ID not found.");
+            return result;
+        }
+
+        int quantityChange = purchaseItem.getQuantity() - existing.getQuantity();
+        if (quantityChange != 0) {
+            boolean updatedCount = itemRepository.updateCurrentCount(purchaseItem.getItemId(), quantityChange);
+            if (!updatedCount) {
+                result.addMessage(ResultType.INVALID, "Failed to update item count for item ID: " + purchaseItem.getItemId());
+                return result;
+            }
+        }
+
+        if (!purchaseItemRepository.update(purchaseItem)) {
             result.addMessage(ResultType.NOT_FOUND, "Purchase item not found.");
         } else {
             result.setPayload(purchaseItem);
@@ -56,7 +71,20 @@ public class PurchaseItemService {
     public Result<PurchaseItem> deleteById(int purchaseItemId) {
         Result<PurchaseItem> result = new Result<>();
 
-        if (!repository.deleteById(purchaseItemId)) {
+        PurchaseItem existing = purchaseItemRepository.findById(purchaseItemId);
+        if (existing == null) {
+            result.addMessage(ResultType.NOT_FOUND, "Purchase item ID not found.");
+            return result;
+        }
+
+        int quantityToSubtract = existing.getQuantity();
+        boolean updatedInventory = itemRepository.updateCurrentCount(existing.getItemId(), -quantityToSubtract);
+        if (!updatedInventory) {
+            result.addMessage(ResultType.INVALID, "Failed to update item count for item ID: " + existing.getItemId());
+            return result;
+        }
+
+        if (!purchaseItemRepository.deleteById(purchaseItemId)) {
             result.addMessage(ResultType.NOT_FOUND, "Purchase item ID not found.");
         }
 
@@ -96,7 +124,7 @@ public class PurchaseItemService {
         }
 
         // Prevent duplicate items in the same purchase order
-        List<PurchaseItem> existingItems = repository.findByPurchaseOrderId(purchaseItem.getPurchaseOrderId());
+        List<PurchaseItem> existingItems = purchaseItemRepository.findByPurchaseOrderId(purchaseItem.getPurchaseOrderId());
         for (PurchaseItem existing : existingItems) {
             if (existing.equals(purchaseItem)
                     && existing.getPurchaseItemId() != purchaseItem.getPurchaseItemId()) {

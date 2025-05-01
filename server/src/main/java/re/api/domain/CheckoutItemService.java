@@ -52,6 +52,22 @@ public class CheckoutItemService {
             return result;
         }
 
+        CheckoutItem existing = checkoutItemRepository.findById(checkoutItem.getCheckoutItemId());
+        if (existing == null) {
+            result.addMessage(ResultType.NOT_FOUND, "Checkout item ID not found.");
+            return result;
+        }
+
+        // Quantity change needs to be negative, opposite of purchase
+        int quantityChange = checkoutItem.getQuantity() - existing.getQuantity();
+        if (quantityChange != 0) {
+            boolean updatedCount = itemRepository.updateCurrentCount(checkoutItem.getItemId(), -quantityChange);
+            if (!updatedCount) {
+                result.addMessage(ResultType.INVALID, "Failed to update item count for item ID: " + checkoutItem.getItemId());
+                return result;
+            }
+        }
+
         if (!checkoutItemRepository.update(checkoutItem)) {
             result.addMessage(ResultType.NOT_FOUND, "Checkout item not found.");
         } else {
@@ -64,6 +80,19 @@ public class CheckoutItemService {
     @Transactional
     public Result<CheckoutItem> deleteById(int checkoutItemId) {
         Result<CheckoutItem> result = new Result<>();
+
+        CheckoutItem existing = checkoutItemRepository.findById(checkoutItemId);
+        if (existing == null) {
+            result.addMessage(ResultType.NOT_FOUND, "Checkout item ID not found.");
+            return result;
+        }
+
+        int quantityToAdd = existing.getQuantity();
+        boolean updatedInventory = itemRepository.updateCurrentCount(existing.getItemId(), quantityToAdd);
+        if (!updatedInventory) {
+            result.addMessage(ResultType.INVALID, "Failed to update item count for item ID: " + existing.getItemId());
+            return result;
+        }
 
         if (!checkoutItemRepository.deleteById(checkoutItemId)) {
             result.addMessage(ResultType.NOT_FOUND, "Checkout item ID not found.");

@@ -130,14 +130,11 @@ public class ItemService {
             result.addMessage(ResultType.INVALID, "Price per unit cannot be null");
         }
 
-        List<Item> existingItems = repository.findAll();
-        for (Item existingItem : existingItems) {
-            if (existingItem.equals(item)
-                    && existingItem.getItemId() != item.getItemId()) {
-                result.addMessage(ResultType.DUPLICATE, "Duplicate items are not allowed.");
-                return result;
-            }
-        }
+        // Duplicate check
+        repository.findAll().stream()
+                .filter(existingItem -> existingItem.equals(item) && existingItem.getItemId() != item.getItemId())
+                .findFirst()
+                .ifPresent(existingItem -> result.addMessage(ResultType.DUPLICATE, "Duplicate items are not allowed."));
 
         return result;
     }

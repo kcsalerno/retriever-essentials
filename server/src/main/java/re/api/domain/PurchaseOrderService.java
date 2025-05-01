@@ -30,7 +30,6 @@ public class PurchaseOrderService {
         this.itemRepository = itemRepository;
     }
 
-
     public List<PurchaseOrder> findAll() {
         List<PurchaseOrder> purchaseOrderList = purchaseOrderRepository.findAll();
         if (purchaseOrderList == null || purchaseOrderList.isEmpty()) {
@@ -77,6 +76,11 @@ public class PurchaseOrderService {
             for (PurchaseItem purchaseItem : purchaseOrder.getPurchaseItems()) {
                 purchaseItem.setPurchaseOrderId(addedPurchase.getPurchaseId());
                 purchaseItemRepository.add(purchaseItem);
+
+                boolean updatedCount = itemRepository.updateCurrentCount(purchaseItem.getItemId(), purchaseItem.getQuantity());
+                if (!updatedCount) {
+                    result.addMessage(ResultType.INVALID, "Failed to update item count for item ID: " + purchaseItem.getItemId());
+                }
             }
         }
 
@@ -112,8 +116,28 @@ public class PurchaseOrderService {
     public Result<PurchaseOrder> deleteById(int purchaseOrderId) {
         Result<PurchaseOrder> result = new Result<>();
 
+        PurchaseOrder existing = purchaseOrderRepository.findById(purchaseOrderId);
+        if (existing == null) {
+            result.addMessage(ResultType.NOT_FOUND, "Purchase order ID not found.");
+            return result;
+        }
+
+        // Update item counts before deleting purchase items
+        List<PurchaseItem> purchaseItems = purchaseItemRepository.findByPurchaseOrderId(purchaseOrderId);
+        if (purchaseItems != null) {
+            for (PurchaseItem purchaseItem : purchaseItems) {
+                boolean updatedCount = itemRepository.updateCurrentCount(purchaseItem.getItemId(), -purchaseItem.getQuantity());
+                if (!updatedCount) {
+                    result.addMessage(ResultType.INVALID, "Failed to update item count for item ID: " + purchaseItem.getItemId());
+                    return result;
+                }
+            }
+        }
+
+        // Delete purchase items first to maintain referential integrity
         purchaseItemRepository.deleteByPurchaseOrderId(purchaseOrderId);
 
+        // Delete the purchase order
         if (!purchaseOrderRepository.deleteById(purchaseOrderId)) {
             result.addMessage(ResultType.NOT_FOUND, "Purchase order not found.");
         }
@@ -139,15 +163,20 @@ public class PurchaseOrderService {
         if (purchaseOrder.getPurchaseItems() != null && !purchaseOrder.getPurchaseItems().isEmpty()) {
             Set<Integer> itemIds = new HashSet<>();
 
-            for (PurchaseItem item : purchaseOrder.getPurchaseItems()) {
+            for (PurchaseItem purchaseItem : purchaseOrder.getPurchaseItems()) {
+                if (purchaseItem == null) {
+                    result.addMessage(ResultType.INVALID, "Checkout item cannot be null.");
+                    continue; // prevent NPE
+                }
+
                 // Check for duplicates
-                if (!itemIds.add(item.getItemId())) {
+                if (!itemIds.add(purchaseItem.getItemId())) {
                     result.addMessage(ResultType.INVALID,
-                            "Duplicate item in purchase order: Item ID " + item.getItemId());
+                            "Duplicate item in purchase order: Item ID " + purchaseItem.getItemId());
                     continue; // Skip further validation for this item
                 }
 
-                validatePurchaseItem(result, item);
+                validatePurchaseItem(result, purchaseItem);
             }
         }
 
