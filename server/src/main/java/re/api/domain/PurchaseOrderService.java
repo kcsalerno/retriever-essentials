@@ -30,7 +30,6 @@ public class PurchaseOrderService {
         this.itemRepository = itemRepository;
     }
 
-
     public List<PurchaseOrder> findAll() {
         List<PurchaseOrder> purchaseOrderList = purchaseOrderRepository.findAll();
         if (purchaseOrderList == null || purchaseOrderList.isEmpty()) {
@@ -164,15 +163,20 @@ public class PurchaseOrderService {
         if (purchaseOrder.getPurchaseItems() != null && !purchaseOrder.getPurchaseItems().isEmpty()) {
             Set<Integer> itemIds = new HashSet<>();
 
-            for (PurchaseItem item : purchaseOrder.getPurchaseItems()) {
+            for (PurchaseItem purchaseItem : purchaseOrder.getPurchaseItems()) {
+                if (purchaseItem == null) {
+                    result.addMessage(ResultType.INVALID, "Checkout item cannot be null.");
+                    continue; // prevent NPE
+                }
+
                 // Check for duplicates
-                if (!itemIds.add(item.getItemId())) {
+                if (!itemIds.add(purchaseItem.getItemId())) {
                     result.addMessage(ResultType.INVALID,
-                            "Duplicate item in purchase order: Item ID " + item.getItemId());
+                            "Duplicate item in purchase order: Item ID " + purchaseItem.getItemId());
                     continue; // Skip further validation for this item
                 }
 
-                validatePurchaseItem(result, item);
+                validatePurchaseItem(result, purchaseItem);
             }
         }
 

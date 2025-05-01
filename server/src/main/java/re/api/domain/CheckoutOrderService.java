@@ -173,6 +173,11 @@ public class CheckoutOrderService {
             Set<Integer> itemIds = new HashSet<>();
 
             for (CheckoutItem checkoutItem : checkoutOrder.getCheckoutItems()) {
+                if (checkoutItem == null) {
+                    result.addMessage(ResultType.INVALID, "Checkout item cannot be null.");
+                    continue; // prevent NPE
+                }
+
                 // Check for duplicates
                 if (!itemIds.add(checkoutItem.getItemId())) {
                     result.addMessage(ResultType.INVALID,

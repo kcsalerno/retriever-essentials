@@ -52,9 +52,9 @@ class PurchaseItemServiceTest {
         // Given
         List<PurchaseItem> purchaseItems = makePurchaseItems();
         // When
-        when(purchaseItemRepository.findById(3)).thenReturn(null);
+        when(purchaseItemRepository.findById(99)).thenReturn(null);
         // Then
-        PurchaseItem purchaseItem = purchaseItemService.findById(3);
+        PurchaseItem purchaseItem = purchaseItemService.findById(99);
         assertNull(purchaseItem);
     }
 
@@ -64,8 +64,8 @@ class PurchaseItemServiceTest {
         List<PurchaseItem> purchaseItems = makePurchaseItems();
         PurchaseItem updatedPurchaseItem = purchaseItems.get(1);
         updatedPurchaseItem.setQuantity(15);
-        // When
         PurchaseItem existing = new PurchaseItem(2, 1, 2, 5);
+        // When
         when(purchaseItemRepository.findById(2)).thenReturn(existing);
         when(purchaseOrderRepository.findById(1)).thenReturn(new PurchaseOrder(1, 1, 1, LocalDateTime.now()));
         when(itemRepository.findById(2)).thenReturn(new Item(2, "Test Item", "desc", "nutri", "https://link", "cat", 10, 2, BigDecimal.TEN, true));

@@ -52,7 +52,6 @@ public class CheckoutItemService {
             return result;
         }
 
-        // Add functionality to update the item count in the inventory
         CheckoutItem existing = checkoutItemRepository.findById(checkoutItem.getCheckoutItemId());
         if (existing == null) {
             result.addMessage(ResultType.NOT_FOUND, "Checkout item ID not found.");
@@ -82,14 +81,12 @@ public class CheckoutItemService {
     public Result<CheckoutItem> deleteById(int checkoutItemId) {
         Result<CheckoutItem> result = new Result<>();
 
-        // Add the functionality to update the item count in the inventory
         CheckoutItem existing = checkoutItemRepository.findById(checkoutItemId);
         if (existing == null) {
             result.addMessage(ResultType.NOT_FOUND, "Checkout item ID not found.");
             return result;
         }
 
-        // I think this should be to add, not subtract
         int quantityToAdd = existing.getQuantity();
         boolean updatedInventory = itemRepository.updateCurrentCount(existing.getItemId(), quantityToAdd);
         if (!updatedInventory) {
