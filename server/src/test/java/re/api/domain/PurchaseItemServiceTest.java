@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -64,7 +65,8 @@ class PurchaseItemServiceTest {
         PurchaseItem updatedPurchaseItem = purchaseItems.get(1);
         updatedPurchaseItem.setQuantity(15);
         // When
-        when(purchaseItemRepository.findById(2)).thenReturn(purchaseItems.get(1));
+        PurchaseItem existing = new PurchaseItem(2, 1, 2, 5);
+        when(purchaseItemRepository.findById(2)).thenReturn(existing);
         when(purchaseOrderRepository.findById(1)).thenReturn(new PurchaseOrder(1, 1, 1, LocalDateTime.now()));
         when(itemRepository.findById(2)).thenReturn(new Item(2, "Test Item", "desc", "nutri", "https://link", "cat", 10, 2, BigDecimal.TEN, true));
         when(itemRepository.updateCurrentCount(2, 10)).thenReturn(true); // 15-5 = 10
@@ -74,7 +76,8 @@ class PurchaseItemServiceTest {
         Result<PurchaseItem> result = purchaseItemService.update(updatedPurchaseItem);
         assertNotNull(result);
         assertTrue(result.isSuccess());
-        assertEquals(2, result.getPayload().getPurchaseItemId());
+        verify(itemRepository).updateCurrentCount(2, 10);
+        verify(purchaseItemRepository).update(updatedPurchaseItem);
     }
 
     @Test
@@ -202,7 +205,7 @@ class PurchaseItemServiceTest {
     void shouldNotUpdateWithNegativeItemCount() {
         // Given
         PurchaseItem purchaseItem = new PurchaseItem(2, 1, 2, -2);
-        // When:
+        // When
         when(purchaseItemRepository.findById(2)).thenReturn(new PurchaseItem(2, 1, 2, 5)); // existing item
         when(purchaseOrderRepository.findById(1)).thenReturn(new PurchaseOrder(1, 1, 1, LocalDateTime.now()));
         when(itemRepository.findById(2)).thenReturn(new Item(2, "Item2", "desc", "nutri", "https://pic", "cat", 10, 2, BigDecimal.TEN, true));
@@ -245,6 +248,8 @@ class PurchaseItemServiceTest {
         Result<PurchaseItem> result = purchaseItemService.deleteById(3);
         assertNotNull(result);
         assertTrue(result.isSuccess());
+        verify(itemRepository).updateCurrentCount(3, -20);
+        verify(purchaseItemRepository).deleteById(3);
     }
 
     @Test
@@ -252,16 +257,12 @@ class PurchaseItemServiceTest {
         // Given
         List<PurchaseItem> purchaseItems = makePurchaseItems();
         PurchaseItem deletedPurchaseItem = purchaseItems.get(2);
-
-        // Needed mocks
+        // When
         when(purchaseItemRepository.findById(3)).thenReturn(deletedPurchaseItem);
         when(itemRepository.updateCurrentCount(3, -20)).thenReturn(true); // simulate inventory update succeeding
         when(purchaseItemRepository.deleteById(3)).thenReturn(false);
-
-        // When
-        Result<PurchaseItem> result = purchaseItemService.deleteById(3);
-
         // Then
+        Result<PurchaseItem> result = purchaseItemService.deleteById(3);
         assertNotNull(result);
         assertFalse(result.isSuccess());
         assertEquals(ResultType.NOT_FOUND, result.getType());
