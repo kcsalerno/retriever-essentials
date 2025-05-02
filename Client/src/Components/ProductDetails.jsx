@@ -1,12 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './ProductDetails.css';
+import { UserContext } from './UserContext';
 
 function ProductDetails({ addToCart }) {
-  const { name } = useParams();  // `id` here will be itemName from the URL
+  const { name } = useParams();
   const [product, setProduct] = useState(null);
   const navigate = useNavigate();
+  const { isAdmin } = useContext(UserContext); 
+
 
   useEffect(() => {
     axios.get(`http://localhost:8080/api/item/name/${name}`)
@@ -61,12 +64,25 @@ const parseNutritionFacts = (nutritionString) => {
           <li>Fat: {nutrition['Fat']}</li>
           <li>Sodium: {nutrition['Sodium']}</li>
         </ul>
-        <button className="add-to-cart-btn" onClick={() => addToCart(product)}>Add to Cart</button>
+        <button
+        className="add-to-cart-btn"
+        onClick={() => {
+        if (product.currentCount <= 0) {
+        alert("There's none of this left.");
+        } else {
+        addToCart(product);
+      }
+    }}
+>
+    Add to Cart
+    </button>
 
-        {/* Edit Item Button */}
-        <button className="update-item-btn" onClick={() => navigate(`/edit-product/${product.itemName}`)}>
+
+        {isAdmin && (
+          <button className="update-item-btn" onClick={() => navigate(`/edit-product/${product.itemName}`)}>
           Edit Item
-        </button>
+         </button>
+        )}
       </div>
     </div>
   );
