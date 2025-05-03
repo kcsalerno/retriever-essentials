@@ -129,7 +129,6 @@ public class PurchaseOrderService {
                 boolean updatedCount = itemRepository.updateCurrentCount(purchaseItem.getItemId(), -purchaseItem.getQuantity());
                 if (!updatedCount) {
                     result.addMessage(ResultType.INVALID, "Failed to update item count for item ID: " + purchaseItem.getItemId());
-                    return result;
                 }
             }
         }
