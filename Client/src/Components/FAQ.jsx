@@ -19,8 +19,25 @@ function FAQ() {
     },
     {
       question: "How does this work?",
-      answer: "Right here is our tutorial..."
+      answer: (
+        <div>
+          <p>Here’s a quick tutorial on how to use our app:</p>
+          <div className="video-wrapper">
+            <iframe
+              width="100%"
+              height="315"
+              src="https://www.youtube.com/embed/4JmdALKwB58"
+              title="Tutorial Video"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            ></iframe>
+          </div>
+        </div>
+      )
     }
+    
+    
   ];
 
   return (

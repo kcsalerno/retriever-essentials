@@ -49,7 +49,19 @@ function CategoryPage({ addToCart }) {
               </p>
               <p>${product.pricePerUnit.toFixed(2)}</p>
             </Link>
-            <button onClick={() => addToCart(product)} className="add-to-cart-btn">Add to Cart</button>
+            <button
+            className="add-to-cart-btn"
+            onClick={() => {
+            if (product.currentCount <= 0) {
+            alert("There's none of this left.");
+             } else {
+            addToCart(product);
+          }
+          }}
+>
+          Add to Cart
+        </button>
+
           </div>
         ))}
       </div>

@@ -9,60 +9,81 @@ function EditProduct() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch the product details using the `name` parameter
     axios.get(`http://localhost:8080/api/item/name/${name}`)
       .then(response => {
-        setProduct(response.data);
+        const item = response.data;
+  
+        const parsed = {};
+        item.nutritionFacts.split(',').forEach(pair => {
+          const [key, value] = pair.split(':');
+          if (key && value) parsed[key.trim().toLowerCase()] = value.trim();
+        });
+  
+        setProduct({ ...item, nutritionFactsParsed: parsed });
       })
       .catch(error => {
         console.error('Error fetching product:', error);
       });
   }, [name]);
+  
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
   
-    // Directly update the quantity (currentCount)
-    if (name === 'currentCount') {
+    if (name.startsWith("nutritionFacts.")) {
+      const key = name.split(".")[1];
       setProduct({
         ...product,
-        [name]: Number(value)  // Ensure value is treated as a number
+        nutritionFactsParsed: {
+          ...product.nutritionFactsParsed,
+          [key]: value
+        }
       });
+    } else if (name === "currentCount") {
+      setProduct({ ...product, [name]: Number(value) });
     } else {
-      setProduct({
-        ...product,
-        [name]: value,
-      });
+      setProduct({ ...product, [name]: value });
     }
   };
   
+  
   const handleSaveChanges = () => {
-    // Ensure currentCount is a valid number before saving
     if (product.currentCount < 0) {
       alert("Quantity can't be negative!");
       return;
     }
   
-    // Make the API call to update the product
-    axios.put(`http://localhost:8080/api/item/${product.itemId}`, product)
+    const nutritionString = Object.entries(product.nutritionFactsParsed)
+      .map(([key, value]) => `${capitalize(key)}: ${value}`)
+      .join(', ');
+  
+    const updatedProduct = {
+      ...product,
+      nutritionFacts: nutritionString
+    };
+  
+    axios.put(`http://localhost:8080/api/item/${product.itemId}`, updatedProduct)
       .then(response => {
-        // After saving, update localStorage cart
         const storedCart = localStorage.getItem('cart');
         if (storedCart) {
           const cart = JSON.parse(storedCart);
-          const updatedCart = cart.map(item => 
+          const updatedCart = cart.map(item =>
             item.itemId === product.itemId ? { ...item, currentCount: product.currentCount } : item
           );
           localStorage.setItem('cart', JSON.stringify(updatedCart));
         }
   
-        // Navigate back to the product details page
         navigate(`/product-details/${product.itemName}`);
       })
       .catch(error => {
         console.error('Error saving product:', error);
       });
   };
+  
+  function capitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+  
   
   
 
