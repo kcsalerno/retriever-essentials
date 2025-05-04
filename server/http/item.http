@@ -1,0 +1,99 @@
+@base_url = http://localhost:8080/api/item
+# @token = {{your_token_here}}  # Use later, required for some endpoints
+
+
+### GET all items - Happy Path
+GET {{base_url}} HTTP/1.1
+
+
+### GET item by ID - Happy Path
+GET {{base_url}}/item-id/1 HTTP/1.1
+
+
+### GET item by ID - Not Found
+GET {{base_url}}/item-id/9999 HTTP/1.1
+
+
+### GET by Category - Happy Path
+GET {{base_url}}/category/South Asian - Snack HTTP/1.1
+
+
+### GET by Category - Not Found
+GET {{base_url}}/category/Nonexistent - Category HTTP/1.1
+
+
+### GET by Name - Happy Path
+GET {{base_url}}/name/Maggi Noodles HTTP/1.1
+
+
+### GET by Name - Not Found
+GET {{base_url}}/name/NoSuchItem HTTP/1.1
+
+
+### GET all enabled items
+GET {{base_url}}/enabled HTTP/1.1
+
+
+### POST add new item - Happy Path
+POST {{base_url}} HTTP/1.1
+Content-Type: application/json
+
+{
+  "itemName": "Test Item",
+  "itemDescription": "Testing new item",
+  "nutritionFacts": "Calories: 123",
+  "picturePath": "https://cloudinary.com/test_item",
+  "category": "Test - Snack",
+  "currentCount": 50,
+  "itemLimit": 5,
+  "pricePerUnit": 1.99,
+  "enabled": true
+}
+
+
+### POST add new item - Missing Name (Invalid)
+POST {{base_url}} HTTP/1.1
+Content-Type: application/json
+
+{
+  "itemDescription": "No name provided",
+  "category": "Error - Snack",
+  "currentCount": 0,
+  "pricePerUnit": 0.99
+}
+
+
+### PUT update item - Happy Path
+PUT {{base_url}}/1 HTTP/1.1
+Content-Type: application/json
+
+{
+  "itemId": 1,
+  "itemName": "Sona Masoori Rice",
+  "itemDescription": "Updated description for rice",
+  "nutritionFacts": "Calories: 160 per 1/4 cup",
+  "picturePath": "https://cloudinary.com/item1",
+  "category": "South Asian - Staple",
+  "currentCount": 199,
+  "itemLimit": 10,
+  "pricePerUnit": 24.99,
+  "enabled": false
+}
+
+
+### PUT update item - Not Found
+PUT {{base_url}}/9999 HTTP/1.1
+Content-Type: application/json
+
+{
+  "itemId": 9999,
+  "itemName": "Ghost Item",
+  "itemDescription": "Should not exist",
+  "nutritionFacts": "Calories: 0",
+  "picturePath": "https://cloudinary.com/ghost_item",
+  "category": "Error - Ghost",
+  "currentCount": 0,
+  "itemLimit": 2,
+  "pricePerUnit": 0.00,
+  "enabled": false
+}

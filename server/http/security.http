@@ -1,11 +1,11 @@
-@base_url = http://localhost:8080
+@base_url = http://localhost:8080/api
 
 ###
 # === AUTH CONTROLLER===
 ###
 
 ### LOGIN - Admin account (Happy Path)
-POST {{base_url}}/api/auth/login
+POST {{base_url}}/auth/login
 Content-Type: application/json
 
 {
@@ -15,10 +15,10 @@ Content-Type: application/json
 
 # After this request, copy the token from the response and assign it below:
 # @admin_token = Bearer <PASTE_ADMIN_JWT_HERE>
-@admin_token = Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJyZXRyaWV2ZXItZXNzZW50aWFscyIsInN1YiI6ImFkbWluQHVtYmMuY29tIiwiYXBwVXNlcklkIjoxLCJyb2xlIjoiUk9MRV9BRE1JTiIsImV4cCI6MTc0NjMzMjkzOH0.4nlemTtZvuAeJPrGcXHvjNF5djR60f11zBBuk8Qcds0
+@admin_token = Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJyZXRyaWV2ZXItZXNzZW50aWFscyIsInN1YiI6ImFkbWluQHVtYmMuY29tIiwiYXBwVXNlcklkIjoxLCJyb2xlIjoiUk9MRV9BRE1JTiIsImV4cCI6MTc0NjMzNDg0NX0.1Yg7Y-8x-54s2SUPZ6o50qf3eLpBYcm1qkCfFYMc8Es
 
 ### LOGIN - Authority1 account (Happy Path)
-POST {{base_url}}/api/auth/login
+POST {{base_url}}/auth/login
 Content-Type: application/json
 
 {
@@ -27,12 +27,11 @@ Content-Type: application/json
 }
 
 # @auth1_token = Bearer <PASTE_AUTHORITY1_JWT_HERE>
-
-@auth1_token = Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJyZXRyaWV2ZXItZXNzZW50aWFscyIsInN1YiI6ImF1dGhvcml0eTFAdW1iYy5jb20iLCJhcHBVc2VySWQiOjIsInJvbGUiOiJST0xFX0FVVEhPUklUWSIsImV4cCI6MTc0NjMzMjA3MX0.h1y8HIucnG2xCe5sCIyT00M5W0Jd-lGbplvL_uhN9RU
+@auth1_token = Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJyZXRyaWV2ZXItZXNzZW50aWFscyIsInN1YiI6ImF1dGhvcml0eTFAdW1iYy5jb20iLCJhcHBVc2VySWQiOjIsInJvbGUiOiJST0xFX0FVVEhPUklUWSIsImV4cCI6MTc0NjMzNDg2OX0.ZCu8ND48uA0qCq3WYpiIW_jBdnCJhyWfOx2hsxUPukE
 
 
 ### LOGIN - Invalid password (Sad Path)
-POST {{base_url}}/api/auth/login
+POST {{base_url}}/auth/login
 Content-Type: application/json
 
 {
@@ -40,14 +39,14 @@ Content-Type: application/json
   "password": "WrongPassword"
 }
 
--- got a 500 error
+
 ### REFRESH TOKEN - Admin (Happy Path)
-POST {{base_url}}/api/auth/refresh
+POST {{base_url}}/auth/refresh
 Authorization: {{admin_token}}
 
 
 ### REFRESH TOKEN - Invalid / Expired (Sad Path)
-POST {{base_url}}/api/auth/refresh
+POST {{base_url}}/auth/refresh
 Authorization: Bearer invalid.token.value
 
 
@@ -56,22 +55,22 @@ Authorization: Bearer invalid.token.value
 ###
 
 ### GET ALL USERS - Admin (Happy Path)
-GET {{base_url}}/api/user
+GET {{base_url}}/user
 Authorization: {{admin_token}}
 
 
 ### GET USER BY ID - Admin (Happy Path)
-GET {{base_url}}/api/user/1
+GET {{base_url}}/user/1
 Authorization: {{admin_token}}
 
 
 ### GET USER BY ID - Not Found
-GET {{base_url}}/api/user/999
+GET {{base_url}}/user/999
 Authorization: {{admin_token}}
 
 
 ### PUT CHANGE PASSWORD - Admin (Happy Path)
-PUT {{base_url}}/api/user/password
+PUT {{base_url}}/user/password
 Content-Type: application/json
 Authorization: {{admin_token}}
 
@@ -81,7 +80,7 @@ Authorization: {{admin_token}}
 
 
 ### PUT CHANGE PASSWORD - Missing password field (Sad Path)
-PUT {{base_url}}/api/user/password
+PUT {{base_url}}/user/password
 Content-Type: application/json
 Authorization: {{admin_token}}
 
@@ -91,20 +90,20 @@ Authorization: {{admin_token}}
 
 
 ### PUT ENABLE USER BY ID - Admin
-PUT {{base_url}}/api/user/enable/2
+PUT {{base_url}}/user/enable/2
 Authorization: {{admin_token}}
 
 
 ### PUT DISABLE USER BY ID - Admin
-PUT {{base_url}}/api/user/disable/2
+PUT {{base_url}}/user/disable/2
 Authorization: {{admin_token}}
 
 
 ### PUT ENABLE USER - Not Found (Sad Path)
-PUT {{base_url}}/api/user/enable/999
+PUT {{base_url}}/user/enable/999
 Authorization: {{admin_token}}
 
 
 ### PUT DISABLE USER - Not Found (Sad Path)
-PUT {{base_url}}/api/user/disable/999
+PUT {{base_url}}/user/disable/999
 Authorization: {{admin_token}}

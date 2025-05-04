@@ -53,7 +53,7 @@ class ItemServiceTest {
         assertEquals("Rice", result.get(0).getItemName());
         assertEquals("Lentils", result.get(1).getItemName());
     }
-    
+
     @Test
     void shouldFindById() {
         // Given
