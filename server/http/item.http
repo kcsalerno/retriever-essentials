@@ -15,15 +15,15 @@ GET {{base_url}}/item-id/9999 HTTP/1.1
 
 
 ### GET by Category - Happy Path
-GET {{base_url}}/category/South Asian - Snack HTTP/1.1
+GET {{base_url}}/category/South Asian%20-%20Snack HTTP/1.1
 
 
 ### GET by Category - Not Found
-GET {{base_url}}/category/Nonexistent - Category HTTP/1.1
+GET {{base_url}}/category/Nonexistent%20-%20Category HTTP/1.1
 
 
 ### GET by Name - Happy Path
-GET {{base_url}}/name/Maggi Noodles HTTP/1.1
+GET {{base_url}}/name/Maggi%20Noodles HTTP/1.1
 
 
 ### GET by Name - Not Found
