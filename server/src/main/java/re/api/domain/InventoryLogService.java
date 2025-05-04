@@ -95,12 +95,12 @@ public class InventoryLogService {
     }
 
     public List<InventoryLog> findByAuthorityEmail(String authorityEmail) {
-        Integer authorityId = appUserRepository.findByEmail(authorityEmail).getAppUserId();
-        if (authorityId == null) {
+        AppUser authority = appUserRepository.findByEmail(authorityEmail);
+        if (authority == null) {
             return List.of();
         }
 
-        List<InventoryLog> inventoryLogList = logRepository.findByAuthorityId(authorityId);
+        List<InventoryLog> inventoryLogList = logRepository.findByAuthorityId(authority.getAppUserId());
 
         if (inventoryLogList == null || inventoryLogList.isEmpty()) {
             return inventoryLogList;
