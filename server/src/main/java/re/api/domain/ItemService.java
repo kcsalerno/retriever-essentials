@@ -10,26 +10,32 @@ import java.util.List;
 
 @Service
 public class ItemService {
-    private final ItemRepository repository;
+    private final ItemRepository itemRepository;
 
-    public ItemService(ItemRepository repository) {
-        this.repository = repository;
+    public ItemService(ItemRepository itemRepository) {
+        this.itemRepository = itemRepository;
     }
 
     public List<Item> findAll() {
-        return repository.findAll();
+        return itemRepository.findAll();
+    }
+
+    public List<Item> findAllEnabled() {
+        return itemRepository.findAll().stream()
+                .filter(Item::isEnabled)
+                .toList();
     }
 
     public Item findById(int itemId) {
-        return repository.findById(itemId);
+        return itemRepository.findById(itemId);
     }
 
     public Item findByName(String name){
-        return repository.findByName(name);
+        return itemRepository.findByName(name);
     }
 
     public List<Item> findByCategory(String category) {
-        return repository.findByCategory(category);
+        return itemRepository.findByCategory(category);
     }
 
     @Transactional
@@ -43,7 +49,7 @@ public class ItemService {
             result.addMessage(ResultType.INVALID, "Item ID cannot be set for `add` operation");
         }
         if (result.isSuccess()) {
-            item = repository.add(item);
+            item = itemRepository.add(item);
             result.setPayload(item);
         }
 
@@ -61,7 +67,7 @@ public class ItemService {
             result.addMessage(ResultType.INVALID, "Item ID must be set for `update` operation");
         }
         if (result.isSuccess()) {
-            if (repository.update(item)) {
+            if (itemRepository.update(item)) {
                 result.setPayload(item);
             } else {
                 result.addMessage(ResultType.NOT_FOUND, "Item ID not found");
@@ -75,7 +81,7 @@ public class ItemService {
     public Result<Item> disableById(int itemId) {
         Result<Item> result = new Result<>();
 
-        if (!repository.disableById(itemId)) {
+        if (!itemRepository.disableById(itemId)) {
             result.addMessage(ResultType.NOT_FOUND, "Item ID not found");
         }
 
@@ -131,7 +137,7 @@ public class ItemService {
         }
 
         // Duplicate check
-        repository.findAll().stream()
+        itemRepository.findAll().stream()
                 .filter(existingItem -> existingItem.equals(item) && existingItem.getItemId() != item.getItemId())
                 .findFirst()
                 .ifPresent(existingItem -> result.addMessage(ResultType.DUPLICATE, "Duplicate items are not allowed."));

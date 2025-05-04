@@ -14,25 +14,25 @@ import java.util.List;
 @CrossOrigin
 @RequestMapping("/api/item")
 public class ItemController {
-    private final ItemService service;
+    private final ItemService itemService;
 
-    public ItemController(ItemService service) {
-        this.service = service;
+    public ItemController(ItemService itemService) {
+        this.itemService = itemService;
     }
 
     @GetMapping
     public List<Item> findAll() {
-        return service.findAll();
+        return itemService.findAll();
     }
 
-    @GetMapping("/test")
-    public ResponseEntity<String> test() {
-        return ResponseEntity.ok("Hello from ItemController!");
+    @GetMapping("/enabled")
+    public List<Item> findAllEnabled() {
+        return itemService.findAllEnabled();
     }
 
     @GetMapping("/item-id/{itemId}")
     public ResponseEntity<Item> findById(@PathVariable int itemId) {
-        Item item = service.findById(itemId);
+        Item item = itemService.findById(itemId);
         if (item == null) {
             return ResponseEntity.notFound().build();
         }
@@ -41,7 +41,7 @@ public class ItemController {
 
     @GetMapping("/name/{itemName}")
     public ResponseEntity<Item> findByName(@PathVariable String itemName) {
-        Item item = service.findByName(itemName);
+        Item item = itemService.findByName(itemName);
         if (item == null) {
             return ResponseEntity.notFound().build();
         }
@@ -50,7 +50,7 @@ public class ItemController {
 
     @GetMapping("/category/{category}")
     public ResponseEntity<List<Item>> findByCategory(@PathVariable String category) {
-        List<Item> items = service.findByCategory(category);
+        List<Item> items = itemService.findByCategory(category);
         if (items.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -59,7 +59,7 @@ public class ItemController {
 
     @PostMapping
     public ResponseEntity<Object> add(@RequestBody Item item) {
-        Result<Item> result = service.add(item);
+        Result<Item> result = itemService.add(item);
         if (result.isSuccess()) {
             return new ResponseEntity<>(result.getPayload(), HttpStatus.CREATED);
         }
@@ -72,7 +72,7 @@ public class ItemController {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
 
-        Result<Item> result = service.update(item);
+        Result<Item> result = itemService.update(item);
         if (result.isSuccess()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
@@ -81,7 +81,7 @@ public class ItemController {
 
     @DeleteMapping("/{itemId}")
     public ResponseEntity<Void> disableById(@PathVariable int itemId) {
-        Result<Item> result = service.disableById(itemId);
+        Result<Item> result = itemService.disableById(itemId);
         if (result.getType() == ResultType.NOT_FOUND) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
