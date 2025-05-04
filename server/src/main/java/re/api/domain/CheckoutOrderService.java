@@ -178,7 +178,6 @@ public class CheckoutOrderService {
                     continue; // prevent NPE
                 }
 
-                // Check for duplicates
                 if (!itemIds.add(checkoutItem.getItemId())) {
                     result.addMessage(ResultType.INVALID,
                             "Duplicate item in checkout order: Item ID " + checkoutItem.getItemId());
@@ -186,6 +185,14 @@ public class CheckoutOrderService {
                 }
 
                 validateCheckoutItem(result, checkoutItem);
+            }
+        }
+
+        List<CheckoutOrder> existing = checkoutOrderRepository.findAll();
+        for (CheckoutOrder order : existing) {
+            if (order.equals(checkoutOrder)) {
+                result.addMessage(ResultType.INVALID, "Duplicate checkout order already exists.");
+                return result;
             }
         }
 

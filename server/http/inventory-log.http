@@ -1,0 +1,103 @@
+@base_url = http://localhost:8080/api/inventory-log
+
+### GET all logs - Happy Path
+GET {{base_url}} HTTP/1.1
+
+### GET by log ID - Happy Path
+GET {{base_url}}/1 HTTP/1.1
+
+### GET by log ID - Not Found
+GET {{base_url}}/9999 HTTP/1.1
+
+### GET by item ID - Happy Path
+GET {{base_url}}/item-id/4 HTTP/1.1
+
+### GET by item ID - Not Found
+GET {{base_url}}/item-id/9999 HTTP/1.1
+
+### GET by item name - Happy Path
+GET {{base_url}}/item/Maggi%20Noodles HTTP/1.1
+
+### GET by item name - Not Found
+GET {{base_url}}/item/Fake%20Rice HTTP/1.1
+
+### GET by authority ID - Happy Path
+GET {{base_url}}/authority-id/1 HTTP/1.1
+
+### GET by authority ID - Not Found
+GET {{base_url}}/authority-id/9999 HTTP/1.1
+
+### GET by authority email - Happy Path
+GET {{base_url}}/authority/authority1@umbc.com HTTP/1.1
+
+### GET by authority email - Not Found
+GET {{base_url}}/authority/fake@umbc.com HTTP/1.1
+
+### POST add new log - Happy Path
+POST {{base_url}} HTTP/1.1
+Content-Type: application/json
+
+{
+  "authorityId": 1,
+  "itemId": 1,
+  "quantityChange": 5,
+  "reason": "Inventory restock",
+  "timeStamp": "2025-05-04T00:00:00"
+}
+
+### POST add new log - Invalid (zero quantity + blank reason)
+POST {{base_url}} HTTP/1.1
+Content-Type: application/json
+
+{
+  "authorityId": 1,
+  "itemId": 1,
+  "quantityChange": 0,
+  "reason": "",
+  "timeStamp": "2025-05-04T00:00:00"
+}
+
+### PUT update log - Happy Path
+PUT {{base_url}}/1 HTTP/1.1
+Content-Type: application/json
+
+{
+  "logId": 1,
+  "authorityId": 1,
+  "itemId": 1,
+  "quantityChange": 3,
+  "reason": "Corrected amount",
+  "timeStamp": "2025-05-04T00:00:00"
+}
+
+### PUT update log - Not Found
+PUT {{base_url}}/9999 HTTP/1.1
+Content-Type: application/json
+
+{
+  "logId": 9999,
+  "authorityId": 1,
+  "itemId": 1,
+  "quantityChange": 2,
+  "reason": "This should fail",
+  "timeStamp": "2025-05-04T00:00:00"
+}
+
+### PUT update log - ID mismatch (409 Conflict)
+PUT {{base_url}}/1 HTTP/1.1
+Content-Type: application/json
+
+{
+  "logId": 2,
+  "authorityId": 1,
+  "itemId": 1,
+  "quantityChange": 3,
+  "reason": "Should cause conflict",
+  "timeStamp": "2025-05-04T00:00:00"
+}
+
+### DELETE log - Happy Path
+DELETE {{base_url}}/1 HTTP/1.1
+
+### DELETE log - Not Found
+DELETE {{base_url}}/9999 HTTP/1.1

@@ -1,0 +1,90 @@
+@base_url = http://localhost:8080/api/vendor
+
+
+### GET all vendors - Happy Path
+GET {{base_url}} HTTP/1.1
+
+
+### GET vendor by ID - Happy Path
+GET {{base_url}}/vendor-id/1 HTTP/1.1
+
+
+### GET vendor by ID - Not Found
+GET {{base_url}}/vendor-id/9999 HTTP/1.1
+
+
+### GET vendor by Name - Happy Path
+GET {{base_url}}/Sunrise%20Foods HTTP/1.1
+
+
+### GET vendor by Name - Not Found
+GET {{base_url}}/Unknown%20Vendor HTTP/1.1
+
+
+### POST add vendor - Happy Path
+POST {{base_url}} HTTP/1.1
+Content-Type: application/json
+
+{
+  "vendorName": "Test Vendor",
+  "phoneNumber": "555-123-4567",
+  "contactEmail": "john@email.com",
+  "enabled": true
+}
+
+
+### POST add vendor - Missing Name (Invalid)
+POST {{base_url}} HTTP/1.1
+Content-Type: application/json
+
+{
+  "vendorDescription": "No name provided",
+  "enabled": true
+}
+
+
+### PUT update vendor - Happy Path
+PUT {{base_url}}/1 HTTP/1.1
+Content-Type: application/json
+
+{
+  "vendorId": 1,
+  "vendorName": "Patel Brothers",
+  "phoneNumber": "999-555-1234",
+  "contactEmail": "dave@email.com",
+  "enabled": true
+}
+
+
+### PUT update vendor - Mismatched ID (Conflict)
+PUT {{base_url}}/99 HTTP/1.1
+Content-Type: application/json
+
+{
+  "vendorId": 1,
+  "vendorName": "Mismatch Vendor",
+  "phoneNumber": "999-555-1234",
+  "contactEmail": "dave@email.com",
+  "enabled": true
+}
+
+
+### PUT update vendor - Not Found
+PUT {{base_url}}/9999 HTTP/1.1
+Content-Type: application/json
+
+{
+  "vendorId": 9999,
+  "vendorName": "Ghost Vendor",
+  "phoneNumber": "999-555-1234",
+  "contactEmail": "dave@email.com",
+  "enabled": true
+}
+
+
+### DELETE (disable) vendor by ID - Happy Path
+DELETE {{base_url}}/2 HTTP/1.1
+
+
+### DELETE (disable) vendor by ID - Not Found
+DELETE {{base_url}}/9999 HTTP/1.1

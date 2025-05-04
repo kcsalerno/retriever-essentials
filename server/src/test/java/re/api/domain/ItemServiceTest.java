@@ -37,6 +37,24 @@ class ItemServiceTest {
     }
 
     @Test
+    void shouldFindAllEnabled() {
+        // Given
+        List<Item> allItems = List.of(
+                new Item(1, "Rice", "White rice", "Grain", "img.com/1", "Staple", 100, 2, BigDecimal.ZERO, true),
+                new Item(2, "Beans", "Black beans", "Protein", "img.com/2", "Staple", 50, 1, BigDecimal.ZERO, false),
+                new Item(3, "Lentils", "Red lentils", "Protein", "img.com/3", "Staple", 75, 1, BigDecimal.ZERO, true)
+        );
+        // When
+        when(itemRepository.findAll()).thenReturn(allItems);
+        List<Item> result = itemService.findAllEnabled();
+        // Then
+        assertEquals(2, result.size());
+        assertTrue(result.stream().allMatch(Item::isEnabled));
+        assertEquals("Rice", result.get(0).getItemName());
+        assertEquals("Lentils", result.get(1).getItemName());
+    }
+
+    @Test
     void shouldFindById() {
         // Given
         List<Item> testItems = makeTestItems();
