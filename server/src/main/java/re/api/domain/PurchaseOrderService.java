@@ -168,7 +168,7 @@ public class PurchaseOrderService {
                     continue; // prevent NPE
                 }
 
-                // Check for duplicates
+                // Check for duplicate Purchase Items within the same Purchase Order
                 if (!itemIds.add(purchaseItem.getItemId())) {
                     result.addMessage(ResultType.INVALID,
                             "Duplicate item in purchase order: Item ID " + purchaseItem.getItemId());
@@ -176,6 +176,15 @@ public class PurchaseOrderService {
                 }
 
                 validatePurchaseItem(result, purchaseItem);
+            }
+        }
+
+        // Check for duplicate Purchase Orders
+        List<PurchaseOrder> existing = purchaseOrderRepository.findAll();
+        for (PurchaseOrder order : existing) {
+            if (order.equals(purchaseOrder)) {
+                result.addMessage(ResultType.INVALID, "Duplicate purchase order already exists.");
+                return result;
             }
         }
 

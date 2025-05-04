@@ -15,8 +15,20 @@ Content-Type: application/json
 {
   "purchaseItemId": 1,
   "purchaseOrderId": 1,
-  "itemId": 8,
-  "quantity": 10
+  "itemId": 1,
+  "quantity": 30
+}
+
+
+### PUT update PurchaseItem - Duplicate Purchse Item in Order
+PUT {{base_url}}/1 HTTP/1.1
+Content-Type: application/json
+
+{
+  "purchaseItemId": 1,
+  "purchaseOrderId": 1,
+  "itemId": 2,
+  "quantity": 30
 }
 
 

@@ -1,0 +1,116 @@
+@base_url = http://localhost:8080/api/checkout-order
+
+### GET all CheckoutOrders - Happy Path
+GET {{base_url}} HTTP/1.1
+
+
+### GET CheckoutOrder by ID - Happy Path
+GET {{base_url}}/1 HTTP/1.1
+
+
+### GET CheckoutOrder by ID - Not Found
+GET {{base_url}}/9999 HTTP/1.1
+
+
+### GET hourly checkout summary
+GET {{base_url}}/hourly-checkout-summary HTTP/1.1
+
+
+### POST CheckoutOrder - Happy Path
+POST {{base_url}} HTTP/1.1
+Content-Type: application/json
+
+{
+  "studentId": 1,
+  "authorityId": 2,
+  "checkoutDate": "2025-05-08T14:00:00",
+  "checkoutItems": [
+    {
+      "itemId": 3,
+      "quantity": 1
+    },
+    {
+      "itemId": 5,
+      "quantity": 1
+    }
+  ]
+}
+
+
+### POST CheckoutOrder - Invalid (duplicate item)
+POST {{base_url}} HTTP/1.1
+Content-Type: application/json
+
+{
+  "studentId": 1,
+  "authorityId": 2,
+  "checkoutDate": "2025-05-08T14:00:00",
+  "checkoutItems": [
+    {
+      "itemId": 3,
+      "quantity": 1
+    },
+    {
+      "itemId": 3,
+      "quantity": 1
+    }
+  ]
+}
+
+
+### PUT CheckoutOrder - Happy Path
+PUT {{base_url}}/1 HTTP/1.1
+Content-Type: application/json
+
+{
+  "checkoutOrderId": 1,
+  "studentId": 1,
+  "authorityId": 2,
+  "checkoutDate": "2025-05-08T16:00:00",
+  "checkoutItems": [
+    {
+      "checkoutItemId": 1,
+      "itemId": 8,
+      "quantity": 1
+    },
+    {
+      "checkoutItemId": 2,
+      "itemId": 6,
+      "quantity": 1
+    }
+  ]
+}
+
+
+### PUT CheckoutOrder - ID Mismatch (Conflict)
+PUT {{base_url}}/2 HTTP/1.1
+Content-Type: application/json
+
+{
+  "checkoutOrderId": 999,
+  "studentId": 1,
+  "authorityId": 2,
+  "pickupDate": "2025-05-08T16:00:00",
+  "checkoutItems": []
+}
+
+
+### PUT CheckoutOrder - Not Found
+PUT {{base_url}}/9999 HTTP/1.1
+Content-Type: application/json
+
+{
+  "checkoutOrderId": 9999,
+  "studentId": 1,
+  "authorityId": 2,
+  "pickupDate": "2025-05-08T16:00:00",
+  "checkoutItems": []
+}
+
+
+### DELETE CheckoutOrder - Happy Path
+DELETE {{base_url}}/3 HTTP/1.1
+
+
+### DELETE CheckoutOrder - Not Found
+DELETE {{base_url}}/9999 HTTP/1.1
