@@ -1,0 +1,110 @@
+@base_url = http://localhost:8080
+
+###
+# === AUTH CONTROLLER===
+###
+
+### LOGIN - Admin account (Happy Path)
+POST {{base_url}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@umbc.com",
+  "password": "P@ssw0rd!"
+}
+
+# After this request, copy the token from the response and assign it below:
+# @admin_token = Bearer <PASTE_ADMIN_JWT_HERE>
+@admin_token = Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJyZXRyaWV2ZXItZXNzZW50aWFscyIsInN1YiI6ImFkbWluQHVtYmMuY29tIiwiYXBwVXNlcklkIjoxLCJyb2xlIjoiUk9MRV9BRE1JTiIsImV4cCI6MTc0NjMzMjkzOH0.4nlemTtZvuAeJPrGcXHvjNF5djR60f11zBBuk8Qcds0
+
+### LOGIN - Authority1 account (Happy Path)
+POST {{base_url}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "authority1@umbc.com",
+  "password": "P@ssw0rd!"
+}
+
+# @auth1_token = Bearer <PASTE_AUTHORITY1_JWT_HERE>
+
+@auth1_token = Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJyZXRyaWV2ZXItZXNzZW50aWFscyIsInN1YiI6ImF1dGhvcml0eTFAdW1iYy5jb20iLCJhcHBVc2VySWQiOjIsInJvbGUiOiJST0xFX0FVVEhPUklUWSIsImV4cCI6MTc0NjMzMjA3MX0.h1y8HIucnG2xCe5sCIyT00M5W0Jd-lGbplvL_uhN9RU
+
+
+### LOGIN - Invalid password (Sad Path)
+POST {{base_url}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@umbc.com",
+  "password": "WrongPassword"
+}
+
+-- got a 500 error
+### REFRESH TOKEN - Admin (Happy Path)
+POST {{base_url}}/api/auth/refresh
+Authorization: {{admin_token}}
+
+
+### REFRESH TOKEN - Invalid / Expired (Sad Path)
+POST {{base_url}}/api/auth/refresh
+Authorization: Bearer invalid.token.value
+
+
+###
+# === APP USER CONTROLLER ===
+###
+
+### GET ALL USERS - Admin (Happy Path)
+GET {{base_url}}/api/user
+Authorization: {{admin_token}}
+
+
+### GET USER BY ID - Admin (Happy Path)
+GET {{base_url}}/api/user/1
+Authorization: {{admin_token}}
+
+
+### GET USER BY ID - Not Found
+GET {{base_url}}/api/user/999
+Authorization: {{admin_token}}
+
+
+### PUT CHANGE PASSWORD - Admin (Happy Path)
+PUT {{base_url}}/api/user/password
+Content-Type: application/json
+Authorization: {{admin_token}}
+
+{
+  "password": "newSecureP@ss123"
+}
+
+
+### PUT CHANGE PASSWORD - Missing password field (Sad Path)
+PUT {{base_url}}/api/user/password
+Content-Type: application/json
+Authorization: {{admin_token}}
+
+{
+  "pass": "nope"
+}
+
+
+### PUT ENABLE USER BY ID - Admin
+PUT {{base_url}}/api/user/enable/2
+Authorization: {{admin_token}}
+
+
+### PUT DISABLE USER BY ID - Admin
+PUT {{base_url}}/api/user/disable/2
+Authorization: {{admin_token}}
+
+
+### PUT ENABLE USER - Not Found (Sad Path)
+PUT {{base_url}}/api/user/enable/999
+Authorization: {{admin_token}}
+
+
+### PUT DISABLE USER - Not Found (Sad Path)
+PUT {{base_url}}/api/user/disable/999
+Authorization: {{admin_token}}
