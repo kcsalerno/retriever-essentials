@@ -48,6 +48,7 @@ PUT {{base_url}}/1 HTTP/1.1
 Content-Type: application/json
 
 {
+  "vendorId": 1,
   "vendorName": "Patel Brothers",
   "phoneNumber": "999-555-1234",
   "contactEmail": "dave@email.com",
@@ -62,7 +63,8 @@ Content-Type: application/json
 {
   "vendorId": 1,
   "vendorName": "Mismatch Vendor",
-  "vendorDescription": "ID conflict test",
+  "phoneNumber": "999-555-1234",
+  "contactEmail": "dave@email.com",
   "enabled": true
 }
 
@@ -74,7 +76,8 @@ Content-Type: application/json
 {
   "vendorId": 9999,
   "vendorName": "Ghost Vendor",
-  "vendorDescription": "Should not exist",
+  "phoneNumber": "999-555-1234",
+  "contactEmail": "dave@email.com",
   "enabled": true
 }
 
