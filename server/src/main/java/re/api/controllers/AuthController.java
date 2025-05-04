@@ -7,6 +7,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import re.api.models.AppUser;
@@ -64,7 +65,7 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<Object> refresh(@RequestAttribute("user") AppUser user) {
+    public ResponseEntity<Object> refresh(@AuthenticationPrincipal AppUser user) {
         String jwt = jwtConverter.getTokenFromUser(user);
 
         Map<String, Object> responseBody = new HashMap<>();
@@ -82,5 +83,4 @@ public class AuthController {
         System.out.println("\nENCODED: " + hashed + "\n");
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
 }

@@ -37,7 +37,7 @@ class CheckoutItemServiceTest {
         // Given
         List<CheckoutItem> checkoutItems = makeCheckoutItems();
         // When
-        when(checkoutItemRepository.findById(1)).thenReturn(checkoutItems.get(0));
+        when(checkoutItemRepository.findById(1)).thenReturn(checkoutItems.getFirst());
         // Then
         CheckoutItem checkoutItem = checkoutItemService.findById(1);
         assertEquals(checkoutItems.getFirst(), checkoutItem);
@@ -59,9 +59,11 @@ class CheckoutItemServiceTest {
 
     @Test
     void shouldFindPopularItems() {
+        // Given
         Map<String, Object> mockItemStat = Map.of("item_id", 1, "count", 20);
+        // When
         when(checkoutItemRepository.findPopularItems()).thenReturn(List.of(mockItemStat));
-
+        // Then
         List<Map<String, Object>> result = checkoutItemService.findPopularItems();
         assertNotNull(result);
         assertEquals(1, result.size());
@@ -71,9 +73,11 @@ class CheckoutItemServiceTest {
 
     @Test
     void shouldFindPopularCategories() {
+        // Given
         Map<String, Object> mockCategoryStat = Map.of("category", "Grains", "count", 40);
+        // When
         when(checkoutItemRepository.findPopularCategories()).thenReturn(List.of(mockCategoryStat));
-
+        // Then
         List<Map<String, Object>> result = checkoutItemService.findPopularCategories();
         assertNotNull(result);
         assertEquals(1, result.size());
@@ -84,9 +88,10 @@ class CheckoutItemServiceTest {
 
     @Test
     void shouldUpdate() {
+        // Given
         CheckoutItem existing = new CheckoutItem(2, 1, 2, 2);
         CheckoutItem updated = new CheckoutItem(2, 1, 2, 4);
-
+        // When
         when(checkoutItemRepository.findById(2)).thenReturn(existing);
         when(checkoutOrderRepository.findById(1)).thenReturn(new CheckoutOrder());
         when(itemRepository.findById(2)).thenReturn(new Item(2, "Item", "",
@@ -94,7 +99,7 @@ class CheckoutItemServiceTest {
         when(itemRepository.updateCurrentCount(2, -2)).thenReturn(true);
         when(checkoutItemRepository.findByCheckoutOrderId(1)).thenReturn(List.of(existing));
         when(checkoutItemRepository.update(updated)).thenReturn(true);
-
+        // Then
         Result<CheckoutItem> result = checkoutItemService.update(updated);
         assertTrue(result.isSuccess());
         verify(itemRepository).updateCurrentCount(2, -2);
@@ -103,6 +108,8 @@ class CheckoutItemServiceTest {
 
     @Test
     void shouldNotUpdateWithNull() {
+        // Given
+        // When
         Result<CheckoutItem> result = checkoutItemService.update(null);
         assertFalse(result.isSuccess());
         assertTrue(result.getMessages().contains("Checkout item cannot be null."));
@@ -110,11 +117,14 @@ class CheckoutItemServiceTest {
 
     @Test
     void shouldNotUpdateWhenIdMissing() {
+        // Given
         CheckoutItem badItem = new CheckoutItem(0, 1, 1, 1);
+        // When
         when(checkoutOrderRepository.findById(1)).thenReturn(new CheckoutOrder());
         when(itemRepository.findById(1)).thenReturn(new Item(1, "", "",
                 "", "", "", 100, 5, BigDecimal.TEN, true));
         when(checkoutItemRepository.findByCheckoutOrderId(1)).thenReturn(List.of());
+        // Then
         Result<CheckoutItem> result = checkoutItemService.update(badItem);
         assertFalse(result.isSuccess());
         assertTrue(result.getMessages().contains("Checkout item ID must be set for update."));
@@ -122,8 +132,11 @@ class CheckoutItemServiceTest {
 
     @Test
     void shouldNotUpdateIfCheckoutOrderMissing() {
+        // Given
         CheckoutItem item = new CheckoutItem(2, 99, 1, 1);
+        // When
         when(checkoutOrderRepository.findById(99)).thenReturn(null);
+        // Then
         Result<CheckoutItem> result = checkoutItemService.update(item);
         assertFalse(result.isSuccess());
         assertTrue(result.getMessages().contains("Checkout order not found."));
@@ -131,7 +144,10 @@ class CheckoutItemServiceTest {
 
     @Test
     void shouldNotUpdateWhenCheckoutOrderIdNotSet() {
+        // Given
         CheckoutItem item = new CheckoutItem(1, 0, 1, 2); // order ID is 0
+        // When
+        // Then
         Result<CheckoutItem> result = checkoutItemService.update(item);
         assertFalse(result.isSuccess());
         assertTrue(result.getMessages().contains("Checkout order ID is required."));
@@ -140,9 +156,12 @@ class CheckoutItemServiceTest {
 
     @Test
     void shouldNotUpdateIfItemMissingOrDisabled() {
+        // Given
         CheckoutItem item = new CheckoutItem(2, 1, 999, 1);
+        // When
         when(checkoutOrderRepository.findById(1)).thenReturn(new CheckoutOrder());
         when(itemRepository.findById(999)).thenReturn(null);
+        // Then
         Result<CheckoutItem> result = checkoutItemService.update(item);
         assertFalse(result.isSuccess());
         assertTrue(result.getMessages().contains("Item does not exist or is disabled."));
@@ -150,8 +169,11 @@ class CheckoutItemServiceTest {
 
     @Test
     void shouldNotUpdateWhenItemIdNotSet() {
+        // Given
         CheckoutItem item = new CheckoutItem(1, 1, 0, 2); // item ID is 0
+        // When
         when(checkoutOrderRepository.findById(1)).thenReturn(new CheckoutOrder());
+        // Then
         Result<CheckoutItem> result = checkoutItemService.update(item);
         assertFalse(result.isSuccess());
         assertTrue(result.getMessages().contains("Item ID is required."));
@@ -159,10 +181,13 @@ class CheckoutItemServiceTest {
 
     @Test
     void shouldNotUpdateWhenQuantityIsZero() {
+        // Given
         CheckoutItem item = new CheckoutItem(1, 1, 1, 0);
+        // When
         when(checkoutOrderRepository.findById(1)).thenReturn(new CheckoutOrder());
         when(itemRepository.findById(1)).thenReturn(new Item(1, "Test", "", "", "", "", 10, 2, BigDecimal.ONE, true));
         when(checkoutItemRepository.findByCheckoutOrderId(1)).thenReturn(List.of());
+        // Then
         Result<CheckoutItem> result = checkoutItemService.update(item);
         assertFalse(result.isSuccess());
         assertTrue(result.getMessages().contains("Quantity must be greater than 0."));
@@ -170,15 +195,16 @@ class CheckoutItemServiceTest {
 
     @Test
     void shouldNotUpdateIfExceedsStockOrLimit() {
+        // Given
         Item item = new Item(2, "", "", "", "",
                 "", 5, 1, BigDecimal.TEN, true);
         CheckoutItem badItem = new CheckoutItem(2, 1, 2, 10);
-
+        // When
         when(checkoutOrderRepository.findById(1)).thenReturn(new CheckoutOrder());
         when(itemRepository.findById(2)).thenReturn(item);
         when(checkoutItemRepository.findById(2)).thenReturn(badItem);
         when(checkoutItemRepository.findByCheckoutOrderId(1)).thenReturn(List.of());
-
+        // Then
         Result<CheckoutItem> result = checkoutItemService.update(badItem);
         assertFalse(result.isSuccess());
         assertTrue(result.getMessages().contains("Quantity exceeds available stock."));
@@ -187,16 +213,17 @@ class CheckoutItemServiceTest {
 
     @Test
     void shouldNotUpdateIfInventoryFails() {
+        // Given
         CheckoutItem existing = new CheckoutItem(2, 1, 2, 5);
         CheckoutItem updated = new CheckoutItem(2, 1, 2, 8);
-
+        // When
         when(checkoutItemRepository.findById(2)).thenReturn(existing);
         when(checkoutOrderRepository.findById(1)).thenReturn(new CheckoutOrder());
         when(itemRepository.findById(2)).thenReturn(new Item(2, "", "",
                 "", "", "", 100, 10, BigDecimal.TEN, true));
         when(itemRepository.updateCurrentCount(2, -3)).thenReturn(false); // fail here
         when(checkoutItemRepository.findByCheckoutOrderId(1)).thenReturn(List.of());
-
+        // Then
         Result<CheckoutItem> result = checkoutItemService.update(updated);
         assertFalse(result.isSuccess());
         assertTrue(result.getMessages().contains("Failed to update item count for item ID: 2"));
@@ -204,14 +231,15 @@ class CheckoutItemServiceTest {
 
     @Test
     void shouldNotUpdateWhenDuplicateCheckoutItemExists() {
+        // Given
         CheckoutItem input = new CheckoutItem(1, 1, 1, 2);
         CheckoutItem duplicate = new CheckoutItem(99, 1, 1, 2); // same order and item ID, different ID
-
+        // When
         when(checkoutOrderRepository.findById(1)).thenReturn(new CheckoutOrder());
         when(itemRepository.findById(1)).thenReturn(new Item(1, "Item", "", "", "", "", 10, 2, BigDecimal.ONE, true));
         when(checkoutItemRepository.findByCheckoutOrderId(1)).thenReturn(List.of(duplicate));
         when(checkoutItemRepository.findById(1)).thenReturn(input);
-
+        // Then
         Result<CheckoutItem> result = checkoutItemService.update(input);
         assertFalse(result.isSuccess());
         assertTrue(result.getMessages().contains("Duplicate checkout item found."));
@@ -219,11 +247,13 @@ class CheckoutItemServiceTest {
 
     @Test
     void shouldDeleteById() {
+        // Given
         CheckoutItem toDelete = new CheckoutItem(3, 1, 3, 5);
+        // When
         when(checkoutItemRepository.findById(3)).thenReturn(toDelete);
         when(itemRepository.updateCurrentCount(3, 5)).thenReturn(true);
         when(checkoutItemRepository.deleteById(3)).thenReturn(true);
-
+        // Then
         Result<CheckoutItem> result = checkoutItemService.deleteById(3);
         assertTrue(result.isSuccess());
         verify(itemRepository).updateCurrentCount(3, 5);
@@ -232,7 +262,10 @@ class CheckoutItemServiceTest {
 
     @Test
     void shouldNotDeleteIfNotFound() {
+        // Given
+        // When
         when(checkoutItemRepository.findById(999)).thenReturn(null);
+        // Then
         Result<CheckoutItem> result = checkoutItemService.deleteById(999);
         assertFalse(result.isSuccess());
         assertTrue(result.getMessages().contains("Checkout item ID not found."));
@@ -240,9 +273,12 @@ class CheckoutItemServiceTest {
 
     @Test
     void shouldNotDeleteIfInventoryUpdateFails() {
+        // Given
         CheckoutItem existing = new CheckoutItem(3, 1, 3, 5);
+        // When
         when(checkoutItemRepository.findById(3)).thenReturn(existing);
         when(itemRepository.updateCurrentCount(3, 5)).thenReturn(false); // fails here
+        // Then
         Result<CheckoutItem> result = checkoutItemService.deleteById(3);
         assertFalse(result.isSuccess());
         assertTrue(result.getMessages().contains("Failed to update item count for item ID: 3"));

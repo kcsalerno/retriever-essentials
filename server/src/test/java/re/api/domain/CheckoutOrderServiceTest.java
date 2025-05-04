@@ -121,8 +121,8 @@ class CheckoutOrderServiceTest {
         // Then
         assertNotNull(result);
         assertEquals(2, result.size());
-        assertEquals(10, result.get(0).get("hour"));
-        assertEquals(5, result.get(0).get("checkout_count"));
+        assertEquals(10, result.getFirst().get("hour"));
+        assertEquals(5, result.getFirst().get("checkout_count"));
         assertEquals(14, result.get(1).get("hour"));
         assertEquals(3, result.get(1).get("checkout_count"));
     }
@@ -143,7 +143,7 @@ class CheckoutOrderServiceTest {
         CheckoutOrder savedOrder = new CheckoutOrder(4, "Z123456789", 1,
                 false, newOrder.getCheckoutDate());
         when(appUserRepository.findById(1)).thenReturn(makeAdmin());
-        when(itemRepository.findById(1)).thenReturn(items.get(0));
+        when(itemRepository.findById(1)).thenReturn(items.getFirst());
         when(itemRepository.findById(2)).thenReturn(items.get(1));
         when(checkoutOrderRepository.add(newOrder)).thenReturn(savedOrder);
         when(itemRepository.updateCurrentCount(1, -2)).thenReturn(true);
@@ -159,6 +159,9 @@ class CheckoutOrderServiceTest {
 
     @Test
     void shouldNotAddWhenCheckoutOrderIsNull() {
+        // Given
+        // When
+        // Then
         Result<CheckoutOrder> result = checkoutOrderService.add(null);
         assertFalse(result.isSuccess());
         assertEquals(ResultType.INVALID, result.getType());
@@ -167,7 +170,10 @@ class CheckoutOrderServiceTest {
 
     @Test
     void shouldNotAddWhenStudentIdIsMissing() {
+        // Given
         CheckoutOrder order = new CheckoutOrder(0, "  ", 1, false, LocalDateTime.now());
+        // When
+        // Then
         Result<CheckoutOrder> result = checkoutOrderService.add(order);
         assertFalse(result.isSuccess());
         assertTrue(result.getMessages().contains("Student ID is required."));
@@ -175,7 +181,10 @@ class CheckoutOrderServiceTest {
 
     @Test
     void shouldNotAddWhenStudentIdTooLong() {
+        // Given
         CheckoutOrder order = new CheckoutOrder(0, "TOOLONGSTUDENTID", 1, false, LocalDateTime.now());
+        // When
+        // Then
         Result<CheckoutOrder> result = checkoutOrderService.add(order);
         assertFalse(result.isSuccess());
         assertTrue(result.getMessages().contains("Student ID cannot exceed 10 characters."));
@@ -183,7 +192,10 @@ class CheckoutOrderServiceTest {
 
     @Test
     void shouldNotAddWhenAuthorityIdIsMissing() {
+        // Given
         CheckoutOrder order = new CheckoutOrder(0, "A123456789", 0, false, LocalDateTime.now());
+        // When
+        // Then
         Result<CheckoutOrder> result = checkoutOrderService.add(order);
         assertFalse(result.isSuccess());
         assertTrue(result.getMessages().contains("Authority ID is required."));
@@ -191,8 +203,11 @@ class CheckoutOrderServiceTest {
 
     @Test
     void shouldNotAddWhenAuthorityIsNotFound() {
+        // Given
+        // When
         when(appUserRepository.findById(999)).thenReturn(null);
         CheckoutOrder order = new CheckoutOrder(0, "A123456789", 999, false, LocalDateTime.now());
+        // Then
         Result<CheckoutOrder> result = checkoutOrderService.add(order);
         assertFalse(result.isSuccess());
         assertTrue(result.getMessages().contains("Authority does not exist or is disabled."));
@@ -200,16 +215,21 @@ class CheckoutOrderServiceTest {
 
     @Test
     void shouldNotAddWhenAuthorityInvalidOrDisabled() {
+        // Given
         CheckoutOrder order = makeCheckoutOrders().getFirst();
         order.setAuthorityId(0); // invalid
-
+        // When
+        // Then
         Result<CheckoutOrder> result1 = checkoutOrderService.add(order);
         assertFalse(result1.isSuccess());
         assertTrue(result1.getMessages().contains("Authority ID is required."));
 
+        // Given
         order.setAuthorityId(999);
+        // When
         when(appUserRepository.findById(999)).thenReturn(new AppUser(999, "x",
                 "Disabled", UserRole.ADMIN, false));
+        // Then
         Result<CheckoutOrder> result2 = checkoutOrderService.add(order);
         assertFalse(result2.isSuccess());
         assertTrue(result2.getMessages().contains("Authority does not exist or is disabled."));
@@ -217,8 +237,11 @@ class CheckoutOrderServiceTest {
 
     @Test
     void shouldNotAddWhenCheckoutDateIsMissing() {
+        // Given
         CheckoutOrder order = new CheckoutOrder(0, "A123456789", 1, false, null);
+        // When
         when(appUserRepository.findById(1)).thenReturn(makeAdmin());
+        // Then
         Result<CheckoutOrder> result = checkoutOrderService.add(order);
         assertFalse(result.isSuccess());
         assertTrue(result.getMessages().contains("Checkout date is required."));
@@ -226,14 +249,15 @@ class CheckoutOrderServiceTest {
 
     @Test
     void shouldNotAddWhenDuplicateItemsInOrder() {
+        // Given
         CheckoutOrder order = new CheckoutOrder(0, "A123456789", 1, false, LocalDateTime.now());
         CheckoutItem item1 = new CheckoutItem(0, 0, 1, 1);
         CheckoutItem item2 = new CheckoutItem(0, 0, 1, 2); // same itemId
         order.setCheckoutItems(List.of(item1, item2));
-
+        // When
         when(appUserRepository.findById(1)).thenReturn(makeAdmin());
-        when(itemRepository.findById(1)).thenReturn(makeItems().get(0));
-
+        when(itemRepository.findById(1)).thenReturn(makeItems().getFirst());
+        // Then
         Result<CheckoutOrder> result = checkoutOrderService.add(order);
         assertFalse(result.isSuccess());
         assertTrue(result.getMessages().stream().anyMatch(msg -> msg.contains("Duplicate item")));
@@ -241,13 +265,14 @@ class CheckoutOrderServiceTest {
 
     @Test
     void shouldNotAddWhenItemQuantityIsZero() {
+        // Given
         CheckoutOrder order = new CheckoutOrder(0, "A123456789", 1, false, LocalDateTime.now());
         CheckoutItem item = new CheckoutItem(0, 0, 1, 0); // invalid quantity
         order.setCheckoutItems(List.of(item));
-
+        // When
         when(appUserRepository.findById(1)).thenReturn(makeAdmin());
-        when(itemRepository.findById(1)).thenReturn(makeItems().get(0));
-
+        when(itemRepository.findById(1)).thenReturn(makeItems().getFirst());
+        // Then
         Result<CheckoutOrder> result = checkoutOrderService.add(order);
         assertFalse(result.isSuccess());
         assertTrue(result.getMessages().stream().anyMatch(m -> m.contains("greater than 0")));
@@ -255,15 +280,15 @@ class CheckoutOrderServiceTest {
 
     @Test
     void shouldNotAddWhenQuantityExceedsStock() {
+        // Given
         Item item = new Item(1, "Rice", "", "", "", "", 1, 2, BigDecimal.ZERO, true);
         CheckoutItem checkoutItem = new CheckoutItem(0, 0, 1, 5); // 5 > currentCount
-
         CheckoutOrder order = new CheckoutOrder(0, "A123456789", 1, false, LocalDateTime.now());
         order.setCheckoutItems(List.of(checkoutItem));
-
+        // When
         when(appUserRepository.findById(1)).thenReturn(makeAdmin());
         when(itemRepository.findById(1)).thenReturn(item);
-
+        // Then
         Result<CheckoutOrder> result = checkoutOrderService.add(order);
         assertFalse(result.isSuccess());
         assertTrue(result.getMessages().stream().anyMatch(m -> m.contains("exceeds available stock")));
@@ -271,15 +296,15 @@ class CheckoutOrderServiceTest {
 
     @Test
     void shouldNotAddWhenQuantityExceedsItemLimit() {
+        // Given
         Item item = new Item(1, "Rice", "", "", "", "", 100, 1, BigDecimal.ZERO, true);
         CheckoutItem checkoutItem = new CheckoutItem(0, 0, 1, 5); // 5 > itemLimit
-
         CheckoutOrder order = new CheckoutOrder(0, "A123456789", 1, false, LocalDateTime.now());
         order.setCheckoutItems(List.of(checkoutItem));
-
+        // When
         when(appUserRepository.findById(1)).thenReturn(makeAdmin());
         when(itemRepository.findById(1)).thenReturn(item);
-
+        // Then
         Result<CheckoutOrder> result = checkoutOrderService.add(order);
         assertFalse(result.isSuccess());
         assertTrue(result.getMessages().stream().anyMatch(m -> m.contains("exceeds limit")));
@@ -287,18 +312,17 @@ class CheckoutOrderServiceTest {
 
     @Test
     void shouldNotAddWithInvalidCheckoutItems() {
+        // Given
         CheckoutOrder order = new CheckoutOrder(0, "S123456789", 1, false, LocalDateTime.now());
-
         CheckoutItem invalidItem = new CheckoutItem(0, 0, 0, -1); // missing itemId, bad quantity
         order.setCheckoutItems(List.of(invalidItem, invalidItem)); // duplicate
-
+        // When
         when(appUserRepository.findById(1)).thenReturn(makeAdmin());
         when(itemRepository.findById(0)).thenReturn(null);
         when(itemRepository.findById(1)).thenReturn(makeItems().getFirst());
         when(checkoutItemRepository.findByCheckoutOrderId(0)).thenReturn(List.of());
-
+        // Then
         Result<CheckoutOrder> result = checkoutOrderService.add(order);
-
         assertFalse(result.isSuccess());
         assertTrue(result.getMessages().contains("Item ID is required."));
         assertTrue(result.getMessages().stream().anyMatch(msg -> msg.startsWith("Duplicate item")));
@@ -306,35 +330,37 @@ class CheckoutOrderServiceTest {
 
     @Test
     void shouldNotAddWhenCheckoutOrderIdIsPreset() {
+        // Given
         CheckoutOrder order = new CheckoutOrder(999, "A123456789", 1, false, LocalDateTime.now());
+        // When
         when(appUserRepository.findById(1)).thenReturn(makeAdmin());
-
+        // Then
         Result<CheckoutOrder> result = checkoutOrderService.add(order);
-
         assertFalse(result.isSuccess());
         assertTrue(result.getMessages().contains("Checkout order ID cannot be set for `add` operation."));
     }
 
     @Test
     void shouldNotUpdateWhenCheckoutOrderIdIsMissing() {
+        // Given
         CheckoutOrder order = new CheckoutOrder(0, "A123456789", 1, false, LocalDateTime.now());
+        // When
         when(appUserRepository.findById(1)).thenReturn(makeAdmin());
-
+        // Then
         Result<CheckoutOrder> result = checkoutOrderService.update(order);
-
         assertFalse(result.isSuccess());
         assertTrue(result.getMessages().contains("Checkout order ID must be set for update."));
     }
 
     @Test
     void shouldNotAddWhenCheckoutItemIsNull() {
+        // Given
         CheckoutOrder order = new CheckoutOrder(0, "A123456789", 1, false, LocalDateTime.now());
         order.setCheckoutItems(Collections.singletonList((CheckoutItem) null));
-
+        // When
         when(appUserRepository.findById(1)).thenReturn(makeAdmin());
-
+        // Then
         Result<CheckoutOrder> result = checkoutOrderService.add(order);
-
         assertFalse(result.isSuccess());
         assertTrue(result.getMessages().contains("Checkout item cannot be null."));
     }
@@ -356,15 +382,15 @@ class CheckoutOrderServiceTest {
     @Test
     void shouldDeleteById() {
         // Given
-        CheckoutOrder existingOrder = makeCheckoutOrders().get(0); // ID = 1
+        CheckoutOrder existingOrder = makeCheckoutOrders().getFirst(); // ID = 1
         List<CheckoutItem> itemsToRestore = existingOrder.getCheckoutItems();
+        // When
         when(checkoutOrderRepository.findById(1)).thenReturn(existingOrder);
         when(checkoutItemRepository.findByCheckoutOrderId(1)).thenReturn(itemsToRestore);
         when(itemRepository.updateCurrentCount(1, 1)).thenReturn(true); // Rice
         when(itemRepository.updateCurrentCount(2, 1)).thenReturn(true); // Beans
         when(checkoutItemRepository.deleteByCheckoutOrderId(1)).thenReturn(true);
         when(checkoutOrderRepository.deleteById(1)).thenReturn(true);
-        // When
         Result<CheckoutOrder> result = checkoutOrderService.deleteById(1);
         // Then
         assertTrue(result.isSuccess());

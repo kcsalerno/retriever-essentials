@@ -65,7 +65,7 @@ class ItemServiceTest {
         // Given
         List<Item> testItems = makeTestItems();
         // When
-        when(itemRepository.findByName("Test Item 1")).thenReturn(testItems.get(0));
+        when(itemRepository.findByName("Test Item 1")).thenReturn(testItems.getFirst());
         // Then
         Item item = itemService.findByName("Test Item 1");
         assertNotNull(item);

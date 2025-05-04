@@ -111,11 +111,11 @@ JOIN app_user au ON co.authority_id = au.app_user_id;
 -- Unjoined Checkout Item Data
 select * from checkout_item;
 
--- Unjoined Purchase Item Data
-select * from purchase_item;
-
 -- Unjoined Checkout Order Data
 select * from checkout_order;
+
+-- Unjoined Purchase Item Data
+select * from purchase_item;
 
 -- Unjoined Purchase Order Data
 select * from purchase_order;
