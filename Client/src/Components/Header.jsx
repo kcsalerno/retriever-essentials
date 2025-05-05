@@ -29,7 +29,7 @@ const Header = ({ cart }) => {
         {user ? (
           <div className="user-controls">
             <FaUserCircle className="user-icon" />
-            <Link to="/profile" className="user-email">{user.email}</Link>
+            <Link to="/dashboard" className="user-email">{user.email}</Link>
             <button className="logout-button" onClick={logout}>Log Out</button>
           </div>
         ) :(
