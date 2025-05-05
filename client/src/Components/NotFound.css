@@ -1,0 +1,39 @@
+/* src/Components/NotFound.css */
+
+.not-found-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 80vh;
+    background-color: #ffcc00; /* UMBC gold */
+    color: black;
+    font-family: sans-serif;
+    text-align: center;
+  }
+  
+  .not-found-container h1 {
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+  
+  .not-found-container p {
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .back-home-button {
+    background-color: black;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    font-size: 1rem;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .back-home-button:hover {
+    background-color: #333;
+  }
+  

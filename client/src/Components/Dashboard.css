@@ -1,0 +1,59 @@
+.dashboard-wrapper {
+    display: flex;
+    justify-content: center;
+    padding: 40px 20px;
+    background-color: #1e1e1e;
+    min-height: calc(100vh - 200px); /* leaves room for header/footer */
+  }
+  
+  .dashboard-container {
+    background: rgb(163, 160, 160);
+    padding: 30px;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 1000px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+  
+  .dashboard-container h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2rem;
+    color: black;
+  }
+  
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+  }
+  
+  .dashboard-button,
+  .self-checkout-button {
+    display: block;
+    background-color: black;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    text-decoration: none;
+    transition: 0.3s;
+  }
+  
+  .dashboard-button:hover {
+    background-color: #444;
+  }
+  
+  .self-checkout-button {
+    background-color: #fff700;
+    color: black;
+  }
+  
+  .self-checkout-button:hover {
+    background-color: #e5e500;
+  }
+  

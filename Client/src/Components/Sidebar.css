@@ -73,3 +73,23 @@
 .contact-buttons button:hover {
   background-color: #444444;
 }
+
+.category-button {
+  background-color: transparent;
+  color: white;
+  border: 1px solid white;
+  padding: 5px 10px;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+
+.category-button:hover {
+  background-color: #333;
+}
+
+.category-button.active-category {
+  background-color: #fff700;
+  color: black;
+  font-weight: bold;
+}

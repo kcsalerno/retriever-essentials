@@ -85,7 +85,6 @@ class CheckoutItemServiceTest {
         assertEquals(40, result.getFirst().get("count"));
     }
 
-
     @Test
     void shouldUpdate() {
         // Given
