@@ -44,7 +44,7 @@
     justify-content: center;
   }
   
-  button {
+  .keypad button {
     width: 60px;
     height: 60px;
     font-size: 24px;
@@ -56,13 +56,13 @@
     transition: background 0.3s, transform 0.1s;
   }
   
-  button:hover {
+  .keypad button:hover {
     background-color: #bbb;
   }
   
-  button:active {
+  .keypad button:active {
     transform: scale(0.95);
-  }
+  }  
   
   .submit-button {
     margin-top: 20px;

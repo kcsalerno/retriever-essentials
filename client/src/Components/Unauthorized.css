@@ -1,0 +1,40 @@
+.unauthorized-container {
+  height: 100vh;
+  background-color: #2D2D2D; /* same yellow */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.unauthorized-box {
+  background-color: black;
+  color: white;
+  padding: 40px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+}
+
+.unauthorized-box h1 {
+  font-size: 32px;
+  margin-bottom: 20px;
+}
+
+.unauthorized-box p {
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+.unauthorized-link {
+  background-color: #fff700;
+  color: black;
+  padding: 12px 20px;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.unauthorized-link:hover {
+  background-color: #e6d400;
+}

@@ -1,14 +1,15 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './ProductDetails.css';
-import { UserContext } from './UserContext';
+import { useAuth } from '../Contexts/AuthContext';
 
 function ProductDetails({ addToCart }) {
   const { name } = useParams();
   const [product, setProduct] = useState(null);
   const navigate = useNavigate();
-  const { isAdmin } = useContext(UserContext); 
+  const { user } = useAuth();
+  const isAdmin = user?.role === 'ROLE_ADMIN';
 
 
   useEffect(() => {

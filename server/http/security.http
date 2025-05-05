@@ -13,7 +13,7 @@ Content-Type: application/json
   "password": "P@ssw0rd!"
 }
 
-# After this request, copy the token from the response and assign it below:
+### After this request, copy the token from the response and assign it below:
 # @admin_token = Bearer <PASTE_ADMIN_JWT_HERE>
 @admin_token = Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJyZXRyaWV2ZXItZXNzZW50aWFscyIsInN1YiI6ImFkbWluQHVtYmMuY29tIiwiYXBwVXNlcklkIjoxLCJyb2xlIjoiUk9MRV9BRE1JTiIsImV4cCI6MTc0NjMzNDg0NX0.1Yg7Y-8x-54s2SUPZ6o50qf3eLpBYcm1qkCfFYMc8Es
 
@@ -26,7 +26,7 @@ Content-Type: application/json
   "password": "P@ssw0rd!"
 }
 
-# @auth1_token = Bearer <PASTE_AUTHORITY1_JWT_HERE>
+### @auth1_token = Bearer <PASTE_AUTHORITY1_JWT_HERE>
 @auth1_token = Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJyZXRyaWV2ZXItZXNzZW50aWFscyIsInN1YiI6ImF1dGhvcml0eTFAdW1iYy5jb20iLCJhcHBVc2VySWQiOjIsInJvbGUiOiJST0xFX0FVVEhPUklUWSIsImV4cCI6MTc0NjMzNDg2OX0.ZCu8ND48uA0qCq3WYpiIW_jBdnCJhyWfOx2hsxUPukE
 
 

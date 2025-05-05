@@ -127,7 +127,6 @@ class CheckoutOrderServiceTest {
         assertEquals(3, result.get(1).get("checkout_count"));
     }
 
-
     @Test
     void shouldAdd() {
         // Given
@@ -341,18 +340,6 @@ class CheckoutOrderServiceTest {
     }
 
     @Test
-    void shouldNotUpdateWhenCheckoutOrderIdIsMissing() {
-        // Given
-        CheckoutOrder order = new CheckoutOrder(0, "A123456789", 1, false, LocalDateTime.now());
-        // When
-        when(appUserRepository.findById(1)).thenReturn(makeAdmin());
-        // Then
-        Result<CheckoutOrder> result = checkoutOrderService.update(order);
-        assertFalse(result.isSuccess());
-        assertTrue(result.getMessages().contains("Checkout order ID must be set for update."));
-    }
-
-    @Test
     void shouldNotAddWhenCheckoutItemIsNull() {
         // Given
         CheckoutOrder order = new CheckoutOrder(0, "A123456789", 1, false, LocalDateTime.now());
@@ -377,6 +364,18 @@ class CheckoutOrderServiceTest {
         // Then
         assertTrue(result.isSuccess());
         assertEquals(2, result.getPayload().getCheckoutOrderId());
+    }
+
+    @Test
+    void shouldNotUpdateWhenCheckoutOrderIdIsMissing() {
+        // Given
+        CheckoutOrder order = new CheckoutOrder(0, "A123456789", 1, false, LocalDateTime.now());
+        // When
+        when(appUserRepository.findById(1)).thenReturn(makeAdmin());
+        // Then
+        Result<CheckoutOrder> result = checkoutOrderService.update(order);
+        assertFalse(result.isSuccess());
+        assertTrue(result.getMessages().contains("Checkout order ID must be set for update."));
     }
 
     @Test

@@ -22,7 +22,7 @@ function CategoryPage({ addToCart }) {
   };
 
   useEffect(() => {
-    axios.get(`http://localhost:8080/api/item/category/${category}`)
+    axios.get(`http://localhost:8080/api/item/category/${decodeURIComponent(category)}`)
       .then((response) => {
         setProducts(response.data);
       })

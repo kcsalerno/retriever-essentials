@@ -1,7 +1,30 @@
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import axios from 'axios';
 import './Sidebar.css';
 
 function Sidebar() {
+  const [categories, setCategories] = useState([]);
+  const location = useLocation();
+  // const currentCategory = decodeURIComponent(location.pathname.replace('/category/', ''));
+
+  useEffect(() => {
+    axios.get('http://localhost:8080/api/item')
+      .then(res => {
+        const allItems = res.data;
+        const uniqueCategories = [...new Set(
+          allItems
+            .filter(item => item.enabled) // just in case
+            .map(item => item.category.trim())
+        )];
+        setCategories(uniqueCategories);
+      })
+      .catch(err => console.error("Error fetching categories:", err));
+  }, []);
+
+  const isActive = (category) =>
+    decodeURIComponent(location.pathname.toLowerCase()) === `/category/${category.toLowerCase()}`;  
+
   const handleButtonClick = (type) => {
     if (type === "ContactUs") {
       alert("Email: retrieversessentials@umbc.edu");
@@ -19,13 +42,14 @@ function Sidebar() {
       <div className="types-of-food">
         <h3>Types of Food</h3>
         <ul>
-          {["Pantry", "Produce", "Asian", "Meat", "Frozen", "American", "Mexican", "Indian", "Bread"]
-            .map(category => (
-              <li key={category}>
-                <Link to={category === "Asian" ? "/Asian" : `/${category.toLowerCase()}`}>
-                  <button>{category}</button>
-                </Link>
-              </li>
+          {categories.map(category => (
+            <li key={category}>
+              <Link to={`/category/${encodeURIComponent(category)}`}>
+                <button className={`category-button ${isActive(category) ? 'active-category' : ''}`}>
+                  {category}
+                </button>
+              </Link>
+            </li>
           ))}
         </ul>
       </div>

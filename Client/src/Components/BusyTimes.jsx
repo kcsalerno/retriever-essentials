@@ -1,33 +1,52 @@
-import React, { useContext, useEffect, useState } from 'react';
+// src/Components/BusyTimes.jsx
+import React, { useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Tooltip, Legend } from 'chart.js';
-import { UserContext } from './UserContext';
+import { useAuth } from '../Contexts/AuthContext';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
-const hours = Array.from({ length: 13 }, (_, i) => `${i + 8}:00`);
-const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+const hours = Array.from({ length: 13 }, (_, i) => {
+  const hour = i + 8;
+  const period = hour >= 12 ? 'PM' : 'AM';
+  const hour12 = hour % 12 === 0 ? 12 : hour % 12;
+  return `${hour12}:00 ${period}`;
+});
+
+const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
 function BusyTimes() {
-  const { isAdmin } = useContext(UserContext);
+  const { user } = useAuth();
+  const isAdmin = user?.role === 'ROLE_ADMIN';
   const [data, setData] = useState({});
-  const [selectedDay, setSelectedDay] = useState('Saturday');
+  const [selectedDay, setSelectedDay] = useState('Monday');
 
   useEffect(() => {
-    fetch('http://localhost:8080/api/checkout-order/busiest-hours')
+    fetch('http://localhost:8080/api/checkout-order/hourly-checkout-summary')
       .then(res => res.json())
       .then(busyData => {
-        const formatted = days.reduce((acc, day) => {
-          acc[day] = Array(13).fill(0);
-          return acc;
-        }, {});
-        busyData.forEach(({ day, hour, count }) => {
+        const formatted = {};
+
+        // Initialize each day with 0s
+        daysOfWeek.forEach(day => {
+          formatted[day] = Array(13).fill(0);
+        });
+
+        busyData.forEach(({ day, hour, total_checkouts }) => {
           const hourIndex = hour - 8;
           if (formatted[day] && hourIndex >= 0 && hourIndex < 13) {
-            formatted[day][hourIndex] = count;
+            formatted[day][hourIndex] = total_checkouts;
           }
         });
+
         setData(formatted);
+
+        // Auto-select first populated day
+        const firstPopulatedDay = daysOfWeek.find(day => formatted[day].some(count => count > 0));
+        if (firstPopulatedDay) {
+          setSelectedDay(firstPopulatedDay);
+        }
+
       })
       .catch(err => console.error("Failed to fetch busy data", err));
   }, []);
@@ -40,7 +59,9 @@ function BusyTimes() {
     }));
   };
 
-  if (!data[selectedDay]) return <div style={{ color: 'white' }}>Loading busy times...</div>;
+  if (!data[selectedDay]) {
+    return <div style={{ color: 'white' }}>Loading busy times...</div>;
+  }
 
   const chartData = {
     labels: hours,
@@ -48,24 +69,48 @@ function BusyTimes() {
       {
         label: `Busyness on ${selectedDay}`,
         data: data[selectedDay],
-        backgroundColor: 'rgba(75,192,192,0.6)',
-        borderColor: 'rgba(75,192,192,1)',
-        borderWidth: 1
+        backgroundColor: '#FFD700', // vibrant gold
+        borderColor: '#FFD700',
+        hoverBackgroundColor: '#e6c200'
       }
     ]
-  };
+  };  
+
+  const maxY = Math.max(...data[selectedDay]) + 1;
 
   const chartOptions = {
     scales: {
+      x: {
+        ticks: {
+          color: '#ffffff'
+        },
+        grid: {
+          color: '#555'
+        }
+      },
       y: {
         beginAtZero: true,
-        max: 5,
-        ticks: { stepSize: 1 }
+        max: maxY,
+        ticks: {
+          color: '#ffffff',
+          stepSize: 1
+        },
+        grid: {
+          color: '#555'
+        }
+      }
+    },
+    plugins: {
+      legend: {
+        labels: {
+          color: '#ffffff'
+        }
       }
     },
     responsive: true,
     maintainAspectRatio: false
   };
+ 
 
   return (
     <div style={{ padding: '20px', color: 'white' }}>
@@ -74,7 +119,9 @@ function BusyTimes() {
       <label>
         Select Day:{" "}
         <select value={selectedDay} onChange={(e) => setSelectedDay(e.target.value)}>
-          {days.map(day => <option key={day} value={day}>{day}</option>)}
+          {daysOfWeek.map(day => (
+            <option key={day} value={day}>{day}</option>
+          ))}
         </select>
       </label>
 
@@ -106,7 +153,3 @@ function BusyTimes() {
 }
 
 export default BusyTimes;
-
-
-
-
