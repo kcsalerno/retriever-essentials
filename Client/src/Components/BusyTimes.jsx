@@ -111,7 +111,6 @@ function BusyTimes() {
     maintainAspectRatio: false
   };
  
-
   return (
     <div style={{ padding: '20px', color: 'white' }}>
       <h2>{isAdmin ? 'Edit Busy Times (Not Saved)' : 'View Busy Times'}</h2>

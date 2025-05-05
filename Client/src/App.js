@@ -29,6 +29,7 @@ import PrivateRoute from './Components/PrivateRoute';
 import Unauthorized from './Components/Unauthorized';
 import Dashboard from './Components/Dashboard';
 import PopularStats from './Components/PopularStats';
+import ItemForm from './Components/ItemForm';
 
 import { AuthProvider, useAuth } from './Contexts/AuthContext';
 import './App.css';
@@ -109,19 +110,39 @@ function App() {
 
   const addToCart = (product) => {
     setCart(prevCart => {
-      const existing = prevCart.find(item => item.id === product.id);
+      const existing = prevCart.find(item => item.itemId === product.itemId);
       let updatedCart;
+  
       if (existing) {
+        if (existing.quantity >= product.itemLimit) {
+          alert("You've reached the limit for this item.");
+          return prevCart; // don't update
+        }
+  
         updatedCart = prevCart.map(item =>
-          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+          item.itemId === product.itemId
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
         );
       } else {
         updatedCart = [...prevCart, { ...product, quantity: 1 }];
       }
+  
       localStorage.setItem('cart', JSON.stringify(updatedCart));
       return updatedCart;
     });
   };
+
+  const updateCartItems = (updatedItems) => {
+    setCart(updatedItems);
+    localStorage.setItem('cart', JSON.stringify(updatedItems));
+  };
+  
+  const removeItemFromCart = (itemId) => {
+    const updatedCart = cart.filter(item => item.itemId !== itemId);
+    setCart(updatedCart);
+    localStorage.setItem('cart', JSON.stringify(updatedCart));
+  };  
 
   return (
     <AuthProvider>
@@ -138,7 +159,7 @@ function App() {
                 {/* <Route path="/:category" element={<CategoryPage addToCart={addToCart} />} /> */}
                 <Route path="/category/:category" element={<CategoryPage addToCart={addToCart} />} />
                 <Route path="/faq" element={<FAQ />} />
-                <Route path='/checkout' element={<Checkout cart={cart} clearCart={clearCart} />} />
+                <Route path='/checkout' element={<Checkout cart={cart} clearCart={clearCart} removeItemFromCart={removeItemFromCart}  updateCartItems={updateCartItems}/>} />
                 <Route
                   path="/product-grid"
                   element={
@@ -152,9 +173,9 @@ function App() {
                   }
                 />
                 <Route path="/product/:name" element={<ProductDetails addToCart={addToCart} />} />
-                <Route path="/add-item" element={<AddItem />} />
+                <Route path="/add-item" element={<ItemForm isEditMode={false} />} />
                 <Route path="/search/:searchTerm" element={<SearchResults addToCart={addToCart} />} />
-                <Route path="/edit-product/:name" element={<EditProduct />} />
+                <Route path="/edit-product/:name" element={<ItemForm isEditMode={true} />} />
                 <Route path="/busy-times" element={<BusyTimes />} />
                 <Route path="/dashboard" element={
                   <PrivateRoute allowedRoles={['ROLE_ADMIN', 'ROLE_AUTHORITY']}>
