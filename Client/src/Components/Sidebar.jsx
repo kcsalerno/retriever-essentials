@@ -9,19 +9,24 @@ function Sidebar() {
   // const currentCategory = decodeURIComponent(location.pathname.replace('/category/', ''));
 
   useEffect(() => {
-    axios.get('http://localhost:8080/api/item')
-      .then(res => {
-        const allItems = res.data;
-        const uniqueCategories = [...new Set(
-          allItems
-            .filter(item => item.enabled) // just in case
-            .map(item => item.category.trim())
-        )];
-        setCategories(uniqueCategories);
-      })
-      .catch(err => console.error("Error fetching categories:", err));
+    const fetchCategories = () => {
+      axios.get('http://localhost:8080/api/item')
+        .then(res => {
+          const enabledItems = res.data.filter(item => item.enabled);
+          const uniqueCategories = [...new Set(enabledItems.map(item => item.category.trim()))];
+          setCategories(uniqueCategories);
+        })
+        .catch(err => console.error("Error fetching categories:", err));
+    };
+  
+    fetchCategories();
+  
+    const handleCategoryUpdate = () => fetchCategories();
+  
+    window.addEventListener('categoryUpdated', handleCategoryUpdate);
+    return () => window.removeEventListener('categoryUpdated', handleCategoryUpdate);
   }, []);
-
+  
   const isActive = (category) =>
     decodeURIComponent(location.pathname.toLowerCase()) === `/category/${category.toLowerCase()}`;  
 

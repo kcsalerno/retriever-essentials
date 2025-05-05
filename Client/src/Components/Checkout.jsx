@@ -1,82 +1,71 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './Checkout.css';  // Import your custom CSS file
+import './Checkout.css';
 
-const Checkout = ({ clearCart }) => {
+const Checkout = ({ cart, clearCart, removeItemFromCart, updateCartItems }) => {
   const [studentId, setStudentId] = useState('');
-  const [cartItems, setCartItems] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
   const authorityId = 1;
   const selfCheckout = true;
+  const cartItems = cart; // Passed down from App.js
 
-  useEffect(() => {
-    const storedCart = localStorage.getItem('cart');
-    if (storedCart) {
-      setCartItems(JSON.parse(storedCart));
-    }
-  }, []);
+  const handleQuantityChange = (itemId, delta) => {
+    const updatedItems = cartItems.map(item => {
+      if (item.itemId === itemId) {
+        const newQty = Math.max(1, Math.min(item.quantity + delta, item.itemLimit));
+        return { ...item, quantity: newQty };
+      }
+      return item;
+    });
+    updateCartItems(updatedItems);
+  };  
+
+  const handleRemoveItem = (itemId) => {
+    const updatedItems = cartItems.filter(item => item.itemId !== itemId);
+    updateCartItems(updatedItems);
+  };
+
+  const handleClearCart = () => {
+    clearCart();
+  };
 
   const handleSubmit = async () => {
     if (!studentId || cartItems.length === 0) return;
-
-    // Check if any item in the cart has a quantity greater than the available stock (currentCount)
+  
     const insufficientStock = cartItems.some(item => item.quantity > item.currentCount);
-
     if (insufficientStock) {
       alert('One or more items in your cart have insufficient stock.');
-      return; // Prevent checkout if stock is insufficient
+      return;
     }
-
+  
     setIsSubmitting(true);
-
+  
     try {
-      const orderRes = await fetch('http://localhost:8080/api/checkout-order', {
+      const orderPayload = {
+        studentId,
+        authorityId,
+        selfCheckout,
+        checkoutDate: new Date().toISOString(),
+        checkoutItems: cartItems.map(item => ({
+          itemId: item.itemId,
+          quantity: item.quantity
+        }))
+      };
+  
+      console.log("Submitting order payload:", orderPayload); // for debug
+  
+      const response = await fetch('http://localhost:8080/api/checkout-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          studentId,
-          authorityId,
-          selfCheckout,
-          checkoutDate: new Date().toISOString()
-        })
+        body: JSON.stringify(orderPayload)
       });
-
-      if (!orderRes.ok) throw new Error('Checkout order failed');
-      const createdOrder = await orderRes.json();
-      const checkoutOrderId = createdOrder.checkoutOrderId;
-
-      // Update item quantities in the database and add checkout items
-      for (const item of cartItems) {
-        // Decrease the item quantity in the database
-        await fetch(`http://localhost:8080/api/item/${item.itemId}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            ...item,
-            currentCount: item.currentCount - item.quantity
-          })
-        });
-
-        // Add the checkout item
-        await fetch('http://localhost:8080/api/checkout-item', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            checkoutOrderId,
-            itemId: item.itemId,
-            quantity: item.quantity
-          })
-        });
-      }
-
-      // Clear the cart in localStorage and state
-      localStorage.removeItem('cart');
-      setCartItems([]);
-      clearCart();  // Call the parent function to clear cart in App.js
-
-      navigate('/'); // Navigate back to home or another relevant page after checkout
-
+  
+      if (!response.ok) throw new Error('Checkout order failed');
+  
+      handleClearCart();
+      navigate('/');
+  
     } catch (err) {
       console.error(err);
       alert('Checkout failed!');
@@ -84,6 +73,7 @@ const Checkout = ({ clearCart }) => {
       setIsSubmitting(false);
     }
   };
+  
 
   return (
     <div className="checkout-container">
@@ -100,11 +90,16 @@ const Checkout = ({ clearCart }) => {
       {cartItems.length === 0 ? (
         <p>Your cart is empty.</p>
       ) : (
-        <div>
+        <>
           <ul>
             {cartItems.map((item) => (
               <li key={item.itemId}>
-                {item.itemName} — {item.quantity} x ${item.pricePerUnit.toFixed(2)}
+                <strong>{item.itemName}</strong> :
+                <button onClick={() => handleQuantityChange(item.itemId, -1)} disabled={item.quantity <= 1}>−</button>
+                {` ${item.quantity} `}
+                <button onClick={() => handleQuantityChange(item.itemId, 1)} disabled={item.quantity >= item.itemLimit}>+</button>
+                {` x $${item.pricePerUnit.toFixed(2)} `}
+                <button onClick={() => handleRemoveItem(item.itemId)} style={{ color: 'red' }}>❌</button>
               </li>
             ))}
           </ul>
@@ -114,19 +109,19 @@ const Checkout = ({ clearCart }) => {
               Total: ${cartItems.reduce((total, item) => total + item.pricePerUnit * item.quantity, 0).toFixed(2)}
             </strong>
           </div>
-        </div>
-      )}
 
-      <button onClick={handleSubmit} disabled={isSubmitting} className="checkout-button">
-        {isSubmitting ? 'Processing...' : 'Submit Checkout'}
-      </button>
+          <div style={{ marginTop: '20px' }}>
+            <button onClick={handleSubmit} disabled={isSubmitting} className="checkout-button">
+              {isSubmitting ? 'Processing...' : 'Submit Checkout'}
+            </button>
+            <button onClick={handleClearCart} className="clear-cart-button" style={{ marginLeft: '10px' }}>
+              Empty Cart
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 };
 
 export default Checkout;
-
-
-
-
-

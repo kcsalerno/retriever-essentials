@@ -62,7 +62,22 @@
   cursor: not-allowed;
 }
 
+.clear-cart-button {
+  padding: 12px 24px;
+  font-size: 1.2rem;
+  background-color: #ffc107;
+  color: black;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
 
-  
-  
+.clear-cart-button:hover {
+  background-color: #e0a800;
+}
+
+.checkout-container button {
+  margin: 0 5px;
+}  
   

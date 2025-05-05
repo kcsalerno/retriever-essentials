@@ -24,12 +24,13 @@ function CategoryPage({ addToCart }) {
   useEffect(() => {
     axios.get(`http://localhost:8080/api/item/category/${decodeURIComponent(category)}`)
       .then((response) => {
-        setProducts(response.data);
+        const enabledOnly = response.data.filter(item => item.enabled);
+        setProducts(enabledOnly);
       })
       .catch((error) => {
         console.error(`Error fetching ${category} products:`, error);
       });
-  }, [category]);
+  }, [category]);  
 
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
