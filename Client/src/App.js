@@ -20,9 +20,9 @@ import AboutUs from './Components/AboutUs';
 import Login from './Components/Login';
 import Checkout from './Components/Checkout';
 import ProductDetails from './Components/ProductDetails';
-import AddItem from './Components/AddItem';
+import ItemList from './Components/ItemList';
 import SearchResults from './Components/SearchResults';
-import EditProduct from './Components/EditProduct';
+import VendorList from './Components/VendorList';
 import BusyTimes from './Components/BusyTimes';
 import NotFound from './Components/NotFound';
 import PrivateRoute from './Components/PrivateRoute';
@@ -30,13 +30,20 @@ import Unauthorized from './Components/Unauthorized';
 import Dashboard from './Components/Dashboard';
 import PopularStats from './Components/PopularStats';
 import ItemForm from './Components/ItemForm';
+import VendorForm from './Components/VendorForm';
+import CheckoutList from './Components/CheckoutList';
+import PurchaseList from './Components/PurchaseList';
+import UserList from './Components/UserList';
+import InventoryLogList from './Components/InventoryLogList';
+import CheckoutForm from './Components/CheckoutForm';
 
 import { AuthProvider, useAuth } from './Contexts/AuthContext';
 import './App.css';
 
 function BottomNav() {
-  const { user } = useAuth();
+  const { user, selfCheckoutEnabled } = useAuth();
   const isAdmin = user?.role === 'ROLE_ADMIN';
+  const isAuthority = user?.role === 'ROLE_AUTHORITY';
 
   return (
     <div
@@ -54,7 +61,6 @@ function BottomNav() {
       <Link to="/about-us" style={{ color: 'white', margin: '0 15px' }}>About Us</Link>
       <Link to="/location" style={{ color: 'white', margin: '0 15px' }}>Location</Link>
       <Link to="/faq" style={{ color: 'white', margin: '0 15px' }}>FAQ</Link>
-      {/* {isAdmin && <Link to="/add-item" style={{ color: 'white', margin: '0 15px' }}>Add Item</Link>} */}
       <Link
         to="/busy-times"
         state={{ readOnly: !isAdmin }}
@@ -63,7 +69,7 @@ function BottomNav() {
         Busy Times
       </Link>
       <Link to="/popular" style={{ color: 'white', margin: '0 15px' }}>Trending</Link>
-      {isAdmin && <Link to="/dashboard" style={{ color: 'white', margin: '0 15px' }}>Dashboard</Link>}
+      {(isAdmin || isAuthority) && !selfCheckoutEnabled && <Link to="/dashboard" style={{ color: 'white', margin: '0 15px' }}>Dashboard</Link>}
     </div>
   );
 }
@@ -173,15 +179,113 @@ function App() {
                   }
                 />
                 <Route path="/product/:name" element={<ProductDetails addToCart={addToCart} />} />
-                <Route path="/add-item" element={<ItemForm isEditMode={false} />} />
+                <Route path="/add-item" element={
+                  <PrivateRoute allowedRoles={['ROLE_ADMIN']} selfCheckoutEnabled={true}>
+                    <ItemForm isEditMode={false} />
+                  </PrivateRoute>
+                } />
                 <Route path="/search/:searchTerm" element={<SearchResults addToCart={addToCart} />} />
-                <Route path="/edit-product/:name" element={<ItemForm isEditMode={true} />} />
+                <Route path="/edit-product/:name" element={
+                  <PrivateRoute allowedRoles={['ROLE_ADMIN', 'ROLE_AUTHORITY']} selfCheckoutEnabled={true}>
+                    <ItemForm isEditMode={true} />
+                  </PrivateRoute>
+                } />
+                <Route path="/items" element={
+                  <PrivateRoute allowedRoles={['ROLE_ADMIN', 'ROLE_AUTHORITY']} selfCheckoutEnabled={true}>
+                    <ItemList />
+                  </PrivateRoute>
+                } />
                 <Route path="/busy-times" element={<BusyTimes />} />
                 <Route path="/dashboard" element={
-                  <PrivateRoute allowedRoles={['ROLE_ADMIN', 'ROLE_AUTHORITY']}>
+                  <PrivateRoute allowedRoles={['ROLE_ADMIN', 'ROLE_AUTHORITY']} selfCheckoutEnabled={true}>
                     <Dashboard />
                   </PrivateRoute>
                 } />
+                <Route path="/vendors" element={
+                  <PrivateRoute allowedRoles={['ROLE_ADMIN']} selfCheckoutEnabled={true}>
+                    <VendorList />
+                  </PrivateRoute>
+                } />
+                <Route path="/add-vendor" element={
+                  <PrivateRoute allowedRoles={['ROLE_ADMIN']} selfCheckoutEnabled={true}>
+                    <VendorForm isEditMode={false} />
+                  </PrivateRoute>
+                } />
+                <Route path="/edit-vendor/:vendorId" element={
+                  <PrivateRoute allowedRoles={['ROLE_ADMIN']} selfCheckoutEnabled={true}>
+                    <VendorForm isEditMode={true} />
+                  </PrivateRoute>
+                } />
+                <Route path="/checkouts" element={
+                  <PrivateRoute allowedRoles={['ROLE_ADMIN', 'ROLE_AUTHORITY']} selfCheckoutEnabled={true}>
+                    <CheckoutList />
+                  </PrivateRoute>
+                } />
+                {<Route path="/edit-checkout/:checkoutId" element={
+                  <PrivateRoute allowedRoles={['ROLE_ADMIN', 'ROLE_AUTHORITY']} selfCheckoutEnabled={true}>
+                    <CheckoutForm />
+                  </PrivateRoute>
+                } />
+                /*{ <Route path="/delete-checkout/:checkoutId" element={
+                  <PrivateRoute allowedRoles={['ROLE_ADMIN']} selfCheckoutEnabled={true}>
+                    <CheckoutList isEditMode={true} />
+                  </PrivateRoute>
+                } /> */}
+                <Route path="/purchases" element={
+                  <PrivateRoute allowedRoles={['ROLE_ADMIN',]} selfCheckoutEnabled={true}>
+                    <PurchaseList />
+                  </PrivateRoute>
+                } />
+                {/* <Route path="/add-purchase" element={
+                  <PrivateRoute allowedRoles={['ROLE_ADMIN']} selfCheckoutEnabled={true}>
+                    <PurchaseList isEditMode={false} />
+                  </PrivateRoute>
+                } />
+                <Route path="/edit-purchase/:purchaseId" element={
+                  <PrivateRoute allowedRoles={['ROLE_ADMIN']} selfCheckoutEnabled={true}>
+                    <PurchaseList isEditMode={true} />
+                  </PrivateRoute>
+                } />
+                <Route path="/delete-purchase/:purchaseId" element={
+                  <PrivateRoute allowedRoles={['ROLE_ADMIN']} selfCheckoutEnabled={true}>
+                    <PurchaseList isEditMode={true} />
+                  </PrivateRoute>
+                } /> */}
+                <Route path="/inventory-logs" element={
+                  <PrivateRoute allowedRoles={['ROLE_ADMIN', 'ROLE_AUTHORITY']} selfCheckoutEnabled={true}>
+                    <InventoryLogList />
+                  </PrivateRoute>
+                } />
+                {/* <Route path="/add-inventory-log" element={
+                  <PrivateRoute allowedRoles={['ROLE_ADMIN', 'ROLE_AUTHORITY']} selfCheckoutEnabled={true}>
+                    <InventoryLogList isEditMode={false} />
+                  </PrivateRoute>
+                } />
+                <Route path="/edit-inventory-log/:logId" element={
+                  <PrivateRoute allowedRoles={['ROLE_ADMIN', 'ROLE_AUTHORITY']} selfCheckoutEnabled={true}>
+                    <InventoryLogList isEditMode={true} />
+                  </PrivateRoute>
+                } />
+                <Route path="/delete-inventory-log/:logId" element={
+                  <PrivateRoute allowedRoles={['ROLE_ADMIN', 'ROLE_AUTHORITY']} selfCheckoutEnabled={true}>
+                    <InventoryLogList isEditMode={true} />
+                  </PrivateRoute>
+                } /> */}
+                <Route path="/users" element={
+                  <PrivateRoute allowedRoles={['ROLE_ADMIN']} selfCheckoutEnabled={true}>
+                    <UserList />
+                  </PrivateRoute>
+                } />
+                {/* <Route path="/add-user" element={
+                  <PrivateRoute allowedRoles={['ROLE_ADMIN']} selfCheckoutEnabled={true}>
+                    <UserList isEditMode={false} />
+                  </PrivateRoute>
+                } />
+                <Route path="/edit-user/:userId" element={
+                  <PrivateRoute allowedRoles={['ROLE_ADMIN']} selfCheckoutEnabled={true}>
+                    <UserList isEditMode={true} />
+                  </PrivateRoute>
+                } /> */}
                 <Route path="/unauthorized" element={<Unauthorized />} />
                 <Route path="/popular" element={<PopularStats />} />
                 <Route path="*" element={<NotFound />} />

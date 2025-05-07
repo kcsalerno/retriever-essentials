@@ -2,14 +2,22 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import Pagination from './Pages';
+import { useAuth } from '../Contexts/AuthContext';
 import './Grid.css';
 
 function CategoryPage({ addToCart }) {
   const { category } = useParams();
   const [products, setProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 3;
-
+  const productsPerPage = 5;
+  const { user } = useAuth();
+  var isAdmin = false
+  var isAuthority = false
+  if (user) {
+    isAdmin = user?.role === 'ROLE_ADMIN';
+    isAuthority = user?.role === 'ROLE_AUTHORITY';
+  }
+  
   // Function to determine the quantity class based on currentCount
   const getQuantityClass = (quantity) => {
     if (quantity <= 2) {
@@ -20,6 +28,10 @@ function CategoryPage({ addToCart }) {
       return 'quantity-high';   // Green for high stock
     }
   };
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [category]);  
 
   useEffect(() => {
     axios.get(`http://localhost:8080/api/item/category/${decodeURIComponent(category)}`)
@@ -48,21 +60,22 @@ function CategoryPage({ addToCart }) {
               <p className={`product-quantity ${getQuantityClass(product.currentCount)}`}>
                 Quantity: {product.currentCount}
               </p>
-              <p>${product.pricePerUnit.toFixed(2)}</p>
+              {/* <p>${product.pricePerUnit.toFixed(2)}</p> */}
             </Link>
+            {}
+            {(isAdmin || isAuthority) && (
             <button
-            className="add-to-cart-btn"
-            onClick={() => {
-            if (product.currentCount <= 0) {
-            alert("There's none of this left.");
-             } else {
-            addToCart(product);
-          }
-          }}
->
-          Add to Cart
-        </button>
-
+              className="add-to-cart-btn"
+              onClick={() => {
+                if (product.currentCount <= 0) {
+                  alert("There's none of this left.");
+                } else {
+                  addToCart(product);
+                }}}
+            >
+              Add to Cart
+            </button>
+            )}
           </div>
         ))}
       </div>

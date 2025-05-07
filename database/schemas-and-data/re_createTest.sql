@@ -196,52 +196,56 @@ BEGIN
         ('Sunrise Foods', '888-555-9876', 'hello@sunrisefoods.com');
 
    -- Items with unified "Region - Type" categories
-    INSERT INTO item (item_name, item_description, nutrition_facts, picture_path, category, current_count, price_per_unit) VALUES
-        -- South Asian - Staples
-        ('Sona Masoori Rice', '1 lb of 20 lb bag', 'Calories: 160 per 1/4 cup', 'https://cloudinary.com/item1', 'South Asian - Staple', 200, 25.00),
-        ('Toor Dahl (Red Lentils)', '1 lb of 179 lbs bulk', 'Calories: 180 per 1/4 cup', 'https://cloudinary.com/item2', 'South Asian - Staple', 300, 1.25),
-        ('Black Chickpeas (Channa)', '1 lb of 85 lbs bulk', 'Calories: 170 per 1/4 cup', 'https://cloudinary.com/item3', 'South Asian - Staple', 200, 1.25),
+    INSERT INTO item (item_name, item_description, nutrition_facts, picture_path, category, current_count, price_per_unit, item_limit) VALUES
+	-- South Asian - Staples
+	('Sona Masoori Rice', '1 lb of 20 lb bag', 'Calories: 160, Protein: 3, Carbs: 36, Fat: 1, Sodium: 0', 'https://res.cloudinary.com/re-images/image/upload/v1746579583/ztudus2yurfyuvoc3pgs.png', 'South Asian - Staple', 200, 25.00, 5),
+	('Toor Dahl (Red Lentils)', '1 lb of 179 lbs bulk', 'Calories: 180, Protein: 9, Carbs: 30, Fat: 0.5, Sodium: 5', 'https://res.cloudinary.com/re-images/image/upload/v1746579607/y90t72euospubaxfig42.jpg', 'South Asian - Staple', 300,  1.25, 5),
+	('Black Chickpeas (Channa)', '1 lb of 85 lbs bulk', 'Calories: 170, Protein: 10, Carbs: 25, Fat: 2, Sodium: 15', 'https://res.cloudinary.com/re-images/image/upload/v1746579621/yujcogzjz4oo7xsem2en.jpg', 'South Asian - Staple', 200, 1.25, 1),
 
-        -- South Asian - Snacks
-        ('Maggi Noodles', 'Instant noodles 1 pack', 'Calories: 350', 'https://cloudinary.com/item4', 'South Asian - Snack', 400, 0.50),
-        ('PARLE KREAM BOUR', 'Pack of cookies', 'Calories: 90 per 2 cookies', 'https://cloudinary.com/item5', 'South Asian - Snack', 100, 1.00),
-        ('HID SEEK BOURB', 'Sweet biscuit', 'Calories: 120 per 3 pieces', 'https://cloudinary.com/item6', 'South Asian - Snack', 100, 0.49),
-        ('SW MASL BANA', 'Banana chips', 'Calories: 150 per oz', 'https://cloudinary.com/item7', 'South Asian - Snack', 100, 1.99),
-        ('GOP SNACK PE CHO', 'Chickpea snack', 'Calories: 140 per oz', 'https://cloudinary.com/item8', 'South Asian - Snack', 100, 1.29),
-        ('AD BANGA MIX', 'Spicy snack mix', 'Calories: 180 per oz', 'https://cloudinary.com/item9', 'South Asian - Snack', 100, 1.99),
-        ('SW BHEL CUP', 'Instant bhel puri', 'Calories: 160 per cup', 'https://cloudinary.com/item10', 'South Asian - Snack', 100, 1.29),
-        ('MAGIC MAS UPMA', 'Ready-to-eat upma', 'Calories: 200 per container', 'https://cloudinary.com/item11', 'South Asian - Snack', 100, 1.29),
-        ('KURKURE MSL', 'Masala chips', 'Calories: 110 per 20g', 'https://cloudinary.com/item12', 'South Asian - Snack', 100, 1.29),
-        ('LAYS CHILE LIMON', 'Spicy lime chips', 'Calories: 150 per oz', 'https://cloudinary.com/item13', 'South Asian - Snack', 100, 0.89),
+	-- South Asian - Snacks
+	('Maggi Noodles', 'Instant noodles 1 pack', 'Calories: 350, Protein: 6, Carbs: 45, Fat: 14, Sodium: 800', 'https://res.cloudinary.com/re-images/image/upload/v1746579637/semnrfgyenx3sbw9dmsk.jpg', 'South Asian - Snack', 400, 0.50, 5),
+	('PARLE KREAM BOUR', 'Pack of cookies', 'Calories: 90, Protein: 1, Carbs: 12, Fat: 4, Sodium: 60', 'https://res.cloudinary.com/re-images/image/upload/v1746579694/usde6kbxbwkjronl3nev.jpg', 'South Asian - Snack', 100, 1.00, 5),
+	('HID SEEK BOURB', 'Sweet biscuit', 'Calories: 120, Protein: 2, Carbs: 18, Fat: 5, Sodium: 50', 'https://res.cloudinary.com/re-images/image/upload/v1746579714/gnhqrragodlxd0qzxbho.jpg', 'South Asian - Snack', 100, 0.49, 5),
+	('SW MASL BANA', 'Banana chips', 'Calories: 150, Protein: 1, Carbs: 17, Fat: 9, Sodium: 30', 'https://res.cloudinary.com/re-images/image/upload/v1746585731/jpk712yivrwqcyzrv5no.jpg', 'South Asian - Snack', 100, 1.99, 5),
+	('GOP SNACK PE CHO', 'Chickpea snack', 'Calories: 140, Protein: 5, Carbs: 15, Fat: 6, Sodium: 100', 'https://res.cloudinary.com/re-images/image/upload/v1746585926/dzhx097aecik7astwpcp.jpg', 'South Asian - Snack', 100, 1.29, 5),
+	('AD BANGA MIX', 'Spicy snack mix', 'Calories: 180, Protein: 4, Carbs: 20, Fat: 8, Sodium: 250', 'https://res.cloudinary.com/re-images/image/upload/v1746586018/aizndttrkaxqrbmigjyj.png', 'South Asian - Snack', 100, 1.99, 5),
+	('SW BHEL CUP', 'Instant bhel puri', 'Calories: 160, Protein: 3, Carbs: 22, Fat: 5, Sodium: 180', 'https://res.cloudinary.com/re-images/image/upload/v1746586636/furdhwtnaczwkiijussv.jpg', 'South Asian - Snack', 100, 1.29, 5),
+	('MAGIC MAS UPMA', 'Ready-to-eat upma', 'Calories: 200, Protein: 4, Carbs: 30, Fat: 7, Sodium: 220', 'https://res.cloudinary.com/re-images/image/upload/v1746586498/yymxyalcgu7c9zrnfc28.jpg', 'South Asian - Snack', 100, 1.29, 5),
+	('KURKURE MSL', 'Masala chips', 'Calories: 110, Protein: 2, Carbs: 13, Fat: 6, Sodium: 160', 'https://res.cloudinary.com/re-images/image/upload/v1746586510/ysmaxkgvytkktt3yngp8.png', 'South Asian - Snack', 100, 1.29, 5),
+	('LAYS CHILE LIMON', 'Spicy lime chips', 'Calories: 150, Protein: 2, Carbs: 16, Fat: 9, Sodium: 210', 'https://res.cloudinary.com/re-images/image/upload/v1746586521/cy7rbqtythplveizj4qg.png', 'South Asian - Snack', 100, 0.89, 5),
 
-        -- South Asian - Prepared Meals
-        ('MTR navaratan korma', 'Vegetable curry', 'Calories: 220 per pouch', 'https://cloudinary.com/item14', 'South Asian - Prepared Meal', 100, 2.99),
-        ('MTR alu muttar', 'Potato peas curry', 'Calories: 210 per pouch', 'https://cloudinary.com/item15', 'South Asian - Prepared Meal', 100, 2.99),
-        ('MTR mutter paneer', 'Peas with cheese', 'Calories: 230 per pouch', 'https://cloudinary.com/item16', 'South Asian - Prepared Meal', 100, 2.99),
-        ('Mixed vegetable curry', 'Assorted veggie curry', 'Calories: 200', 'https://cloudinary.com/item17', 'South Asian - Prepared Meal', 100, 2.99),
-        ('MTR palak paneer', 'Spinach cheese curry', 'Calories: 240', 'https://cloudinary.com/item18', 'South Asian - Prepared Meal', 100, 2.99),
-        ('MTR shahi paneer', 'Rich cottage cheese curry', 'Calories: 250', 'https://cloudinary.com/item19', 'South Asian - Prepared Meal', 100, 2.99),
-        ('MTR bhindi masala', 'Okra curry', 'Calories: 180', 'https://cloudinary.com/item20', 'South Asian - Prepared Meal', 100, 2.99),
-        ('MTR chana masala', 'Chickpea curry', 'Calories: 210', 'https://cloudinary.com/item21', 'South Asian - Prepared Meal', 100, 2.99),
-        ('MTR kadhi pakora', 'Yogurt curry', 'Calories: 200', 'https://cloudinary.com/item22', 'South Asian - Prepared Meal', 100, 2.99),
+	-- South Asian - Prepared Meals
+	('MTR navaratan korma', 'Vegetable curry', 'Calories: 220, Protein: 6, Carbs: 28, Fat: 10, Sodium: 400', 'https://res.cloudinary.com/re-images/image/upload/v1746586374/e2voteeomc3l8dygyeku.jpg', 'South Asian - Prepared Meal', 100, 2.99, 5),
+	('MTR alu muttar', 'Potato peas curry', 'Calories: 210, Protein: 5, Carbs: 30, Fat: 8, Sodium: 350', 'https://res.cloudinary.com/re-images/image/upload/v1746586384/erlfifuim9k7z16iz7go.jpg', 'South Asian - Prepared Meal', 100, 2.99, 5),
+	('MTR mutter paneer', 'Peas with cheese', 'Calories: 230, Protein: 7, Carbs: 26, Fat: 11, Sodium: 390', 'https://res.cloudinary.com/re-images/image/upload/v1746586396/anfcme1lwruvbk7rnxwz.jpg', 'South Asian - Prepared Meal', 100, 2.99, 5),
+	('Mixed vegetable curry', 'Assorted veggie curry', 'Calories: 200, Protein: 4, Carbs: 22, Fat: 8, Sodium: 310', 'https://res.cloudinary.com/re-images/image/upload/v1746586431/rq3nc5zbdfhke51q1dig.png', 'South Asian - Prepared Meal', 100, 2.99, 5),
+	('MTR palak paneer', 'Spinach cheese curry', 'Calories: 240, Protein: 8, Carbs: 18, Fat: 13, Sodium: 420', 'https://res.cloudinary.com/re-images/image/upload/v1746586443/zejyyonoxi4sql7izfoz.jpg', 'South Asian - Prepared Meal', 100, 2.99, 5),
+	('MTR shahi paneer', 'Rich cottage cheese curry', 'Calories: 250, Protein: 9, Carbs: 20, Fat: 14, Sodium: 430', 'https://res.cloudinary.com/re-images/image/upload/v1746586457/quycfjko3xwwvb6xcfx9.jpg', 'South Asian - Prepared Meal', 100, 2.99, 5),
+	('MTR bhindi masala', 'Okra curry', 'Calories: 180, Protein: 4, Carbs: 16, Fat: 9, Sodium: 300', 'https://res.cloudinary.com/re-images/image/upload/v1746586535/kkzogsgdk34mzac3l0nx.jpg', 'South Asian - Prepared Meal', 100, 2.99, 5),
+	('MTR chana masala', 'Chickpea curry', 'Calories: 210, Protein: 6, Carbs: 25, Fat: 8, Sodium: 350', 'https://res.cloudinary.com/re-images/image/upload/v1746586546/gb6ebrv0ysxmmlmrpkgf.jpg', 'South Asian - Prepared Meal', 100, 2.99, 5),
+	('MTR kadhi pakora', 'Yogurt curry', 'Calories: 200, Protein: 5, Carbs: 18, Fat: 9, Sodium: 330', 'https://res.cloudinary.com/re-images/image/upload/v1746586578/ezlhzncan6s5gju0ukgt.jpg', 'South Asian - Prepared Meal', 100, 2.99, 5),
 
-        -- Global Snacks and Staples (Sunrise Foods)
-        ('Japanese Rice Crackers', 'Crunchy rice snack mix', 'Calories: 110 per oz', 'https://cloudinary.com/item23', 'East Asian - Snack', 100, 1.89),
-        ('Plantain Chips', 'Fried plantain slices', 'Calories: 150 per oz', 'https://cloudinary.com/item24', 'Latin American - Snack', 100, 1.99),
-        ('Spicy Seaweed Snacks', 'Thin roasted seaweed', 'Calories: 25 per pack', 'https://cloudinary.com/item25', 'Korean - Snack', 100, 2.29),
-        ('Hummus & Pita Chips', 'Chickpea dip and pita chips', 'Calories: 220 per pack', 'https://cloudinary.com/item26', 'Mediterranean - Snack', 100, 2.99),
-        ('Nacho Cheese Tortilla Chips', 'Cheesy corn chips', 'Calories: 140 per oz', 'https://cloudinary.com/item27', 'Western - Snack', 100, 1.49),
-        ('Jasmine Rice', 'Aromatic Thai rice', 'Calories: 160 per 1/4 cup', 'https://cloudinary.com/item28', 'Thai - Staple', 200, 2.99),
-        ('Canned Black Beans', 'Cooked black beans', 'Calories: 110 per 1/2 cup', 'https://cloudinary.com/item29', 'Latin American - Staple', 200, 1.19),
-        ('Olive Oil', 'Extra virgin olive oil', 'Calories: 120 per tbsp', 'https://cloudinary.com/item30', 'Mediterranean - Staple', 100, 5.99),
-        ('Pasta', 'Durum wheat spaghetti', 'Calories: 200 per 2 oz', 'https://cloudinary.com/item31', 'Italian - Staple', 150, 1.49),
-        ('Cornmeal', 'Stone-ground yellow cornmeal', 'Calories: 110 per 1/4 cup', 'https://cloudinary.com/item32', 'West African - Staple', 150, 2.59),
-        ('Frozen Chicken Tikka Masala', 'Chicken curry with rice', 'Calories: 320 per meal', 'https://cloudinary.com/item33', 'South Asian - Prepared Meal', 100, 4.99),
-        ('Frozen Bulgogi Beef Bowl', 'Korean marinated beef with rice', 'Calories: 450 per bowl', 'https://cloudinary.com/item34', 'Korean - Prepared Meal', 100, 5.49),
-        ('Microwave Pad Thai', 'Thai-style noodle dish', 'Calories: 400 per container', 'https://cloudinary.com/item35', 'Thai - Prepared Meal', 100, 3.99),
-        ('Frozen Burrito', 'Beans, cheese & rice', 'Calories: 300 per burrito', 'https://cloudinary.com/item36', 'Mexican-American - Prepared Meal', 100, 2.29),
-        ('Mac & Cheese Cup', 'Creamy pasta in a cup', 'Calories: 250 per cup', 'https://cloudinary.com/item37', 'Western - Prepared Meal', 100, 1.49);
+	-- Global Snacks and Staples
+	('Japanese Rice Crackers', 'Crunchy rice snack mix', 'Calories: 110, Protein: 2, Carbs: 23, Fat: 3, Sodium: 190', 'https://res.cloudinary.com/re-images/image/upload/v1746586360/y4r9hqwhrgajksrztnbt.jpg', 'East Asian - Snack', 100, 1.89, 5),
+	('Plantain Chips', 'Fried plantain slices', 'Calories: 150, Protein: 1, Carbs: 18, Fat: 9, Sodium: 160', 'https://res.cloudinary.com/re-images/image/upload/v1746586331/um3pov8uwgxfz4bf8gnn.jpg', 'Latin American - Snack', 100, 1.99, 5),
+	('Spicy Seaweed Snacks', 'Thin roasted seaweed', 'Calories: 25, Protein: 1, Carbs: 2, Fat: 1.5, Sodium: 65', 'https://res.cloudinary.com/re-images/image/upload/v1746586318/lutyv07ce9wozkz8gkxr.jpg', 'Korean - Snack', 100, 2.29, 5),
+	('Hummus & Pita Chips', 'Chickpea dip and pita chips', 'Calories: 220, Protein: 5, Carbs: 28, Fat: 10, Sodium: 300', 'https://res.cloudinary.com/re-images/image/upload/v1746586302/lgpsyoasok3rq9myfv1j.png', 'Mediterranean - Snack', 100, 2.99, 5),
+	('Nacho Cheese Tortilla Chips', 'Cheesy corn chips', 'Calories: 140, Protein: 2, Carbs: 16, Fat: 7, Sodium: 210', 'https://res.cloudinary.com/re-images/image/upload/v1746586287/xbmlj865bxbi60oehera.jpg', 'Western - Snack', 100, 1.49, 5),
+	('Jasmine Rice', 'Aromatic Thai rice', 'Calories: 160, Protein: 3, Carbs: 36, Fat: 1, Sodium: 0', 'https://res.cloudinary.com/re-images/image/upload/v1746586271/cnjqk7upc2icavwe8xbv.jpg', 'Thai - Staple', 200, 2.99, 5),
+	('Canned Black Beans', 'Cooked black beans', 'Calories: 110, Protein: 7, Carbs: 19, Fat: 0.5, Sodium: 140', 'https://res.cloudinary.com/re-images/image/upload/v1746586255/kk018ddwnmamicqo8bh7.jpg', 'Latin American - Staple', 200, 1.19, 5),
+	('Olive Oil', 'Extra virgin olive oil', 'Calories: 120, Protein: 0, Carbs: 0, Fat: 14, Sodium: 0', 'https://res.cloudinary.com/re-images/image/upload/v1746586238/vc5ktlx7hdeny9gmjtxy.jpg', 'Mediterranean - Staple', 100, 5.99, 5),
+	('Pasta', 'Durum wheat spaghetti', 'Calories: 200, Protein: 7, Carbs: 42, Fat: 1, Sodium: 0', 'https://res.cloudinary.com/re-images/image/upload/v1746586219/epkx9ocg5qx83a48zobn.jpg', 'Italian - Staple', 150, 1.49, 5),
+	('Cornmeal', 'Stone-ground yellow cornmeal', 'Calories: 110, Protein: 2, Carbs: 24, Fat: 0.5, Sodium: 0', 'https://res.cloudinary.com/re-images/image/upload/v1746586206/hqrusmoe3qpqt6fy1nlt.png', 'West African - Staple', 150, 2.59, 5),
+	('Frozen Chicken Tikka Masala', 'Chicken curry with rice', 'Calories: 320, Protein: 17, Carbs: 35, Fat: 12, Sodium: 700', 'https://res.cloudinary.com/re-images/image/upload/v1746586590/e6rfodc01tnmpgecwwmg.jpg', 'South Asian - Prepared Meal', 100, 4.99, 5),
+	('Frozen Bulgogi Beef Bowl', 'Korean marinated beef with rice', 'Calories: 450, Protein: 21, Carbs: 50, Fat: 18, Sodium: 800', 'https://res.cloudinary.com/re-images/image/upload/v1746586190/shyhmzobe26nadbmfgdh.jpg', 'Korean - Prepared Meal', 100, 5.49, 5),
+	('Microwave Pad Thai', 'Thai-style noodle dish', 'Calories: 400, Protein: 9, Carbs: 44, Fat: 16, Sodium: 650', 'https://res.cloudinary.com/re-images/image/upload/v1746586174/wvltycycvtby3n8fjfsa.jpg', 'Thai - Prepared Meal', 100, 3.99, 5),
+	('Frozen Burrito', 'Beans, cheese & rice', 'Calories: 300, Protein: 11, Carbs: 36, Fat: 9, Sodium: 590', 'https://res.cloudinary.com/re-images/image/upload/v1746586143/xonjiss0mj6iyqbrb8mr.jpg', 'Mexican-American - Prepared Meal', 100, 2.29, 5),
+	('Mac & Cheese Cup', 'Creamy pasta in a cup', 'Calories: 250, Protein: 6, Carbs: 31, Fat: 11, Sodium: 480', 'https://res.cloudinary.com/re-images/image/upload/v1746586128/jmiaffb5l0yvanpowtkx.jpg', 'Western - Prepared Meal', 100, 1.49, 5),
 
+	-- NEW: Low-stock items
+	('Sambar Powder', 'Spice mix for sambar soup', 'Calories: 10, Protein: 1, Carbs: 2, Fat: 0, Sodium: 50', 'https://res.cloudinary.com/re-images/image/upload/v1746580913/mfepeozgh7ktjbowd5ia.jpg', 'South Asian - Staple', 2, 0.99, 5),
+	('Miso Soup Pack', 'Instant miso soup packet', 'Calories: 35, Protein: 2, Carbs: 5, Fat: 1, Sodium: 550', 'https://res.cloudinary.com/re-images/image/upload/v1746586116/ca08ogao0ads71wxobbd.jpg', 'Japanese - Prepared Meal', 1, 1.19, 5);
+	   
     -- Purchase Orders (admin_id = 1, vendor_id = 1 = Patel Brothers)
     INSERT INTO purchase_order (admin_id, vendor_id, purchase_date) VALUES
         (1, 1, '2025-03-18 12:15:00'),

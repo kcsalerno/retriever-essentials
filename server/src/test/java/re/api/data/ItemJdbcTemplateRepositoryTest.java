@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class ItemJdbcTemplateRepositoryTest {
-    private final int ITEM_COUNT = 37;
+    private final int ITEM_COUNT = 39;
 
     @Autowired
     ItemJdbcTemplateRepository itemJdbcTemplateRepository;
@@ -93,7 +93,7 @@ class ItemJdbcTemplateRepositoryTest {
         // Assert
         assertNotNull(items);
         assertFalse(items.isEmpty());
-        assertEquals(3, items.size());
+        assertEquals(4, items.size());
     }
 
     @Test

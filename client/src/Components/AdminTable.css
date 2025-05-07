@@ -1,0 +1,111 @@
+.admin-table-container {
+  background-color: white;
+  border-radius: 10px;
+  padding: 30px;
+  margin: 30px auto;
+  max-width: 900px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.admin-table-container h2 {
+  color: #222;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.button-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.btn {
+  padding: 8px 14px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn.add {
+  background-color: #ffcc00;
+  color: black;
+}
+
+.btn.add:hover {
+  background-color: #e6b800;
+}
+
+.btn.delete {
+  background-color: #d9534f;
+  color: white;
+}
+
+.btn.delete:hover {
+  background-color: #c9302c;
+}
+
+.buttonContainer {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-start;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 1rem;
+    text-align: left;
+    background-color: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  
+.admin-table th {
+background-color: #b5cde2; /* light blue header */
+color: #333;
+font-weight: bold;
+padding: 12px;
+border-bottom: 2px solid #ccc;
+}
+
+.admin-table td {
+padding: 10px 12px;
+border-bottom: 1px solid #ddd;
+}
+
+.admin-table tbody tr:nth-child(odd) {
+background-color: #f9f9f9;
+}
+
+.admin-table tbody tr:nth-child(even) {
+background-color: #d5d4d4;
+}
+
+.admin-table td .btn {
+margin-right: 8px;
+padding: 6px 12px;
+font-size: 0.9rem;
+}
+
+.admin-table td .btn.add {
+background-color: #007bff;
+color: white;
+border: none;
+border-radius: 4px;
+}
+
+.admin-table td .btn.delete {
+background-color: #dc3545;
+color: white;
+border: none;
+border-radius: 4px;
+}
+
+.admin-table tbody tr:hover {
+    background-color: #e9e696; /* light blue hover effect */
+    cursor: pointer;
+}

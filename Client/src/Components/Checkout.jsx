@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth  } from "../Contexts/AuthContext";
 import './Checkout.css';
 
 const Checkout = ({ cart, clearCart, removeItemFromCart, updateCartItems }) => {
   const [studentId, setStudentId] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { selfCheckoutEnabled } = useAuth();
   const navigate = useNavigate();
   const authorityId = 1;
-  const selfCheckout = true;
+  const selfCheckout = selfCheckoutEnabled;
   const cartItems = cart; // Passed down from App.js
 
   const handleQuantityChange = (itemId, delta) => {
@@ -61,10 +63,20 @@ const Checkout = ({ cart, clearCart, removeItemFromCart, updateCartItems }) => {
         body: JSON.stringify(orderPayload)
       });
   
-      if (!response.ok) throw new Error('Checkout order failed');
+      if (!response.ok) {
+        throw new Error('Checkout order failed');
+      }
+      else {
+        alert('Checkout successful!');
+      }
   
       handleClearCart();
-      navigate('/');
+      if (selfCheckout) {
+        navigate('/popular');
+      }
+      else {
+        navigate('/dashboard');
+      }
   
     } catch (err) {
       console.error(err);
@@ -98,17 +110,17 @@ const Checkout = ({ cart, clearCart, removeItemFromCart, updateCartItems }) => {
                 <button onClick={() => handleQuantityChange(item.itemId, -1)} disabled={item.quantity <= 1}>−</button>
                 {` ${item.quantity} `}
                 <button onClick={() => handleQuantityChange(item.itemId, 1)} disabled={item.quantity >= item.itemLimit}>+</button>
-                {` x $${item.pricePerUnit.toFixed(2)} `}
+                {/* {` x $${item.pricePerUnit.toFixed(2)} `} */}
                 <button onClick={() => handleRemoveItem(item.itemId)} style={{ color: 'red' }}>❌</button>
               </li>
             ))}
           </ul>
 
-          <div className="total">
+          {/* <div className="total">
             <strong>
               Total: ${cartItems.reduce((total, item) => total + item.pricePerUnit * item.quantity, 0).toFixed(2)}
             </strong>
-          </div>
+          </div> */}
 
           <div style={{ marginTop: '20px' }}>
             <button onClick={handleSubmit} disabled={isSubmitting} className="checkout-button">
