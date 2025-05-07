@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import './ItemForm.css';
+import { Link } from 'react-router-dom';
 
 function VendorForm({ isEditMode }) {
   const { vendorId } = useParams();
@@ -97,6 +98,7 @@ function VendorForm({ isEditMode }) {
           <button type="submit" className="add-btn">
             {isEditMode ? 'Save Changes' : 'Add Vendor'}
           </button>
+          <Link to="/dashboard" className="btn-cancel">Cancel</Link>
         </form>
       </div>
     </div>

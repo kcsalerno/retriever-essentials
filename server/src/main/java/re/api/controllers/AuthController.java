@@ -64,6 +64,22 @@ public class AuthController {
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
+    @PostMapping("/re-auth")
+    public ResponseEntity<?> reAuthenticate(@RequestBody Map<String, String> credentials) {
+        String email = credentials.get("email");
+        String password = credentials.get("password");
+
+        UsernamePasswordAuthenticationToken token =
+                new UsernamePasswordAuthenticationToken(email, password);
+
+        try {
+            authenticationManager.authenticate(token);
+            return ResponseEntity.ok().build();
+        } catch (AuthenticationException ex) {
+            return new ResponseEntity<>("Invalid credentials", HttpStatus.UNAUTHORIZED);
+        }
+    }
+
     @PostMapping("/refresh")
     public ResponseEntity<Object> refresh(@AuthenticationPrincipal AppUser user) {
         String jwt = jwtConverter.getTokenFromUser(user);

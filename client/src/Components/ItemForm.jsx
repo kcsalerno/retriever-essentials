@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import './ItemForm.css';
+import { Link } from 'react-router-dom';
 
 function ItemForm({ isEditMode }) {
   const { name } = useParams();
@@ -267,6 +268,7 @@ function ItemForm({ isEditMode }) {
           <button type="submit" className="add-btn">
             {isEditMode ? 'Save Changes' : 'Add Item'}
           </button>
+          <Link to="/dashboard" className="btn-cancel">Cancel</Link>
         </form>
       </div>
     </div>

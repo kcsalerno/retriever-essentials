@@ -42,7 +42,7 @@ function VendorList() {
               <td>{vendor.phoneNumber}</td>
               <td>{vendor.contactEmail}</td>
               <td style={{ textAlign: 'center' }}>{vendor.enabled ? '✅' : '❌'}</td>
-              <td style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+              <td style={{ display: 'flex', gap: '10px', justifyContent: 'center', textAlign: 'center' }}>
                 <Link className="btn add" to={`/edit-vendor/${vendor.vendorId}`}>📝Edit</Link>
                 {/* <Link className="btn delete" to={`/delete-vendor/${vendor.vendorId}`}>Disable</Link> */}
               </td>

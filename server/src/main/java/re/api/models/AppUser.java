@@ -12,7 +12,7 @@ public class AppUser implements UserDetails {
     private int appUserId;
     private final String username;
 
-    @JsonIgnore
+
     private String passwordHash;
 
     private final UserRole userRole;
@@ -31,7 +31,6 @@ public class AppUser implements UserDetails {
         return List.of(userRole.toGrantedAuthority());
     }
 
-    @JsonIgnore
     @Override
     public String getPassword() {
         return passwordHash;

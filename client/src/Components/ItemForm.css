@@ -82,3 +82,14 @@
     margin-bottom: 20px;
     text-align: left;
   }
+
+  .btn.enable-btn {
+    background-color: #28a745;
+    color: white;
+  }
+  
+  .btn.disable-btn {
+    background-color: #dc3545;
+    color: white;
+  }
+  

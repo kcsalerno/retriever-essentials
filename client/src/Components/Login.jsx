@@ -25,6 +25,10 @@ function Login() {
 
     if (result.ok) {
       console.log("✅ Login success:", result);
+      // Save token and basic user info to localStorage
+    localStorage.setItem("token", result.token);
+    localStorage.setItem("email", result.email);
+    localStorage.setItem("role", result.role);
       navigate('/dashboard');
     } else {
       console.error("❌ Login failed:", result.error);

@@ -17,6 +17,7 @@ function Dashboard() {
   if (!user) return null;
 
   const isAdmin = user.role === 'ROLE_ADMIN';
+  const userId = user.appUserId;
 
   return (
     <div className="dashboard-wrapper">
@@ -37,6 +38,9 @@ function Dashboard() {
           <button className="self-checkout-button" onClick={enableSelfCheckout}>
             Enable Self Checkout
           </button>
+            <Link to={`/change-password/${userId}`} className="change-pass-button">
+              Change Password
+            </Link>
         </div>
       </div>
     </div>
