@@ -6,7 +6,7 @@ const PrivateRoute = ({ children, allowedRoles }) => {
 
   if (!user) return <Navigate to="/" />;
   if (allowedRoles && !allowedRoles.includes(user.role)) return <Navigate to="/unauthorized" />;
-  if (selfCheckoutEnabled) return <Navigate to="/unauthorized" />;
+  if (selfCheckoutEnabled) return <Navigate to="/popular" />;
 
   return children;
 };

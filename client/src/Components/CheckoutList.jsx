@@ -16,6 +16,18 @@ function CheckoutList() {
       });
   }, [navigate]);
 
+  const handleDelete = async (checkOutOrderId) => {
+    if (!window.confirm("Are you sure you want to delete this checkout order?")) return;
+    try {
+      await axios.delete(`http://localhost:8080/api/checkout-order/${checkOutOrderId}`);
+      alert('Checkout order deleted!');
+      navigate('/dashboard');
+    } catch (err) {
+      console.error("Error deleting checkout order:", err);
+      alert('Failed to delete checkout order.');
+    }
+  };
+
 return (
     <div className="admin-table-container">
         <div className="button-head">
@@ -51,9 +63,12 @@ return (
                             <td>{order.authority.username ?? '—'}</td>
                             <td style={{ textAlign: 'center' }}>{order.selfCheckout ? '✅' : '❌'}</td>
                             <td>{formattedDate}</td>
-                            <td style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+                            <td style={{ display: 'flex', gap: '10px', justifyContent: 'center', textAlign: 'center' }}>
                                 <Link className="btn add" to={`/edit-checkout/${order.checkoutOrderId}`}>📝Edit</Link>
-                                <Link className="btn delete" to={`/delete-checkout/${order.checkoutOrderId}`}>🗑️Delete</Link>
+                                <button className="btn delete"
+                                    onClick={() => handleDelete(order.checkoutOrderId)}>
+                                    🗑️ Delete
+                                </button>
                             </td>
                         </tr>
                     );

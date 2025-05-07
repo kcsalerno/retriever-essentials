@@ -24,7 +24,9 @@ public class AppUserController {
 
     @GetMapping
     public List<AppUser> findAll() {
-        return service.findAll();
+        return service.findAll().stream().peek(user -> {;
+            user.setPassword(""); // Do not expose password
+        }).toList();
     }
 
     @GetMapping("/{appUserId}")
@@ -36,6 +38,26 @@ public class AppUserController {
 
         user.setPassword(""); // Do not expose password
         return ResponseEntity.ok(user);
+    }
+
+    @GetMapping("/email/{email}")
+    public ResponseEntity<AppUser> findByEmail(@PathVariable String email) {
+        AppUser user = service.findByEmail(email);
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        user.setPassword(""); // Do not expose password
+        return ResponseEntity.ok(user);
+    }
+
+    @PostMapping
+    public ResponseEntity<Object> add(@RequestBody AppUser appUser) {
+        Result<AppUser> result = service.add(appUser);
+        if (result.isSuccess()) {
+            return new ResponseEntity<>(result.getPayload(), HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>(result.getMessages(), HttpStatus.BAD_REQUEST);
     }
 
     @PutMapping("/password")

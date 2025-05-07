@@ -15,7 +15,7 @@ Content-Type: application/json
 
 ### After this request, copy the token from the response and assign it below:
 # @admin_token = Bearer <PASTE_ADMIN_JWT_HERE>
-@admin_token = Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJyZXRyaWV2ZXItZXNzZW50aWFscyIsInN1YiI6ImFkbWluQHVtYmMuY29tIiwiYXBwVXNlcklkIjoxLCJyb2xlIjoiUk9MRV9BRE1JTiIsImV4cCI6MTc0NjMzNDg0NX0.1Yg7Y-8x-54s2SUPZ6o50qf3eLpBYcm1qkCfFYMc8Es
+@admin_token = Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJyZXRyaWV2ZXItZXNzZW50aWFscyIsInN1YiI6ImFkbWluQHVtYmMuY29tIiwiYXBwVXNlcklkIjoxLCJyb2xlIjoiUk9MRV9BRE1JTiIsImV4cCI6MTc0NjYyMDMzOX0.yi1YsjGKuiFbk2bNnUAPPR2IYKNhBmte1RHRYK9Fi_Q
 
 ### LOGIN - Authority1 account (Happy Path)
 POST {{base_url}}/auth/login
@@ -63,11 +63,33 @@ Authorization: {{admin_token}}
 GET {{base_url}}/user/1
 Authorization: {{admin_token}}
 
+### GET USER BY ID - Authority (Happy Path)
+GET {{base_url}}/user/2
+Authorization: {{auth1_token}}
 
 ### GET USER BY ID - Not Found
 GET {{base_url}}/user/999
 Authorization: {{admin_token}}
 
+### GET USER BY EMAIL - Admin (Happy Path)
+GET {{base_url}}/user/email/admin@umbc.com
+Authorization: {{admin_token}}
+
+### GET USER BY EMAIL - Admin (Not Found)
+GET {{base_url}}/user/email/not@found.com
+Authorization: {{admin_token}}
+
+### POST ADD USER - Admin (Happy Path)
+POST {{base_url}}/user
+Content-Type: application/json
+Authorization: {{admin_token}}
+
+{
+  "username": "test@admin.com",
+  "password": "P@ssw0rd!",
+  "userRole": "ADMIN"
+
+}
 
 ### PUT CHANGE PASSWORD - Admin (Happy Path)
 PUT {{base_url}}/user/password
@@ -77,7 +99,6 @@ Authorization: {{admin_token}}
 {
   "password": "newSecureP@ss123"
 }
-
 
 ### PUT CHANGE PASSWORD - Missing password field (Sad Path)
 PUT {{base_url}}/user/password

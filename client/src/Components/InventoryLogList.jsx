@@ -16,6 +16,18 @@ function InventoryLogList() {
       });
   }, [navigate]);
 
+  const handleDelete = async (logId) => {
+    if (!window.confirm("Are you sure you want to delete this inventory log?")) return;
+    try {
+      await axios.delete(`http://localhost:8080/api/inventory-log/${logId}`);
+      alert('Inventory log deleted!');
+      navigate('/dashboard');
+    } catch (err) {
+      console.error("Error deleting inventory log:", err);
+      alert('Failed to delete inventory log.');
+    }
+  };
+
   return (
     <div className="admin-table-container">
       <div className="button-head">
@@ -60,7 +72,11 @@ function InventoryLogList() {
                 <td>{formattedDate}</td>
                 <td style={{ display: 'flex', gap: '10px', justifyContent: 'center', textAlign: 'center' }}>
                   <Link className="btn add" to={`/edit-inventory-log/${log.logId}`}>📝Edit</Link>
-                  <Link className="btn delete" to={`/delete-inventory-log/${log.logId}`}>🗑️Delete</Link>
+                  <button className="btn delete"
+                    onClick={() => handleDelete(log.logId)}>
+                    🗑️ Delete
+                  </button>
+                  {/* <Link className="btn delete" to={`/delete-inventory-log/${log.logId}`}>🗑️Delete</Link> */}
                 </td>
               </tr>
             );

@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import CheckoutItemsList from './CheckoutItemsList';
 import './ItemForm.css';
+import { Link } from 'react-router-dom';
 
 function CheckoutForm() {
   const { checkoutId } = useParams(); // changed to match your route
@@ -152,6 +153,7 @@ function CheckoutForm() {
         </div>
 
         <button type="submit" className="add-btn">Update Checkout Order</button>
+        <Link to="/dashboard" className="btn-cancel">Cancel</Link>
       </form>
 
       <CheckoutItemsList checkoutItems={checkoutItems} />

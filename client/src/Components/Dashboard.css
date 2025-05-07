@@ -7,7 +7,7 @@
   }
   
   .dashboard-container {
-    background: rgb(163, 160, 160);
+    background: rgb(157, 157, 157);
     padding: 30px;
     border-radius: 12px;
     width: 100%;
@@ -29,6 +29,7 @@
   }
   
   .dashboard-button,
+  .change-pass-button,
   .self-checkout-button {
     display: block;
     background-color: black;
@@ -48,12 +49,20 @@
     background-color: #444;
   }
   
-  .self-checkout-button {
+  .change-pass-button {
     background-color: #fff700;
     color: black;
   }
   
-  .self-checkout-button:hover {
+  .change-pass-button:hover {
     background-color: #e5e500;
   }
   
+  .self-checkout-button {
+    background-color: #1d9d24;
+    color: black;
+  }
+  
+  .self--buttton:hover {
+    background-color: #14831f;
+  }

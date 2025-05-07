@@ -16,6 +16,18 @@ function PurchaseList() {
       });
   }, [navigate]);
 
+  const handleDelete = async (purchaseId) => {
+    if (!window.confirm("Are you sure you want to delete this purchase order?")) return;
+    try {
+      await axios.delete(`http://localhost:8080/api/purchase/${purchaseId}`);
+      alert('Purchsae order deleted!');
+      navigate('/dashboard');
+    } catch (err) {
+      console.error("Error deleting purchase order:", err);
+      alert('Failed to delete purhcase order.');
+    }
+  };
+
   return (
     <div className="admin-table-container">
       <div className="button-head">
@@ -52,9 +64,12 @@ function PurchaseList() {
                 <td>{purchase.vendor?.vendorName ?? '—'}</td>
                 <td>{purchase.admin?.username ?? '—'}</td>
                 <td>{formattedDate}</td>
-                <td style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+                <td style={{ display: 'flex', gap: '10px', justifyContent: 'center', textAlign: 'center' }}>
                   <Link className="btn add" to={`/edit-purchase/${purchase.purchaseId}`}>📝Edit</Link>
-                  <Link className="btn delete" to={`/delete-purchase/${purchase.purchaseId}`}>🗑️Delete</Link>
+                  <button className="btn delete"
+                    onClick={() => handleDelete(purchase.purchaseId)}>
+                    🗑️ Delete
+                  </button>
                 </td>
               </tr>
             );

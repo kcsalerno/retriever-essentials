@@ -36,9 +36,16 @@ import PurchaseList from './Components/PurchaseList';
 import UserList from './Components/UserList';
 import InventoryLogList from './Components/InventoryLogList';
 import CheckoutForm from './Components/CheckoutForm';
+import AddPurchaseForm from './Components/AddPurchaseForm';
+import InventoryLogForm from './Components/InventoryLogForm';
+import UserForm from './Components/UserForm';
+import ChangePasswordForm from './Components/ChangePasswordForm';
+import EditCheckoutItemForm from './Components/EditCheckoutItemForm';
 
 import { AuthProvider, useAuth } from './Contexts/AuthContext';
 import './App.css';
+import PurchaseForm from './Components/PurchaseForm';
+import PurchaseItemForm from './Components/EditPurchaseItemForm';
 
 function BottomNav() {
   const { user, selfCheckoutEnabled } = useAuth();
@@ -231,42 +238,52 @@ function App() {
                     <CheckoutList isEditMode={true} />
                   </PrivateRoute>
                 } /> */}
+                <Route path="/edit-checkout-item/:checkoutItemId" element={
+                  <PrivateRoute allowedRoles={['ROLE_ADMIN', 'ROLE_AUTHORITY']} selfCheckoutEnabled={true}>
+                    <EditCheckoutItemForm />
+                  </PrivateRoute>
+                } />
                 <Route path="/purchases" element={
                   <PrivateRoute allowedRoles={['ROLE_ADMIN',]} selfCheckoutEnabled={true}>
                     <PurchaseList />
                   </PrivateRoute>
                 } />
-                {/* <Route path="/add-purchase" element={
+                <Route path="/add-purchase" element={
                   <PrivateRoute allowedRoles={['ROLE_ADMIN']} selfCheckoutEnabled={true}>
-                    <PurchaseList isEditMode={false} />
+                    <AddPurchaseForm isEditMode={false} />
                   </PrivateRoute>
                 } />
                 <Route path="/edit-purchase/:purchaseId" element={
                   <PrivateRoute allowedRoles={['ROLE_ADMIN']} selfCheckoutEnabled={true}>
-                    <PurchaseList isEditMode={true} />
+                    <PurchaseForm isEditMode={true} />
                   </PrivateRoute>
                 } />
-                <Route path="/delete-purchase/:purchaseId" element={
+                <Route path="/edit-purchase-item/:purchaseItemId" element={
+                  <PrivateRoute allowedRoles={['ROLE_ADMIN']} selfCheckoutEnabled={true}>
+                    <PurchaseItemForm isEditMode={true} />
+                  </PrivateRoute>
+                } />
+                {/* <Route path="/delete-purchase/:purchaseId" element={
                   <PrivateRoute allowedRoles={['ROLE_ADMIN']} selfCheckoutEnabled={true}>
                     <PurchaseList isEditMode={true} />
                   </PrivateRoute>
                 } /> */}
                 <Route path="/inventory-logs" element={
-                  <PrivateRoute allowedRoles={['ROLE_ADMIN', 'ROLE_AUTHORITY']} selfCheckoutEnabled={true}>
+                  <PrivateRoute allowedRoles={['ROLE_ADMIN', 'ROLE_AUTHORITY']} selfCheckoutEnabled={false}>
                     <InventoryLogList />
                   </PrivateRoute>
                 } />
-                {/* <Route path="/add-inventory-log" element={
+                <Route path="/add-inventory-log" element={
                   <PrivateRoute allowedRoles={['ROLE_ADMIN', 'ROLE_AUTHORITY']} selfCheckoutEnabled={true}>
-                    <InventoryLogList isEditMode={false} />
+                    <InventoryLogForm isEditMode={false} />
                   </PrivateRoute>
                 } />
                 <Route path="/edit-inventory-log/:logId" element={
                   <PrivateRoute allowedRoles={['ROLE_ADMIN', 'ROLE_AUTHORITY']} selfCheckoutEnabled={true}>
-                    <InventoryLogList isEditMode={true} />
+                    <InventoryLogForm isEditMode={true} />
                   </PrivateRoute>
                 } />
-                <Route path="/delete-inventory-log/:logId" element={
+                {/* <Route path="/delete-inventory-log/:logId" element={
                   <PrivateRoute allowedRoles={['ROLE_ADMIN', 'ROLE_AUTHORITY']} selfCheckoutEnabled={true}>
                     <InventoryLogList isEditMode={true} />
                   </PrivateRoute>
@@ -276,16 +293,21 @@ function App() {
                     <UserList />
                   </PrivateRoute>
                 } />
-                {/* <Route path="/add-user" element={
+                <Route path="/add-user" element={
                   <PrivateRoute allowedRoles={['ROLE_ADMIN']} selfCheckoutEnabled={true}>
-                    <UserList isEditMode={false} />
+                    <UserForm isEditMode={false} />
                   </PrivateRoute>
                 } />
                 <Route path="/edit-user/:userId" element={
                   <PrivateRoute allowedRoles={['ROLE_ADMIN']} selfCheckoutEnabled={true}>
-                    <UserList isEditMode={true} />
+                    <UserForm isEditMode={true} />
                   </PrivateRoute>
-                } /> */}
+                } />
+                <Route path="/change-password/:userId" element={
+                  <PrivateRoute allowedRoles={['ROLE_ADMIN']} selfCheckoutEnabled={true}>
+                    <ChangePasswordForm />
+                  </PrivateRoute>
+                } />
                 <Route path="/unauthorized" element={<Unauthorized />} />
                 <Route path="/popular" element={<PopularStats />} />
                 <Route path="*" element={<NotFound />} />
