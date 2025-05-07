@@ -8,8 +8,9 @@ function ProductDetails({ addToCart }) {
   const { name } = useParams();
   const [product, setProduct] = useState(null);
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, selfCheckoutEnabled } = useAuth();
   const isAdmin = user?.role === 'ROLE_ADMIN';
+  const isAuthority = user?.role === 'ROLE_AUTHORITY';
 
 
   useEffect(() => {
@@ -60,26 +61,24 @@ const parseNutritionFacts = (nutritionString) => {
         <h3>Nutrition Facts</h3>
         <ul>
           <li>Calories: {nutrition['Calories']}</li>
-          <li>Protein: {nutrition['Protein']}</li>
-          <li>Carbs: {nutrition['Carbs']}</li>
-          <li>Fat: {nutrition['Fat']}</li>
-          <li>Sodium: {nutrition['Sodium']}</li>
+          <li>Protein: {nutrition['Protein']}g</li>
+          <li>Carbs: {nutrition['Carbs']}g</li>
+          <li>Fat: {nutrition['Fat']}g</li>
+          <li>Sodium: {nutrition['Sodium']}mg</li>
         </ul>
-        <button
-        className="add-to-cart-btn"
-        onClick={() => {
-        if (product.currentCount <= 0) {
-        alert("There's none of this left.");
-        } else {
-        addToCart(product);
-      }
-    }}
->
-    Add to Cart
-    </button>
-
-
-        {isAdmin && (
+        {(isAdmin || isAuthority) && (
+            <button
+              className="add-to-cart-btn"
+              onClick={() => {
+              if (product.currentCount <= 0) {
+                alert("There's none of this left.");
+              } else {
+                addToCart(product);
+              }}} >
+              Add to Cart
+            </button>
+        )}
+        {isAdmin && !selfCheckoutEnabled && (
           <button className="update-item-btn" onClick={() => navigate(`/edit-product/${product.itemName}`)}>
           Edit Item
          </button>

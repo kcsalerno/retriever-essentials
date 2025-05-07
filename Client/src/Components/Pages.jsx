@@ -18,7 +18,7 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
           Prev
         </button>
       </li>
-      <span>{currentPage} of {totalPages}</span>
+      <span className="pagination-info">{currentPage} of {totalPages}</span>
       <li>
         <button 
           onClick={() => handlePageChange(currentPage + 1)} 

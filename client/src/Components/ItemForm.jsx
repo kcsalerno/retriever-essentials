@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
+import './ItemForm.css';
 
 function ItemForm({ isEditMode }) {
   const { name } = useParams();
@@ -10,6 +11,7 @@ function ItemForm({ isEditMode }) {
     itemName: '',
     category: '',
     itemDescription: '',
+    pricePerUnit: '',
     currentCount: '',
     itemLimit: '',
     nutritionFactsParsed: {
@@ -41,6 +43,7 @@ function ItemForm({ isEditMode }) {
             itemName: item.itemName,
             category: item.category,
             itemDescription: item.itemDescription,
+            pricePerUnit: item.pricePerUnit || 0.00,
             currentCount: item.currentCount,
             itemLimit: item.itemLimit || 5,
             nutritionFactsParsed: parsed,
@@ -51,7 +54,7 @@ function ItemForm({ isEditMode }) {
         })
         .catch(() => {
           alert("Failed to load item for editing.");
-          navigate('/');
+          navigate('/items');
         });
     }
   }, [isEditMode, name, navigate]);
@@ -117,8 +120,8 @@ function ItemForm({ isEditMode }) {
       nutritionFacts: nutritionString,
       picturePath: imageUrl || formData.picturePath,
       currentCount: Number(formData.currentCount),
-      itemLimit: Number(formData.itemLimit),
-      pricePerUnit: 1.99,
+      itemLimit: Number(formData.itemLimit) || 5,
+      pricePerUnit: parseFloat(formData.pricePerUnit).toFixed(2),
       enabled: formData.enabled
     };
 
@@ -136,7 +139,7 @@ function ItemForm({ isEditMode }) {
         window.dispatchEvent(new Event('categoryUpdated'));
         alert('Item added!');
       }
-      navigate('/dashboard');
+      navigate('/items');
     } catch (err) {
       console.error("Error saving item:", err);
 
@@ -183,7 +186,20 @@ function ItemForm({ isEditMode }) {
           </div>
 
           <div className="form-group">
-            <label>Quantity</label>
+            <label>Price Per Unit ($)</label>
+            <input
+                type="number"
+                name="pricePerUnit"
+                step="0.01"
+                value={formData.pricePerUnit !== '' ? Number(formData.pricePerUnit).toFixed(2) : ''}
+                onChange={handleChange}
+                required
+            />
+          </div>
+
+          <div className="form-group">
+            {isEditMode && <label>Current Count</label>}
+            {!isEditMode && <label>Quantity</label>}
             <input type="number" name="currentCount" value={formData.currentCount} onChange={handleChange} required />
           </div>
 
@@ -193,28 +209,48 @@ function ItemForm({ isEditMode }) {
           </div>
 
           <h3>Nutrition Facts</h3>
-          {['calories', 'protein', 'carbs', 'fat', 'sodium'].map((field) => (
-            <div className="form-group" key={field}>
-              <label>{capitalize(field)}</label>
-              <input
+          <div className="form-group">
+            <label>Calories</label>
+            <input
                 type="number"
-                name={`nutritionFacts.${field}`}
-                value={formData.nutritionFactsParsed[field] || ''}
+                name="nutritionFacts.calories"
+                value={formData.nutritionFactsParsed.calories || ''}
                 onChange={handleChange}
-              />
+            />
+          </div>
+
+          {['protein', 'carbs', 'fat',].map((field) => (
+            <div className="form-group" key={field}>
+                <label>{capitalize(field)} (g)</label>
+                    <input
+                    type="number"
+                    name={`nutritionFacts.${field}`}
+                    value={formData.nutritionFactsParsed[field] || ''}
+                    onChange={handleChange}
+                    />
             </div>
           ))}
+
+          <div className="form-group">
+            <label>Sodium (mg)</label>
+              <input
+                type="number"
+                name="nutritionFacts.sodium"
+                value={formData.nutritionFactsParsed.sodium || ''}
+                onChange={handleChange}
+              />
+          </div>
 
           {isEditMode && (
             <div className="form-group">
               <label>
+                Enabled
                 <input
                   type="checkbox"
                   name="enabled"
                   checked={formData.enabled}
                   onChange={handleChange}
                 />
-                Enabled
               </label>
             </div>
           )}
@@ -228,7 +264,7 @@ function ItemForm({ isEditMode }) {
             <img src={formData.picturePath} alt="Preview" style={{ width: '150px', marginBottom: '10px' }} />
           )}
 
-          <button type="submit" className="add-to-cart-btn">
+          <button type="submit" className="add-btn">
             {isEditMode ? 'Save Changes' : 'Add Item'}
           </button>
         </form>
