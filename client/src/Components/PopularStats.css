@@ -24,3 +24,24 @@
     font-size: 18px;
   }
   
+  .stats-row {
+    display: flex; /* Enable flexbox for rows */
+    justify-content: center; /* Center columns horizontally */
+    gap: 59px; /* Add spacing between columns */
+    flex-wrap: wrap; /* Allow wrapping for smaller screens */
+  }
+  
+  .stats-column {
+    padding: 0 0px;
+    width: 46%;
+    text-align: left; /* Center content inside columns */
+  }
+  
+  
+  
+  /* Clear floats after the columns */
+  .stats-row:after {
+    content: "";
+    display: table;
+    clear: both;
+  }

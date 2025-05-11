@@ -60,7 +60,7 @@ function BusyTimes() {
   };
 
   if (!data[selectedDay]) {
-    return <div style={{ color: 'white' }}>Loading busy times...</div>;
+    return <div style={{ color: 'black' }}>Loading busy times...</div>;
   }
 
   const chartData = {
@@ -82,7 +82,7 @@ function BusyTimes() {
     scales: {
       x: {
         ticks: {
-          color: '#ffffff'
+          color: '#000000'
         },
         grid: {
           color: '#555'
@@ -92,7 +92,7 @@ function BusyTimes() {
         beginAtZero: true,
         max: maxY,
         ticks: {
-          color: '#ffffff',
+          color: '#000000',
           stepSize: 1
         },
         grid: {
@@ -103,7 +103,7 @@ function BusyTimes() {
     plugins: {
       legend: {
         labels: {
-          color: '#ffffff'
+          color: '#000000'
         }
       }
     },
@@ -112,7 +112,7 @@ function BusyTimes() {
   };
  
   return (
-    <div style={{ padding: '20px', color: 'white' }}>
+    <div style={{ padding: '20px', color: 'black' }}>
       <h2>{isAdmin ? 'Edit Busy Times (Not Saved)' : 'View Busy Times'}</h2>
 
       <label>

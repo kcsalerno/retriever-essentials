@@ -6,6 +6,7 @@
 }
 
 .app {
+  font-family: "Inter var","Helvetica Neue","Helvetica","Arial",sans-serif;
   display: flex;
   flex-direction: column;
   height: 100vh;
@@ -37,7 +38,6 @@ header {
   top: -40px;
   bottom: 0;
   padding: 20px;
-  background-color: #2d2d2d;
   z-index: 1;
   height: 100%;
   margin-left: -30px;
@@ -48,7 +48,7 @@ header {
   flex: 1;
   padding: 20px;
   overflow-y: auto; 
-  background-color: #2d2d2d;
+  background-color: #fff;
   justify-content: flex-start;
   align-items: flex-start;
   justify-content: flex-start;
@@ -70,7 +70,6 @@ footer {
   background-color: black;
   color: white;
   padding: 20px;
-  border-radius: 8px;
   margin-bottom: 20px;
 
 }
@@ -102,7 +101,7 @@ footer {
   padding: 5px;
   background-color: #fff;
   border-radius: 8px;
-  font-size: 19px;
+  font-size: 16px;
   margin-bottom: 20px;
 }
 
@@ -113,7 +112,7 @@ footer {
   margin-bottom: 10px;
 }
 .hours p{
-  font-size: 20px;
+  font-size: 16px;
   margin-bottom: 15px;
 }
 .hours p:nth-child(1), 

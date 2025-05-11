@@ -18,24 +18,29 @@ function PopularStats() {
 
   return (
     <div className="popular-stats-container">
-      <h2>📦 Most Popular Items</h2>
-      <ul className="stats-list">
-        {popularItems.map((item, index) => (
-          <li key={index}>
-            <strong>{item.item_name}</strong> — {item.total_checkouts} checkouts
-          </li>
-        ))}
-      </ul>
-
-      <h2>📊 Most Popular Categories</h2>
-      <ul className="stats-list">
-        {popularCategories.map((cat, index) => (
-          <li key={index}>
-            <strong>{cat.category}</strong> — {cat.total_checkouts} checkouts
-          </li>
-        ))}
-      </ul>
+      <div className="stats-row">
+        <div className="stats-column">
+          <h2>📦 Most Popular Items</h2>
+          <ul className="stats-list">
+            {popularItems.map((item, index) => (
+              <li key={index}>
+                <strong>{item.item_name}</strong> — {item.total_checkouts} checkouts
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="stats-column">
+          <h2>📊 Most Popular Categories</h2>
+          <ul className="stats-list">
+            {popularCategories.map((cat, index) => (
+              <li key={index}>
+                <strong>{cat.category}</strong> — {cat.total_checkouts} checkouts
+              </li>
+            ))}
+          </ul>
+      </div>
     </div>
+  </div>
   );
 }
 

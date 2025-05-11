@@ -21,7 +21,7 @@
 .header-right {
   position: absolute;
   top: 10px;
-  right: 20px;
+  right: 30px;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -38,9 +38,10 @@
 .logo {
   position: absolute;
   top: 0px;
-  left: 15px;
+  left: 20px;
   width: 119px;
   height: auto;
+  padding:10px;
 }
 
 .search-bar {
@@ -90,9 +91,9 @@
 
 .user-email {
   color: black;
-  font-weight: bold;
+  font-weight: 600;
   text-decoration: underline;
-  font-size: 17px;
+  font-size: 15px;
   background-color: transparent;
 }
 

@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import './ItemForm.css';
-import { Link } from 'react-router-dom';
 
 function InventoryLogForm() {
   const { logId } = useParams();
@@ -10,36 +9,43 @@ function InventoryLogForm() {
   const isEditMode = !!logId;
 
   const [formData, setFormData] = useState({
-    authorityId: '',
     itemId: '',
     quantityChange: '',
     reason: '',
     timeStamp: ''
   });
 
-  const [users, setUsers] = useState([]);
+  const [currentUser, setCurrentUser] = useState(null);
   const [items, setItems] = useState([]);
   const [errors, setErrors] = useState([]);
 
-  // Load dropdown data
+  // Load logged-in user from email
   useEffect(() => {
-    axios.get('http://localhost:8080/api/user')
-      .then(res => setUsers(res.data.filter(user => user.enabled)))
-      .catch(err => console.error("Failed to fetch users", err));
+    const storedEmail = localStorage.getItem("email");
+    if (!storedEmail) {
+      console.error("No stored email found.");
+      return;
+    }
 
+    axios.get(`http://localhost:8080/api/user/email/${storedEmail}`)
+      .then(res => setCurrentUser(res.data))
+      .catch(err => console.error("Failed to fetch user by email:", err));
+  }, []);
+
+  // Load items
+  useEffect(() => {
     axios.get('http://localhost:8080/api/item')
       .then(res => setItems(res.data.filter(item => item.enabled)))
       .catch(err => console.error("Failed to fetch items", err));
   }, []);
 
-  // Load log if editing
+  // Load existing log data for edit mode
   useEffect(() => {
     if (isEditMode) {
       axios.get(`http://localhost:8080/api/inventory-log/${logId}`)
         .then(res => {
-          const { authorityId, itemId, quantityChange, reason, timeStamp } = res.data;
+          const { itemId, quantityChange, reason, timeStamp } = res.data;
           setFormData({
-            authorityId,
             itemId,
             quantityChange,
             reason,
@@ -48,7 +54,7 @@ function InventoryLogForm() {
         })
         .catch(err => {
           console.error("Error loading inventory log", err);
-          navigate('/logs');
+          navigate('/inventory-logs');
         });
     }
   }, [isEditMode, logId, navigate]);
@@ -63,14 +69,19 @@ function InventoryLogForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     const payload = {
       ...formData,
+      authorityId: currentUser?.appUserId,
       quantityChange: parseInt(formData.quantityChange, 10)
     };
 
     try {
       if (isEditMode) {
-        await axios.put(`http://localhost:8080/api/inventory-log/${logId}`, { logId: parseInt(logId), ...payload });
+        await axios.put(`http://localhost:8080/api/inventory-log/${logId}`, {
+          logId: parseInt(logId, 10),
+          ...payload
+        });
         alert("Log updated!");
       } else {
         await axios.post(`http://localhost:8080/api/inventory-log`, payload);
@@ -91,6 +102,7 @@ function InventoryLogForm() {
   return (
     <div className="item-form-container">
       <h1>{isEditMode ? `Edit Log #${logId}` : 'Add Inventory Log'}</h1>
+
       {errors.length > 0 && (
         <div className="error-box">
           <ul>
@@ -98,17 +110,15 @@ function InventoryLogForm() {
           </ul>
         </div>
       )}
+
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label>Admin/Authority Username</label>
-          <select name="authorityId" value={formData.authorityId} onChange={handleChange} required>
-            <option value="">Select a user</option>
-            {users.map(user => (
-              <option key={user.appUserId} value={user.appUserId}>
-                {user.username}
-              </option>
-            ))}
-          </select>
+          <input
+            type="text"
+            value={currentUser?.username ?? "Loading..."}
+            disabled
+          />
         </div>
 
         <div className="form-group">
