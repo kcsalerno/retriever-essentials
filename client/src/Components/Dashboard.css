@@ -2,17 +2,16 @@
     display: flex;
     justify-content: center;
     padding: 40px 20px;
-    background-color: #1e1e1e;
     min-height: calc(100vh - 200px); /* leaves room for header/footer */
   }
   
   .dashboard-container {
-    background: rgb(157, 157, 157);
     padding: 30px;
-    border-radius: 12px;
     width: 100%;
     max-width: 1000px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    display: flex; /* Enable flexbox */
+    flex-direction: column; /* Stack items vertically */
+    align-items: center; /* Center columns horizontally */
   }
   
   .dashboard-container h1 {
@@ -22,27 +21,29 @@
     color: black;
   }
   
-  .dashboard-grid {
+  /* .dashboard-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 20px;
-  }
+  } */
   
   .dashboard-button,
   .change-pass-button,
   .self-checkout-button {
     display: block;
-    background-color: black;
+    background-color: #191919;
     color: white;
     text-align: center;
-    padding: 15px;
+    padding: 16px;
     border: none;
     border-radius: 8px;
-    font-weight: bold;
+    font-weight: 500;
     font-size: 1rem;
     cursor: pointer;
     text-decoration: none;
     transition: 0.3s;
+    margin:8px 0;
+    min-width: 190px; /* Set a minimum width for buttons */
   }
   
   .dashboard-button:hover {
@@ -50,19 +51,41 @@
   }
   
   .change-pass-button {
-    background-color: #fff700;
-    color: black;
+    background-color: #FFC907;
+    color: #191919;
   }
   
   .change-pass-button:hover {
-    background-color: #e5e500;
+    background-color: #FDB515;
   }
   
   .self-checkout-button {
-    background-color: #1d9d24;
-    color: black;
+    color: white;
+    background-color:#028f62;
   }
   
   .self--buttton:hover {
     background-color: #14831f;
+  }
+
+  .dash-row {
+    display: flex; /* Enable flexbox for rows */
+    justify-content: center; /* Center columns horizontally */
+    gap: 15px; /* Add spacing between columns */
+    flex-wrap: wrap; /* Allow wrapping for smaller screens */
+  }
+  
+  .dash-column {
+    padding: 0 10px;
+    width: 30%;
+    text-align: center; /* Center content inside columns */
+  }
+  
+  
+  
+  /* Clear floats after the columns */
+  .dash-row:after {
+    content: "";
+    display: table;
+    clear: both;
   }

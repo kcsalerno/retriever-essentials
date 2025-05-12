@@ -59,7 +59,7 @@ function BottomNav() {
         backgroundColor: 'black',
         color: 'white',
         textAlign: 'center',
-        padding: '20px 0',
+        padding: '12px 0',
         fontSize: '18px',
         display: 'flex',
         justifyContent: 'space-around',
@@ -323,7 +323,7 @@ function App() {
               backgroundSize: 'cover',
               backgroundPosition: 'center',
               width: '100%',
-              height: '90px',
+              height: '25px',
             }}
           />
         </div>

@@ -59,7 +59,7 @@ function Sidebar() {
         </ul>
       </div>
       <div className="hours">
-        <p>Location</p>
+        <h3>Location</h3>
         <p>The Commons 1A10</p>
         <h3>Hours of Operation</h3>
         <p>Mon: 12PM - 5 PM</p>

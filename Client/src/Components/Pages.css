@@ -44,7 +44,7 @@
 
 .pagination-info {
   font-size: 14px; /* Match font size with the rest of the project */
-  color: white; /* White text for visibility */
+  color: rgb(0, 0, 0); /* White text for visibility */
   font-size: 16px; /* Slightly larger text */
   margin-top: 10px; /* Add spacing above the info text */
   text-align: center; /* Center align the text */
