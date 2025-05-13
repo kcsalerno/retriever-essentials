@@ -35,7 +35,7 @@ const ProductGrid = ({ products, addToCart }) => {
     <div className="product-grid">
       {products.map((product) => (
         <div className="product-card" key={product.itemId}>
-          <Link to={`/product/${product.itemId}`} className="product-link">
+          <Link to={`/product/${product.itemName}`} className="product-link">
             <img
               src={product.picturePath || 'default-image.jpg'} // Fallback to default image if missing
               alt={product.itemName}
