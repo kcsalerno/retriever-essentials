@@ -109,6 +109,7 @@ public class CheckoutItemService {
             return result;
         }
 
+        // Validate checkout order
         CheckoutOrder checkoutOrder = null;
         if (checkoutItem.getCheckoutOrderId() <= 0) {
             result.addMessage(ResultType.INVALID, "Checkout order ID is required.");
@@ -119,6 +120,7 @@ public class CheckoutItemService {
             }
         }
 
+        // Validate item
         Item item = null;
         if (checkoutItem.getItemId() <= 0) {
             result.addMessage(ResultType.INVALID, "Item ID is required.");
@@ -129,17 +131,38 @@ public class CheckoutItemService {
             }
         }
 
+        // Validate quantity
         if (checkoutItem.getQuantity() <= 0) {
             result.addMessage(ResultType.INVALID, "Quantity must be greater than 0.");
         } else if (item != null) {
-            if (checkoutItem.getQuantity() > item.getCurrentCount()) {
-                result.addMessage(ResultType.INVALID, "Quantity exceeds available stock.");
+            // Special handling for an update-scenario
+            if (checkoutItem.getCheckoutItemId() > 0) {
+                CheckoutItem existing = checkoutItemRepository.findById(checkoutItem.getCheckoutItemId());
+                if (existing != null && existing.getItemId() == checkoutItem.getItemId()) {
+                    int restoredInventory = item.getCurrentCount() + existing.getQuantity();
+                    if (checkoutItem.getQuantity() > restoredInventory) {
+                        result.addMessage(ResultType.INVALID, "Quantity exceeds available stock.");
+                    }
+                } else {
+                    // fallback check
+                    if (checkoutItem.getQuantity() > item.getCurrentCount()) {
+                        result.addMessage(ResultType.INVALID, "Quantity exceeds available stock.");
+                    }
+                }
+            } else {
+                // Normal add-case
+                if (checkoutItem.getQuantity() > item.getCurrentCount()) {
+                    result.addMessage(ResultType.INVALID, "Quantity exceeds available stock.");
+                }
             }
+
+            // Item limit (same logic regardless of add/update)
             if (checkoutItem.getQuantity() > item.getItemLimit()) {
                 result.addMessage(ResultType.INVALID, "Quantity exceeds item limit.");
             }
         }
 
+        // Check for duplicate item in the same checkout
         List<CheckoutItem> existingItems = checkoutItemRepository.findByCheckoutOrderId(checkoutItem.getCheckoutOrderId());
         for (CheckoutItem existingItem : existingItems) {
             if (existingItem.equals(checkoutItem)
