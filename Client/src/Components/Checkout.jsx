@@ -15,7 +15,23 @@ const Checkout = ({ cart, clearCart, removeItemFromCart, updateCartItems }) => {
   const handleQuantityChange = (itemId, delta) => {
     const updatedItems = cartItems.map(item => {
       if (item.itemId === itemId) {
-        const newQty = Math.max(1, Math.min(item.quantity + delta, item.itemLimit));
+        const newQty = item.quantity + delta;
+
+        if (newQty > item.itemLimit) {
+          alert("You've reached the limit for this item.");
+          return item; // Don't update
+        }
+
+        if (newQty > item.currentCount) {
+          alert("Not enough stock available for this item.");
+          return item; // Don't update
+        }
+
+        if (newQty < 1) {
+          alert("Quantity cannot be less than 1.");
+          return item; // Don't update
+        }
+
         return { ...item, quantity: newQty };
       }
       return item;
@@ -68,6 +84,7 @@ const Checkout = ({ cart, clearCart, removeItemFromCart, updateCartItems }) => {
       }
       else {
         alert('Checkout successful!');
+        window.dispatchEvent(new Event('categoryUpdated'));
       }
   
       handleClearCart();

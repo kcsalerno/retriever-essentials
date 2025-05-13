@@ -11,6 +11,7 @@ function CheckoutItemsList({ checkoutItems }) {
     try {
       await axios.delete(`http://localhost:8080/api/checkout-item/${id}`);
       alert('Checkout item deleted!');
+      window.dispatchEvent(new Event('categoryUpdated'));
       navigate('/checkouts');
     } catch (err) {
       console.error("Error deleting checkout item:", err);

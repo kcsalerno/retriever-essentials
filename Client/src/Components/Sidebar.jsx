@@ -12,7 +12,7 @@ function Sidebar() {
     const fetchCategories = () => {
       axios.get('http://localhost:8080/api/item')
         .then(res => {
-          const enabledItems = res.data.filter(item => item.enabled);
+          const enabledItems = res.data.filter(item => item.enabled).filter(item => item.currentCount > 0);
           const uniqueCategories = [...new Set(enabledItems.map(item => item.category.trim()))];
           setCategories(uniqueCategories);
         })

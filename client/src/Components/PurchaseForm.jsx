@@ -71,6 +71,7 @@ function PurchaseForm() {
     try {
       await axios.put(`http://localhost:8080/api/purchase/${purchaseId}`, payload);
       alert("Purchase order updated!");
+      window.dispatchEvent(new Event('categoryUpdated'));
       navigate('/purchases');
     } catch (err) {
       console.error("Failed to update purchase order", err);

@@ -87,6 +87,7 @@ function AddPurchaseForm() {
     try {
       await axios.post('http://localhost:8080/api/purchase', payload);
       alert('Purchase order created!');
+      window.dispatchEvent(new Event('categoryUpdated'));
       navigate('/purchases');
     } catch (err) {
       console.error('Failed to create purchase order', err);

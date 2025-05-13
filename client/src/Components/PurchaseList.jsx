@@ -21,6 +21,7 @@ function PurchaseList() {
     try {
       await axios.delete(`http://localhost:8080/api/purchase/${purchaseId}`);
       alert('Purchsae order deleted!');
+      window.dispatchEvent(new Event('categoryUpdated'));
       navigate('/dashboard');
     } catch (err) {
       console.error("Error deleting purchase order:", err);

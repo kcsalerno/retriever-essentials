@@ -11,6 +11,7 @@ function PurchaseItemsList({ purchaseItems }) {
     try {
       await axios.delete(`http://localhost:8080/api/purchase-item/${id}`);
       alert('Purchase item deleted!');
+      window.dispatchEvent(new Event('categoryUpdated'));
       navigate('/purchases');
     } catch (err) {
       console.error("Error deleting purchase item:", err);

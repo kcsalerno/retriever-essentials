@@ -123,26 +123,36 @@ function App() {
 
   const addToCart = (product) => {
     setCart(prevCart => {
-      const existing = prevCart.find(item => item.itemId === product.itemId);
-      let updatedCart;
-  
-      if (existing) {
-        if (existing.quantity >= product.itemLimit) {
-          alert("You've reached the limit for this item.");
-          return prevCart; // don't update
-        }
-  
-        updatedCart = prevCart.map(item =>
-          item.itemId === product.itemId
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
-      } else {
-        updatedCart = [...prevCart, { ...product, quantity: 1 }];
+    const existing = prevCart.find(item => item.itemId === product.itemId);
+    let updatedCart;
+
+    if (existing) {
+      if (existing.quantity >= product.itemLimit) {
+        alert("You've reached the limit for this item.");
+        return prevCart; // Don't update
       }
-  
-      localStorage.setItem('cart', JSON.stringify(updatedCart));
-      return updatedCart;
+
+      if (existing.quantity >= product.currentCount) {
+        alert("Not enough stock available for this item.");
+        return prevCart; // Don't update
+      }
+
+      updatedCart = prevCart.map(item =>
+        item.itemId === product.itemId
+          ? { ...item, quantity: item.quantity + 1 }
+          : item
+      );
+    } else {
+      if (product.currentCount <= 0) {
+        alert("This item is out of stock.");
+        return prevCart; // Don't add out-of-stock items
+      }
+
+      updatedCart = [...prevCart, { ...product, quantity: 1 }];
+    }
+
+    localStorage.setItem('cart', JSON.stringify(updatedCart));
+    return updatedCart;
     });
   };
 

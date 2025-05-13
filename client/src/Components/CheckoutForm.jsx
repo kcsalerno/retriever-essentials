@@ -73,6 +73,7 @@ function CheckoutForm() {
     console.log("Submitting payload:", JSON.stringify(payload, null, 2));
       await axios.put(`http://localhost:8080/api/checkout-order/${checkoutId}`, payload);
       alert('Checkout order updated!');
+      window.dispatchEvent(new Event('categoryUpdated'));
       navigate('/checkouts');
     } catch (err) {
       console.error("Failed to update checkout order", err);

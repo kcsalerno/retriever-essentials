@@ -20,6 +20,7 @@ function InventoryLogList() {
     if (!window.confirm("Are you sure you want to delete this inventory log?")) return;
     try {
       await axios.delete(`http://localhost:8080/api/inventory-log/${logId}`);
+      window.dispatchEvent(new Event('categoryUpdated'));
       alert('Inventory log deleted!');
       navigate('/dashboard');
     } catch (err) {

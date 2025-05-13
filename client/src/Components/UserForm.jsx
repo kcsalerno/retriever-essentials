@@ -151,7 +151,7 @@ function UserForm() {
         </div>
 
         {errors.length > 0 && (
-          <div className="error-messages">
+          <div className="error-box">
             <ul>
               {errors.map((msg, idx) => (
                 <li key={idx}>{msg}</li>
