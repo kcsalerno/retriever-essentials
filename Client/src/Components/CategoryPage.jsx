@@ -36,7 +36,7 @@ function CategoryPage({ addToCart }) {
   useEffect(() => {
     axios.get(`http://localhost:8080/api/item/category/${decodeURIComponent(category)}`)
       .then((response) => {
-        const enabledOnly = response.data.filter(item => item.enabled);
+        const enabledOnly = response.data.filter(item => item.enabled).filter(item => item.currentCount > 0);
         setProducts(enabledOnly);
       })
       .catch((error) => {

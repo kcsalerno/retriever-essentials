@@ -53,6 +53,7 @@ function EditPurchaseItemForm() {
     try {
       await axios.put(`http://localhost:8080/api/purchase-item/${purchaseItemId}`, formData);
       alert("Purchase item updated!");
+      window.dispatchEvent(new Event('categoryUpdated'));
       navigate('/purchases');
     } catch (err) {
       console.error("Error updating purchase item:", err);
@@ -101,7 +102,7 @@ function EditPurchaseItemForm() {
         <button type="submit" className="add-btn">Save Changes</button>
 
         {errors.length > 0 && (
-          <div className="error-messages">
+          <div className="error-box">
             <ul>
               {errors.map((msg, idx) => (
                 <li key={idx}>{msg}</li>

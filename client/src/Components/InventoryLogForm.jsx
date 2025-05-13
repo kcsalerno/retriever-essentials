@@ -83,9 +83,11 @@ function InventoryLogForm() {
           ...payload
         });
         alert("Log updated!");
+        window.dispatchEvent(new Event('categoryUpdated'));
       } else {
         await axios.post(`http://localhost:8080/api/inventory-log`, payload);
         alert("Log added!");
+        window.dispatchEvent(new Event('categoryUpdated'));
       }
       navigate('/inventory-logs');
     } catch (err) {
