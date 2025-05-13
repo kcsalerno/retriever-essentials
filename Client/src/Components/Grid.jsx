@@ -1,7 +1,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../Contexts/AuthContext';
 
 const ProductGrid = ({ products, addToCart }) => {
+    const { user } = useAuth();
+    var isAdmin = false
+    var isAuthority = false
+    if (user) {
+      isAdmin = user?.role === 'ROLE_ADMIN';
+      isAuthority = user?.role === 'ROLE_AUTHORITY';
+    }
+
   // Function to determine the quantity class based on currentCount
   const getQuantityClass = (quantity) => {
     if (quantity <= 2) {
@@ -36,9 +45,11 @@ const ProductGrid = ({ products, addToCart }) => {
           <p className={`product-quantity ${getQuantityClass(product.currentCount)}`}>
             Quantity: {product.currentCount}
           </p>
-          <button onClick={() => addToCart(product)} className="add-to-cart-btn">
-            Add to Cart
-          </button>
+          {(isAdmin || isAuthority) && (
+            <button onClick={() => addToCart(product)} className="add-to-cart-btn">
+              Add to Cart
+            </button>
+          )}
         </div>
       ))}
     </div>
